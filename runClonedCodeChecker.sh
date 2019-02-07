@@ -21,7 +21,7 @@ print_help()
 
 run_program()
 {
-  ./clonedCodeChecker.py "$@"#-a $arg_a -j $arg_j -c $arg_c -R $arg_R
+  ./clonedcodechecker/clonedCodeChecker.py "$@"#-a $arg_a -j $arg_j -c $arg_c -R $arg_R
 }
 
 printf "Argument a is %s\n" "$arg_a"
