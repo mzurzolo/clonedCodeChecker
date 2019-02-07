@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-a', help="a?")
-parser.add_argument('-j', help="j?")
-parser.add_argument('-c', help="c?")
-parser.add_argument('-R', help="R?")
+parser.add_argument('-p', help="Purge C++ Code Cache")
+parser.add_argument('-f', help="Search for duplicate code in given file")
+parser.add_argument('-o', help="Specify directory for the output file")
+parser.add_argument('-d', help="Search for duplicate code in given directory \
+                    (but not sub-directories)", default="./")
+parser.add_argument('-c', help="Search for duplicate code in current directory \
+                    (but not sub-directories)",
+                    action="store_true")
+parser.add_argument('-r', help="Search for duplicate code recursively",
+                    action="store_true")
 
-args = parser.parse_args()
-arg_a = args.a
-arg_j = args.j
-arg_c = args.c
-arg_R = args.R
+
 
 def load_file(filename='example.txt'):
     lineslist = []
@@ -24,22 +27,37 @@ def load_file(filename='example.txt'):
     return lineslist
 
 
-def main(arg_a=None, arg_j=None, arg_c=None, arg_R=None):
+def recursive_walk(directory="./"):
+    for current, _folders, files in os.walk(directory):
+        print(current)
+        map(lambda x: print("___{}".format(x)), _folders)
+        map(lambda x: print("___...___{}".format(x)), files)
 
-    lineslist = load_file()
-    # looping examples? not sure what examples to include... will add more
-    for line in lineslist:
-        print(line)
 
-    for i in range(len(lineslist)):
-        if len(lineslist[i]) == 0:
-            continue
-        for split in lineslist[i].split():
-            print(split.strip(), end=' ')
-        print()
+def option_c():
+    for file in os.listdir("./"):
+        print(file)
+
+
+def main(args):
+
+    # If -f <filename> was not specified, args.f will be None, which will
+    # evaluate false.
+    if args.f:
+        lineslist = load_file(args.f)
+        for line in lineslist:
+            print(line)
+
+    if args.r:
+        recursive_walk(args.d)
+
+    if args.c:
+        option_c()
+
 
 
 
 
 if __name__ == "__main__":
-    main()
+    args = parser.parse_args()
+    main(args)
