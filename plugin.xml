@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="clonedcodechecker.cpp.intro.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="clonedcodechecker.cpp.intro.Perspective"
+            name="RCP Perspective"
+            id="clonedCodeChecker.cpp.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            name="RCP Product"
+            application="clonedCodeChecker.cpp.application">
+         <property
+               name="windowImages"
+               value="icons/eclipse16.png,icons/eclipse32.png,icons/eclipse48.png,icons/eclipse64.png, icons/eclipse128.png,icons/eclipse256.png,icons/eclipse512.png">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            id="clonedcodechecker.cpp.intro"
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart">
+      </intro>
+      <introProductBinding
+            introId="clonedcodechecker.cpp.intro"
+            productId="clonedCodeChecker.cpp.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            id="clonedCodeChecker.cpp.configId"
+            introId="clonedcodechecker.cpp.intro"
+            content="introContent.xml">
+         <presentation
+               home-page-id="root">
+            <implementation
+                  os="win32,linux,macosx"
+                  kind="html">
+            </implementation>
+         </presentation>
+      </config>
+   </extension>
+
+</plugin>

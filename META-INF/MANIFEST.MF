@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cpp
+Bundle-SymbolicName: clonedCodeChecker.cpp;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: clonedcodechecker.cpp.Activator
+Bundle-Vendor: Dogs
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.intro,
+ org.apache.felix.scr,
+ org.eclipse.equinox.util,
+ org.eclipse.equinox.event
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: clonedCodeChecker.cpp
+Eclipse-AutoStart: true
