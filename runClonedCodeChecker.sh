@@ -21,27 +21,8 @@ print_help()
 
 run_program()
 {
-  ./clonedCodeChecker.py #-a $arg_a -j $arg_j -c $arg_c -R $arg_R
+  ./clonedCodeChecker.py "$@"#-a $arg_a -j $arg_j -c $arg_c -R $arg_R
 }
-
-while getopts ":ajcRh" opt; do
-  case $opt in
-    a) arg_a="$OPTARG"
-    ;;
-    j) arg_j="$OPTARG"
-    ;;
-    c) arg_c="$OPTARG"
-    ;;
-    h)
-    print_help
-    exit 0
-    ;;
-    R) arg_R="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    ;;
-  esac
-done
 
 printf "Argument a is %s\n" "$arg_a"
 printf "Argument j is %s\n" "$arg_j"
