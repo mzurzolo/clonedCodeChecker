@@ -2,6 +2,8 @@
 
 import argparse
 import os
+import pandas as pd
+from cppFile import cppFile
 
 
 parser = argparse.ArgumentParser()
@@ -19,12 +21,12 @@ parser.add_argument('-r', help="Search for duplicate code recursively",
 
 
 def load_file(filename='example.txt'):
-    lineslist = []
+    newFile = cppFile(filename)
     with open(filename,'r') as file:
         for line in file:
-            lineslist.append( line.strip() )
+            newFile.addLine( line.strip() )
 
-    return lineslist
+    return newFile
 
 
 def recursive_walk(directory="./"):
@@ -44,17 +46,15 @@ def main(args):
     # If -f <filename> was not specified, args.f will be None, which will
     # evaluate false.
     if args.f:
-        lineslist = load_file(args.f)
-        for line in lineslist:
-            print(line)
+        newFile = load_file(args.f)
+        newFile.printSet()
+
 
     if args.r:
         recursive_walk(args.d)
 
     if args.c:
         option_c()
-
-
 
 
 
