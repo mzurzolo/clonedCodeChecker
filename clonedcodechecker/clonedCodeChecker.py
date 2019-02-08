@@ -2,8 +2,7 @@
 
 import argparse
 import os
-from cppFile import cppFile
-
+import cppFile as cpf
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', help="Purge C++ Code Cache")
@@ -20,7 +19,7 @@ parser.add_argument('-r', help="Search for duplicate code recursively",
 
 
 def load_file(filename='example.txt'):
-    newFile = cppFile(filename)
+    newFile = cpf.cppFile(filename)
     with open(filename,'r') as file:
         for line in file:
             newFile.addLine( line.strip() )
@@ -28,11 +27,14 @@ def load_file(filename='example.txt'):
     return newFile
 
 
-def recursive_walk(directory="./"):
-    for current, _folders, files in os.walk(directory):
-        print(current)
-        map(lambda x: print("___{}".format(x)), _folders)
-        map(lambda x: print("___...___{}".format(x)), files)
+def recursive_walk(directory="."):
+    for current, _folders, files in os.walk(directory, topdown=False):
+        if current[-1] is not "/":
+            for f in os.listdir(current):
+                print(current + "/" + f)
+        else:
+            for f in os.listdir(current):
+                print(current + f)
 
 
 def option_c():
@@ -47,7 +49,6 @@ def main(args):
     if args.f:
         newFile = load_file(args.f)
         newFile.printSet()
-
 
     if args.r:
         recursive_walk(args.d)
