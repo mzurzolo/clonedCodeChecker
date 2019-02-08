@@ -2,7 +2,6 @@
 
 import argparse
 import os
-import pandas as pd
 from cppFile import cppFile
 
 
