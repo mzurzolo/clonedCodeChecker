@@ -3,6 +3,7 @@
 import argparse
 import os
 import cppFile as cpf
+import codeCache as cC
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', help="Purge C++ Code Cache")
@@ -16,25 +17,29 @@ parser.add_argument('-c', help="Search for duplicate code in current directory \
 parser.add_argument('-r', help="Search for duplicate code recursively",
                     action="store_true")
 
+###############################################################################
+codecache = cC.codeCache()
 
 
 def load_file(filename='example.txt'):
-    newFile = cpf.cppFile(filename)
-    with open(filename,'r') as file:
-        for line in file:
-            newFile.addLine( line.strip() )
+    return cpf.cppFile(filename)
 
-    return newFile
+
+def load_cpp_files(directory="."):
+    for f in os.listdir(directory):
+        if f.endswith(".cpp") and not f.startswith("."):
+            codecache.addFile(load_file(directory + f))
+
+        if f.endswith(".c") and not f.startswith("."):
+            codecache.addFile(load_file(directory + f))
 
 
 def recursive_walk(directory="."):
     for current, _folders, files in os.walk(directory, topdown=False):
         if current[-1] is not "/":
-            for f in os.listdir(current):
-                print(current + "/" + f)
+            load_cpp_files(current+"/")
         else:
-            for f in os.listdir(current):
-                print(current + f)
+            load_cpp_files(current)
 
 
 def option_c():
@@ -52,6 +57,8 @@ def main(args):
 
     if args.r:
         recursive_walk(args.d)
+        codecache.printCache()
+        codecache.saveCache()
 
     if args.c:
         option_c()
