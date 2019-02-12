@@ -7,12 +7,12 @@ import _common as common
 
 class codeCache():
 
-    __slots__ = ["files", "stats"]
+    __slots__ = ["files", "stats", "filecache"]
 
     def __init__(self, files=None, stats=None, filecache="./.filecache/"):
-        #with open(cacheFile,"r") as file:
-            #for line in file:
-                #print(line)
+
+        self.filecache = filecache
+
         if files:
             self.files = files
         else:
@@ -22,22 +22,10 @@ class codeCache():
         else:
             self.stats = {}
 
-        try:
-            for file in os.listdir(filecache):
-                self.loadFile(filecache + file)
-
-
-        except:
-            print("Error loading {} ... starting fresh".format(filecache))
-
 
     def processFile(self, filename):
         if filename in self.files:
             return
-
-
-    def addFile(self, cppfile):
-        self.files.add(cppfile)
 
 
     def printCache(self):
@@ -46,9 +34,18 @@ class codeCache():
 #            file.buildBlocks()
 
 
-    def loadFile(self, filename):
-        #input(os.path.abspath(filename))
-        self.addFile(cpf.cppFile(os.path.abspath(filename),True))
+    def add(self, cppfile):
+        self.files.add(cppfile)
+
+
+
+
+    def addFile(self, filename):
+        fname = common.cacheFileName(filename)
+        if fname in os.listdir(self.filecache):
+            self.add(cpf.cppFile(os.path.abspath(self.filecache + fname),True))
+        else:
+            self.add(cpf.cppFile(os.path.abspath(filename)))
 
 
     def saveCache(self, outdir="./.filecache/"):
@@ -67,6 +64,9 @@ class codeCache():
             newdict["blocks"] = file.blocks
 
             with open("{}{}".format(outdir, fname), "w") as output:
-                yaml.dump(newdict, output, Dumper=yaml.CSafeDumper)
+                yaml.dump(newdict,
+                          output,
+                          Dumper=yaml.CSafeDumper,
+                          default_flow_style=False)
 
             print("saved : ", fname)

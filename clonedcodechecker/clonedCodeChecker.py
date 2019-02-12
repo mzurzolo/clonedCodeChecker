@@ -29,10 +29,10 @@ def load_file(filename='example.txt'):
 def load_cpp_files(directory="."):
     for f in os.listdir(directory):
         if f.endswith(".cpp") and not f.startswith("."):
-            codecache.addFile(load_file(directory + f))
+            codecache.addFile(os.path.abspath(directory + f))
 
         if f.endswith(".c") and not f.startswith("."):
-            codecache.addFile(load_file(directory + f))
+            codecache.addFile(os.path.abspath(directory + f))
 
 
 def recursive_walk(directory="."):
