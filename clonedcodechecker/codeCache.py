@@ -7,11 +7,12 @@ import _common as common
 
 class codeCache():
 
-    __slots__ = ["files", "stats", "filecache"]
+    __slots__ = ["files", "stats", "filecache", "filecachelistdir"]
 
     def __init__(self, files=None, stats=None, filecache="./.filecache/"):
 
         self.filecache = filecache
+        self.filecachelistdir = set(os.listdir(self.filecache))
 
         if files:
             self.files = files
@@ -21,6 +22,7 @@ class codeCache():
             self.stats = stats
         else:
             self.stats = {}
+
 
 
     def processFile(self, filename):
@@ -38,11 +40,9 @@ class codeCache():
         self.files.add(cppfile)
 
 
-
-
     def addFile(self, filename):
         fname = common.cacheFileName(filename)
-        if fname in os.listdir(self.filecache):
+        if fname in self.filecachelistdir:
             self.add(cpf.cppFile(os.path.abspath(self.filecache + fname),True))
         else:
             self.add(cpf.cppFile(os.path.abspath(filename)))
@@ -53,14 +53,14 @@ class codeCache():
             file = self.files.pop()
             fname = common.cacheFileName(file.filename)
 
-            if fname in os.listdir(outdir):
-                print("_______________________________________________________")
+            if fname in self.filecachelistdir:
+                # print("_______________________________________________________")
                 continue
 
             newdict = {}
             newdict["filename"] = file.filename
             newdict["lineset"] = file.lineset
-            newdict["allLines"] = file.allLines
+            newdict["linestring"] = file.linestring
             newdict["blocks"] = file.blocks
 
             with open("{}{}".format(outdir, fname), "w") as output:
@@ -70,3 +70,4 @@ class codeCache():
                           default_flow_style=False)
 
             print("saved : ", fname)
+            self.filecachelistdir.add(fname)
