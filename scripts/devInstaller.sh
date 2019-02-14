@@ -12,7 +12,7 @@ removerepo(){
   done
 }
 
-printf "\n\n\nThis script will set up a dev environment"
+printf "\n\n\nThis script will set up a dev environment\n"
 
 echo "Would you like to set up an ssh key?"
 echo "This is optional. If you already have one (probably in $HOME/.ssh/),"
