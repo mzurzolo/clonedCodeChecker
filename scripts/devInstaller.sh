@@ -46,8 +46,8 @@ echo "export PATH=\"$HOME/ccc_env/py37/bin:$PATH\"" >> $HOME/.bashrc
 source $HOME/.bashrc ;
 python3 -m pip install -r $HOME/ccc_env/clonedcodechecker-mercurial/scripts/requirements.txt ;
 
-printf "\n\nDone! The repository you cloned to get this script can now be safely"
-printf "removed. Would you like to do this now?"
+printf "\n\nDone! The repository you cloned to get this script can now be safely\n"
+printf "removed. Would you like to do this now?\n"
 select yn in "Yes" "No" ; do
     case $yn in
         Yes ) removerepo; break;;
