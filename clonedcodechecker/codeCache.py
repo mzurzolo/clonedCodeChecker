@@ -24,7 +24,6 @@ class codeCache():
             self.stats = {}
 
 
-
     def processFile(self, filename):
         if filename in self.files:
             return
@@ -33,7 +32,6 @@ class codeCache():
     def printCache(self):
         for file in self.files:
             file.printSet()
-#            file.buildBlocks()
 
 
     def add(self, cppfile):
@@ -43,7 +41,22 @@ class codeCache():
     def addFile(self, filename):
         fname = common.cacheFileName(filename)
         if fname in self.filecachelistdir:
-            self.add(cpf.cppFile(os.path.abspath(self.filecache + fname),True))
+            try:
+                with open(self.filecache + fname, "r") as file:
+                    data = yaml.load(file, Loader=yaml.CSafeLoader)
+                    filename = data['filename']
+                    lineset = data['lineset']
+                    allLines = [] # data['allLines']
+                    blocks = data['blocks']
+                    linestring = data['linestring']
+
+                print("load : ", filename)
+                self.add(cpf.cppFile(filename, lineset, allLines,
+                                     blocks, linestring, True))
+
+            except Exception as e:
+                print(e)
+                os.remove(filename)
         else:
             self.add(cpf.cppFile(os.path.abspath(filename)))
 
