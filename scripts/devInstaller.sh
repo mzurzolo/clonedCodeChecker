@@ -14,6 +14,22 @@ removerepo(){
   done
 }
 
+createssh(){
+  printf "Would you like to set up an ssh key?\n"
+  printf "This is optional. If you already have one (probably in $HOME/.ssh/),\n"
+  printf "you probably don\'t want to create another one. If you create one, you can\n"
+  printf "add it to your SourceForge account, and it'll stop prompting you for a password\n"
+  printf "when you pull new changes (hg pull ; hg update) or push your own changes\n"
+  printf "(hg commit -m \"<short message about what changed>\" ; hg push)\n"
+  select yn in "Yes" "No" "Cancel"; do
+      case $yn in
+          Yes ) ssh-keygen; break;;
+          No ) echo "ok"; break;;
+          Cancel ) exit ;;
+      esac
+  done
+}
+
 printf "\n\n\nThis script will set up a dev environment\n"
 
 mkdir -p $HOME/ccc_env ;
@@ -22,7 +38,7 @@ cd $HOME/ccc_env ;
 printf "Do you want to be able to submit changes from here? (Requires a SourceForge account)"
 select yn in "Yes" "No" ; do
   case $yn in
-    Yes ) read -p "SourceForge Username: " username ; hg clone ssh://${username}@hg.code.sf.net/p/clonedcodechecker/mercurial clonedcodechecker-mercurial ; break ;;
+    Yes ) read -p "SourceForge Username: " username ; hg clone ssh://${username}@hg.code.sf.net/p/clonedcodechecker/mercurial clonedcodechecker-mercurial ; createssh; break ;;
     No ) hg clone http://hg.code.sf.net/p/clonedcodechecker/mercurial clonedcodechecker-mercurial ; break ;;
   esac
 done
@@ -46,20 +62,6 @@ select yn in "Yes" "No" ; do
     case $yn in
         Yes ) removerepo; break;;
         No ) echo "ok"; break;;
-    esac
-done
-
-printf "Would you like to set up an ssh key?\n"
-printf "This is optional. If you already have one (probably in $HOME/.ssh/),\n"
-printf "you probably don\'t want to create another one. If you create one, you can\n"
-printf "add it to your SourceForge account, and it'll stop prompting you for a password\n"
-printf "when you pull new changes (hg pull ; hg update) or push your own changes\n"
-printf "(hg commit -m \"<short message about what changed>\" ; hg push)\n"
-select yn in "Yes" "No" "Cancel"; do
-    case $yn in
-        Yes ) ssh-keygen; break;;
-        No ) echo "ok"; break;;
-        Cancel ) exit ;;
     esac
 done
 

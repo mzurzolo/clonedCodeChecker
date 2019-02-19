@@ -65,7 +65,8 @@ def main():
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', help="Purge C++ Code Cache")
+    parser.add_argument('-p', help="Purge C++ Code Cache",
+                        action="store_true")
     parser.add_argument('-f', help="Search for duplicate code in given file")
     parser.add_argument('-o', help="Specify directory for the output file")
     parser.add_argument('-d', help="Search for duplicate code in given directory" +
@@ -81,6 +82,9 @@ def main():
 
     ###############################################################################
 
+    if args.p:
+        codecache.purge()
+
     # If -f <filename> was not specified, args.f will be None, which will
     # evaluate false.
     if args.f:
@@ -93,6 +97,7 @@ def main():
         recursive_walk(args.d)
         #codecache.printCache()
         codecache.saveCache()
+        codecache.scanSearchSet()
 
 
     if args.c:

@@ -13,12 +13,12 @@ except:
 
 class codeCache():
 
-    __slots__ = ["files", "stats", "filecache", "filecachelistdir"]
+    __slots__ = ["files", "searchSet", "filecache", "filecachelistdir"]
 
-    def __init__(self, files=set(), stats={}, filecache="./.filecache/"):
+    def __init__(self, files=set(), searchSet=set(), filecache="./.filecache/"):
 
         self.files = files
-        self.stats = stats
+        self.searchSet = searchSet
         # the directory of processed files
         self.filecache = filecache
         # the files in filecache
@@ -29,6 +29,9 @@ class codeCache():
     def printCache(self):
         for file in self.files:
             file.printSet()
+
+    def purge(self):
+        os.rmdir(self.filecache)
 
     # add cppFile object to the codeCache. Use internally (from addFile())
     def add(self, cppfile):
@@ -77,7 +80,12 @@ class codeCache():
             # if the file is already in the filecache, skip the rest of this loop
             # and go back up to the while statement.
             if fname in self.filecachelistdir:
+                for line in file.lineset:
+                    self.searchSet.add(line)
                 continue
+
+            for line in file.lineset:
+                self.searchSet.add(line)
 
             # a dictionary makes it easy to dump cppFile's fields (and retrieve
             # them by name later)
@@ -101,3 +109,9 @@ class codeCache():
             # keep track of what gets added to the filecache directory so we
             # don't have to re-query the filesystem with os.listdir() all the time
             self.filecachelistdir.add(fname)
+
+
+    def scanSearchSet(self):
+        print(len(self.searchSet))
+        for line in self.searchSet:
+            input(line)
