@@ -3,6 +3,6 @@
 PROGRAM="Cloned Code Checker"
 VERSION=0.0.1
 
-mkdir -p ./.filecache
+mkdir -p .$CCC_ENV/.filecache
 
-./clonedcodechecker/clonedCodeChecker.py "$@"
+$CCC_ENV/clonedcodechecker/clonedCodeChecker.py -e $CCC_ENV "$@"

@@ -16,16 +16,10 @@ def abspath(filename):
     return os.path.abspath(filename)
 
 # this is where the filter is defined in that ugly list(filter(map(lambda))) line
-# in cppFile.py.
+# in cppFile.py. it's only empty lines now
 def fun(item):
     # empty lines get filtered
     if len(item) == 0:
         return False
-    # the middle of block comments
-    if item[0] == "*":
-        return False
-    # the first line of a block commment
-    if item[0:1] == "/*":
-        return False
-    
+
     return True
