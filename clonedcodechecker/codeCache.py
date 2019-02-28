@@ -31,7 +31,9 @@ class codeCache():
             file.printSet()
 
     def purge(self):
-        os.rmdir(self.filecache)
+        for fname in os.listdir(self.filecache):
+            os.remove(self.filecache + fname)
+        self.filecachelistdir = set(os.listdir(self.filecache))
 
     # add cppFile object to the codeCache. Use internally (from addFile())
     def add(self, cppfile):
