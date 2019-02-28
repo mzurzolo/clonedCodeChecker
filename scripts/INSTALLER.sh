@@ -18,7 +18,7 @@ done
 
 mkdir -p $TARGET ;
 
-hg clone http://hg.code.sf.net/p/clonedcodechecker/mercurial $TARGET/clonedcodechecker-mercurial
+hg clone http://hg.code.sf.net/p/clonedcodechecker/mercurial -r SPRINT1 $TARGET/clonedcodechecker-mercurial
 
 python3 -m venv $TARGET/py37 ;
 echo "export PATH=\"$TARGET/py37/bin:$PATH\"" >> $HOME/.bashrc
