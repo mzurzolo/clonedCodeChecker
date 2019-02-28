@@ -44,16 +44,6 @@ def recursive_walk(directory="."):
         # filecache.
         codecache.saveCache()
 
-# this isn't doing anything useful. Debugging with print statements
-def option_c():
-    for file in os.listdir("./"):
-        print(file)
-        print(os.path.abspath(file))
-        print("file only")
-        common.parseFilename(file)
-        print("os path abspath")
-        common.parseFilename(os.path.abspath(file))
-
 # main decides what functions to run based on the arguments in args.
 # this is not complete
 def main():
@@ -67,15 +57,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', help="Purge C++ Code Cache",
                         action="store_true")
-    parser.add_argument('-f', help="Search for duplicate code in given file")
-    parser.add_argument('-o', help="Specify directory for the output file")
-    parser.add_argument('-d', help="Search for duplicate code in given directory" +
-                        "(but not sub-directories)", default="./")
-    parser.add_argument('-c', help="Search for duplicate code in current" +
-                        " directory (but not sub-directories)",
-                        action="store_true")
-    parser.add_argument('-r', help="Search for duplicate code recursively",
-                        action="store_true")
+    # parser.add_argument('-f', help="Search for duplicate code in given file")
+    # parser.add_argument('-o', help="Specify directory for the output file")
+    parser.add_argument('-r', help="Search for duplicate code in given " +
+                        "directory and any sub-directories (recursive)")
+    parser.add_argument('-d', help="Search for duplicate code in given " +
+                        "directory (but not sub-directories)", default="./")
 
 
     args = parser.parse_args()
@@ -91,17 +78,14 @@ def main():
         newFile = load_file(args.f)
         newFile.printSet()
 
-    # Assumes that if -r was an argument, a directory was also specified
-    # with -d. It doesn't check that that's actually what happened.
+
     if args.r:
-        recursive_walk(args.d)
-        #codecache.printCache()
+        recursive_walk(args.r)
         codecache.saveCache()
-        codecache.scanSearchSet()
 
 
-    if args.c:
-        option_c()
+    if args.d:
+        load_cpp_files(args.d)
 
 
 # This is the entry point.
