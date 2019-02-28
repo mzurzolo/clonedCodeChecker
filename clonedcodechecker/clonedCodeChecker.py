@@ -69,6 +69,7 @@ def main():
                         action="store_true")
     parser.add_argument('-f', help="Search for duplicate code in given file")
     parser.add_argument('-o', help="Specify directory for the output file")
+    parser.add_argument('-e', help=argparse.SUPRESS)
     parser.add_argument('-d', help="Search for duplicate code in given directory" +
                         "(but not sub-directories)", default="./")
     parser.add_argument('-c', help="Search for duplicate code in current" +
@@ -80,6 +81,8 @@ def main():
 
     args = parser.parse_args()
 
+    ###############################################################################
+    codecache.filecache = args.e
     ###############################################################################
 
     if args.p:

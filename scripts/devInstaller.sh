@@ -34,6 +34,7 @@ done
 
 python3 -m venv $TARGET/py37 ;
 echo "export PATH=\"$TARGET/py37/bin:$PATH\"" >> $HOME/.bashrc
+echo "export CCC_ENV=$TARGET" >> $HOME/.bashrc
 source $HOME/.bashrc ;
 python3 -m pip install -r $TARGET/clonedcodechecker-mercurial/scripts/requirements.txt ;
 
