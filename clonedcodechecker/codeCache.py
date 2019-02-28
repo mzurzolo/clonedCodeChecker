@@ -117,7 +117,7 @@ class codeCache():
 
     def testmatch(self):
         for file in self.files:
-            self.matcher.printMatches(file.lineset)
+            self.matcher.printMatches(file.linestring)
 
 
     def scanSearchSet(self):

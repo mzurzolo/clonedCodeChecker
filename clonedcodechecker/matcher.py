@@ -6,29 +6,28 @@ import re
 class matcher:
 
     def __init__(self):
-        #self.prototype = re.compile('[a-zA-Z0-9_]*?\s+[a-zA-Z0-9_]*?[(][a-zA-Z0-9_]*?[)];')#'.*\(.*\);')
-        self.assignment = re.compile('\s*[a-zA-Z0-9_]*?\s*=.*?;')
-        self.ifstatement = re.compile('\s*if.*?')
-        self.comment = re.compile('\s*([/][/].*?\n|[/][*].*?[*][/]|[*].*?\n)')
-        self.integer2 = re.compile('\s*[0-9]+[.][0-9]*?')
+
+        NUMBER = '[0-9]+[.]?[0-9]*'     # Integer or decimal number
+        ASSIGN = '='                    # Assignment operator
+        END = ';'                       # Statement terminator
+        ID = '[A-Za-z_]+'               # Identifiers
+        OP = '[+]|[-]|[*]|(?<!/)/(?!/)' # Arithmetic operators
+        WHITESPACE = '\s+'              # spaces, tabs, and newlines
+        MISMATCH = '.'                  # Any other character
+
+        token_specification = [
+        ('NUMBER', NUMBER),
+        ('ASSIGN', ASSIGN),
+        ('END', END),
+        ('ID', ID),
+        ('OP', OP),
+        ('WHITESPACE', WHITESPACE),
+        ('MISMATCH', MISMATCH),
+        ]
+        self.tok_regex = re.compile('|'.join(('(?P<{}>{})'.format(pair[0],pair[1]) for pair in token_specification)))
 
     def printMatches(self, code):
-
-        for n in code:
-            print("line: ", n)
-            if self.assignment.match(n):
-
-                input("assignment---------------------------------------------")
-                input(n)
-            if self.ifstatement.match(n):
-
-                input("if---------------------------------------------")
-                input(n)
-            if self.comment.match(n):
-
-                input("comment---------------------------------------------")
-                input(n)
-            if self.integer2.match(n):
-
-                input("integer2---------------------------------------------")
-                input(n)
+        for token in self.tok_regex.finditer(code):
+            input(token.lastgroup)
+            input(token)
+            input(token.group)
