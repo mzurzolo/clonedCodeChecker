@@ -59,7 +59,7 @@ def main():
                         action="store_true")
     # parser.add_argument('-f', help="Search for duplicate code in given file")
     # parser.add_argument('-o', help="Specify directory for the output file")
-    parser.add_argument('-e', help=argparse.SUPRESS)
+    parser.add_argument('-e', help=argparse.SUPPRESS)
     parser.add_argument('-r', help="Search for duplicate code in given " +
                         "directory and any sub-directories (recursive)")
     parser.add_argument('-d', help="Search for duplicate code in given " +
