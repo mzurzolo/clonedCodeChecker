@@ -19,8 +19,8 @@ mkdir -p $TARGET ;
 printf "Do you want to be able to submit changes from here? (Requires a SourceForge account)\n"
 select yn in "Yes" "No" ; do
   case $yn in
-    Yes ) read -p "SourceForge Username: " username ; hg clone ssh://${username}@hg.code.sf.net/p/clonedcodechecker/mercurial $TARGET/clonedcodechecker-mercurial ; break ;;
-    No ) hg clone http://hg.code.sf.net/p/clonedcodechecker/mercurial $TARGET/clonedcodechecker-mercurial ; break ;;
+    Yes ) read -p "SourceForge Username: " username ; hg clone ssh://${username}@hg.code.sf.net/p/clonedcodechecker/mercurial -r SPRINT1 $TARGET/clonedcodechecker-mercurial ; break ;;
+    No ) hg clone http://hg.code.sf.net/p/clonedcodechecker/mercurial -r SPRINT1 $TARGET/clonedcodechecker-mercurial ; break ;;
   esac
 done
 
