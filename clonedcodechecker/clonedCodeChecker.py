@@ -44,16 +44,6 @@ def recursive_walk(directory="."):
         # filecache.
         codecache.saveCache()
 
-# this isn't doing anything useful. Debugging with print statements
-def option_c():
-    for file in os.listdir("./"):
-        print(file)
-        print(os.path.abspath(file))
-        print("file only")
-        common.parseFilename(file)
-        print("os path abspath")
-        common.parseFilename(os.path.abspath(file))
-
 # main decides what functions to run based on the arguments in args.
 # this is not complete
 def main():
