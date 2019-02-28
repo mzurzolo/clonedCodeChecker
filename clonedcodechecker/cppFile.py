@@ -31,7 +31,7 @@ class cppFile:
             # strip whitespace out of each line ->
             # filter out blank lines and comment lines (defined in common.fun) ->
             # make a list of the result
-            self.allLines = list(filter(common.fun,map(lambda x: x.strip(), lines)))
+            self.allLines = list(filter(common.fun,lines))
             # every line as one long string. we may want this for processing
             # large code blocks
             self.linestring = ''.join(self.allLines)

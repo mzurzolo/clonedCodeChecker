@@ -25,6 +25,10 @@ def load_cpp_files(directory="."):
         if f.endswith(".c") and not f.startswith("."):
             # add it to the codecache (process it)
             codecache.addFile(common.abspath(directory + f))
+        # if the file has a .h extension and is visible:
+        if f.endswith(".h") and not f.startswith("."):
+            # add it to the codecache (process it)
+            codecache.addFile(common.abspath(directory + f))
 
 
 def recursive_walk(directory="."):
@@ -44,6 +48,16 @@ def recursive_walk(directory="."):
         # filecache.
         codecache.saveCache()
 
+# Testing matches. eventually the matcher will be a tokenizer
+def recursive_walk_testm(directory="."):
+    for current, _folders, files in os.walk(directory):
+        if current[-1] is not "/":
+            load_cpp_files(current+"/")
+        else:
+            load_cpp_files(current)
+        codecache.testmatch()
+        codecache.saveCache()
+
 # this isn't doing anything useful. Debugging with print statements
 def option_c():
     for file in os.listdir("./"):
@@ -60,7 +74,7 @@ def main():
 
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
-    # defaults can be specified. action="store_true" menas that the option
+    # defaults can be specified. action="store_true" means that the option
     # defaults to false, and the argument's presence makes it true. For example,
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
@@ -76,6 +90,7 @@ def main():
                         action="store_true")
     parser.add_argument('-r', help="Search for duplicate code recursively",
                         action="store_true")
+    parser.add_argument('-m', help="Activate matcher", action="store_true")
 
 
     args = parser.parse_args()
@@ -84,6 +99,9 @@ def main():
 
     if args.p:
         codecache.purge()
+
+    if args.m:
+        recursive_walk_testm(args.d)
 
     # If -f <filename> was not specified, args.f will be None, which will
     # evaluate false.

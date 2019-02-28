@@ -22,10 +22,10 @@ def fun(item):
     if len(item) == 0:
         return False
     # the middle of block comments
-    if item[0] == "*":
-        return False
+    #if item[0] == "*":
+    #    return False
     # the first line of a block commment
-    if item[0:1] == "/*":
-        return False
-    
+    #if item[0:1] == "/*":
+    #    return False
+
     return True
