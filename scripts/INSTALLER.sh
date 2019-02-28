@@ -23,9 +23,8 @@ hg clone http://hg.code.sf.net/p/clonedcodechecker/mercurial -r SPRINT1 $TARGET/
 python3 -m venv $TARGET/py37 ;
 echo "export PATH=\"$TARGET/py37/bin:$PATH\"" >> $HOME/.bashrc
 echo "export CCC_ENV=$TARGET/clonedcodechecker-mercurial" >> $HOME/.bashrc
-source $HOME/.bashrc ;
-python3 -m pip install -r $TARGET/clonedcodechecker-mercurial/scripts/requirements.txt ;
-
 ln -s -T $TARGET/clonedcodechecker-mercurial/runClonedCodeChecker.sh $TARGET/py37/bin/ccc
+source $HOME/.bashrc ;
+python3 -m pip install -r $TARGET/clonedcodechecker-mercurial/requirements.txt ;
 
 printf "Please run \'source \$HOME/.bashrc\' (or open a new terminal) to get started\n\n"
