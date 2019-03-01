@@ -15,13 +15,19 @@ class codeCache():
 
     __slots__ = ["files", "searchSet", "filecache", "filecachelistdir"]
 
-    def __init__(self, files=set(), searchSet=set(), filecache="./.filecache/"):
+    def __init__(self, files=set(), searchSet=set(),
+                 filecache="./.filecache/", filecachelistdir=set()):
 
         self.files = files
         self.searchSet = searchSet
         # the directory of processed files
         self.filecache = filecache
-        # the files in filecache
+        self.filecachelistdir = filecachelistdir
+
+
+    # must be set after filecache is changed to the proper directory
+    # in clonedCodeChecker.py
+    def set_fc_listdir(self):
         self.filecachelistdir = set(os.listdir(self.filecache))
 
 
