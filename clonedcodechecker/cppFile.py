@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 import _common as common
 class cppFile:
 

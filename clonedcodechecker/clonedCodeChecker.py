@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import argparse
 import os
 # the next three imports allow us to use code from _common.py, cppFile.py, and

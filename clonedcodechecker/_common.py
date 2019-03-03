@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 
 # filenames made from the absolute path of the file will be unique
