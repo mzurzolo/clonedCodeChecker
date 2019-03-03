@@ -24,10 +24,11 @@ class matcher:
         ('WHITESPACE', WHITESPACE),
         ('MISMATCH', MISMATCH),
         ]
+        te = '|'.join(('(?P<{}>{})'.format(pair[0],pair[1]) for pair in token_specification))
+        input(te)
         self.tok_regex = re.compile('|'.join(('(?P<{}>{})'.format(pair[0],pair[1]) for pair in token_specification)))
 
     def printMatches(self, code):
         for token in self.tok_regex.finditer(code):
-            input(token.lastgroup)
-            input(token)
-            input(token.group)
+            print(token.lastgroup, end=' ')
+            input(token.group())

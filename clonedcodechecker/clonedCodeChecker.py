@@ -51,30 +51,6 @@ def recursive_walk(directory="."):
 
 # Testing matches. eventually the matcher will be a tokenizer
 def recursive_walk_testm(directory="."):
-    token_specification = [
-        ('NUMBER',   r'\d+(\.\d*)?'),  # Integer or decimal number
-        ('ASSIGN',   r':='),           # Assignment operator
-        ('END',      r';'),            # Statement terminator
-        ('ID',       r'[A-Za-z]+'),    # Identifiers
-        ('OP',       r'[+\-*/]'),      # Arithmetic operators
-        ('NEWLINE',  r'\n'),           # Line endings
-        ('SKIP',     r'[ \t]+'),       # Skip over spaces and tabs
-        ('MISMATCH', r'.'),            # Any other character
-    ]
-    token_specification2 = [
-    ('NUMBER',   '[0-9]+[.]?[0-9]*'),  # Integer or decimal number
-    ('ASSIGN',   '='),           # Assignment operator
-    ('END',      ';'),            # Statement terminator
-    ('ID',       '[A-Za-z_]+'),    # Identifiers
-    ('OP',       '[[+][-][*][/]]'),      # Arithmetic operators
-    ('NEWLINE',  '[\n]'),           # Line endings
-    ('WHITESPACE',     '[[ ][\t]]+'),       # Skip over spaces and tabs
-    ('MISMATCH', '.'),            # Any other character
-    ]
-    tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
-    input(tok_regex)
-    tok_regex2 = '|'.join(('(?P<{}>{})'.format(pair[0],pair[1]) for pair in token_specification2))
-    input(tok_regex2)
     for current, _folders, files in os.walk(directory):
         if current[-1] is not "/":
             load_cpp_files(current+"/")
