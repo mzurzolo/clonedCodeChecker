@@ -1,6 +1,8 @@
 import os
 
 # filenames made from the absolute path of the file will be unique
+
+
 def cacheFileName(path):
     if path != abspath(path):
         path = abspath(path)
@@ -10,14 +12,6 @@ def cacheFileName(path):
     # list[1:-1] would give me everything but the first and last element
     return path.replace("/", ".")[1:] + ".yaml"
 
+
 def abspath(filename):
     return os.path.abspath(filename)
-
-# this is where the filter is defined in that ugly list(filter(map(lambda))) line
-# in cppFile.py. it's only empty lines now
-def fun(item):
-    # empty lines get filtered
-    if len(item) == 0:
-        return False
-
-    return True

@@ -1,11 +1,6 @@
-#!/usr/bin/env python3
-
 import argparse
 import os
-# the next three imports allow us to use code from _common.py, cppFile.py, and
-# codeCache.py
 import _common as common
-import cppFile as cpf
 import codeCache as cC
 
 
@@ -27,8 +22,8 @@ def load_cpp_files(directory="."):
 
 
 def recursive_walk(directory="."):
-    # this iterates through every subdirectory, starting at whatever 'directory'
-    # is. "for current, _folders, files" just gives us access to the folders
+    # this iterates through every subdirectory, starting at 'directory'
+    # "for current, _folders, files" just gives us access to the folders
     # and files. it doesn't nest iterations. (if there's one sub-directory with
     # 1000 files, the loop doesn't run 1000 times)
     for current, _folders, files in os.walk(directory):
@@ -43,51 +38,42 @@ def recursive_walk(directory="."):
         # filecache.
         codecache.saveCache()
 
-# main decides what functions to run based on the arguments in args.
-# this is not complete
+
 def main():
 
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
     # defaults can be specified. action="store_true" menas that the option
-    # defaults to false, and the argument's presence makes it true. For example,
+    # defaults to false, and the argument's presence makes it true. For example
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', help="Purge C++ Code Cache",
                         action="store_true")
     # parser.add_argument('-f', help="Search for duplicate code in given file")
-    # parser.add_argument('-o', help="Specify directory for the output file")
+    parser.add_argument('-o', help="Specify directory for the output file",
+                        default="./report.txt")
     parser.add_argument('-e', help=argparse.SUPPRESS)
     parser.add_argument('-r', help="Search for duplicate code in given " +
-                        "directory and any sub-directories (recursive)")
+                        "directory and any sub-directories (recursive)",
+                        action="store_true")
     parser.add_argument('-d', help="Search for duplicate code in given " +
                         "directory (but not sub-directories)", default="./")
 
-
     args = parser.parse_args()
 
-    ###############################################################################
+    #########################################################################
     codecache.filecache = args.e
-    codecache.set_fc_listdir()
-    ###############################################################################
+    codecache.sync_cachedfiles()
+    #########################################################################
 
     if args.p:
         codecache.purge()
 
-    # If -f <filename> was not specified, args.f will be None, which will
-    # evaluate false.
-    if args.f:
-        newFile = load_file(args.f)
-        newFile.printSet()
-
-
     if args.r:
-        recursive_walk(args.r)
+        recursive_walk(args.d)
         codecache.saveCache()
-
-
-    if args.d:
+    else:
         load_cpp_files(args.d)
 
 

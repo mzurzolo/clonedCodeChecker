@@ -5,34 +5,29 @@ import _common as common
 try:
     from yaml import CSafeLoader as Loader
     from yaml import CSafeDumper as Dumper
-except:
+except Exception:
     from yaml import SafeLoader as Loader
     from yaml import SafeDumper as Dumper
 
+
 class codeCache():
 
-    __slots__ = ["files", "searchSet", "filecache", "filecachelistdir"]
+    __slots__ = ["files", "searchSet", "filecache", "cachedfiles", "filelist"]
 
     def __init__(self, files=set(), searchSet=set(),
-                 filecache="./.filecache/", filecachelistdir=set()):
+                 filecache="./.filecache/", cachedfiles=None, filelist=None):
 
         self.files = files
         self.searchSet = searchSet
         # the directory of processed files
         self.filecache = filecache
-        self.filecachelistdir = filecachelistdir
-
+        self.cachedfiles = cachedfiles
+        self.filelist = []
 
     # must be set after filecache is changed to the proper directory
     # in clonedCodeChecker.py
-    def set_fc_listdir(self):
-        self.filecachelistdir = set(os.listdir(self.filecache))
-
-
-    # for debugging. prints lots of lines
-    def printCache(self):
-        for file in self.files:
-            file.printSet()
+    def sync_cachedfiles(self):
+        self.cachedfiles = set(os.listdir(self.filecache))
 
     def purge(self):
         for fname in os.listdir(self.filecache):
@@ -43,10 +38,10 @@ class codeCache():
     def add(self, cppfile):
         self.files.add(cppfile)
 
-
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
         fname = common.cacheFileName(filename)
+        self.filelist.append(fname)
         # if the file has been processed
         if fname in self.filecachelistdir:
             # basic exception handling. try/except
@@ -57,7 +52,7 @@ class codeCache():
                     # grab all the fields
                     filename = data['filename']
                     lineset = data['lineset']
-                    allLines = [] # data['allLines']
+                    allLines = []
                     blocks = data['blocks']
                     linestring = data['linestring']
                 # successfully loaded
@@ -70,11 +65,10 @@ class codeCache():
             except Exception as e:
                 print(e)
                 os.remove(self.filecache + fname)
-        # if the file isn't in the filecache, load/process it from source, create a
-        # cppFile object, add it to codeCache
+        # if the file isn't in the filecache, load/process it from source,
+        # create a cppFile object, add it to codeCache
         else:
             self.add(cpf.cppFile(common.abspath(filename)))
-
 
     def saveCache(self, outdir="./.filecache/"):
         # while the codeCache has cppFile objects:
@@ -83,8 +77,8 @@ class codeCache():
             file = self.files.pop()
             # get a filecache name for it
             fname = common.cacheFileName(file.filename)
-            # if the file is already in the filecache, skip the rest of this loop
-            # and go back up to the while statement.
+            # if the file is already in the filecache, skip the rest of this
+            # loop and go back up to the while statement.
             if fname in self.filecachelistdir:
                 for line in file.lineset:
                     self.searchSet.add(line)
@@ -101,8 +95,9 @@ class codeCache():
             newdict["linestring"] = file.linestring
             newdict["blocks"] = file.blocks
 
-            # "{}{}".format(var1,var2) inserts var1 and var2 into an empty string
-            # another example: "Var 1: {} here is var 2: {}... {}".format(1,2,"see?")
+            # "{}{}".format(var1,var2) puts var1 and var2 into an empty string
+            # another example:
+            # "Var 1: {} here is var 2: {}... {}".format(1,2,"see?")
             # would produce the string: "Var 1: 1 here is var 2: 2... see?"
             with open("{}{}".format(outdir, fname), "w") as output:
                 # save the dictionary to the filecache
@@ -113,9 +108,8 @@ class codeCache():
 
             print("saved : ", fname)
             # keep track of what gets added to the filecache directory so we
-            # don't have to re-query the filesystem with os.listdir() all the time
+            # don't have to re-query the filesystem with os.listdir() as much
             self.filecachelistdir.add(fname)
-
 
     def scanSearchSet(self):
         print(len(self.searchSet))
