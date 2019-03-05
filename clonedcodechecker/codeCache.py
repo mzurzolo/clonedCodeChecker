@@ -4,6 +4,7 @@ import yaml
 import cppFile as cpf
 import os
 import _common as common
+import matcher as matchER
 try:
     from yaml import CSafeLoader as Loader
     from yaml import CSafeDumper as Dumper
@@ -13,7 +14,7 @@ except:
 
 class codeCache():
 
-    __slots__ = ["files", "searchSet", "filecache", "filecachelistdir"]
+    __slots__ = ["files", "searchSet", "filecache", "filecachelistdir", "matcher"]
 
     def __init__(self, files=set(), searchSet=set(), filecache="./.filecache/"):
 
@@ -23,6 +24,8 @@ class codeCache():
         self.filecache = filecache
         # the files in filecache
         self.filecachelistdir = set(os.listdir(self.filecache))
+
+        self.matcher = matchER.matcher()
 
 
     # for debugging. prints lots of lines
@@ -111,6 +114,10 @@ class codeCache():
             # keep track of what gets added to the filecache directory so we
             # don't have to re-query the filesystem with os.listdir() all the time
             self.filecachelistdir.add(fname)
+
+    def testmatch(self):
+        for file in self.files:
+            self.matcher.printMatches(file.linestring)
 
 
     def scanSearchSet(self):
