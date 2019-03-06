@@ -63,7 +63,7 @@ def main():
     args = parser.parse_args()
 
     #########################################################################
-    codecache.filecache = args.e
+    codecache.filecache = args.e + "./filecache/"
     codecache.sync_cachedfiles()
     #########################################################################
 
