@@ -41,7 +41,7 @@ class codeCache():
 
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
-        with open(filename, "r", encoding='utf-8') as tohash:
+        with open(filename, "rb") as tohash:
             hashed = hashlib.md5(tohash.read())
 
         fname = common.cacheFileName(filename)
@@ -75,7 +75,8 @@ class codeCache():
         else:
             self.add(cpf.cppFile(common.abspath(filename)))
 
-    def saveCache(self, outdir="./.filecache/"):
+    def saveCache(self):
+        outdir = self.filecache
         # while the codeCache has cppFile objects:
         while len(self.files) > 0:
             # pop it off the set (and call it file)
@@ -115,7 +116,7 @@ class codeCache():
             print("saved : ", fname)
             # keep track of what gets added to the filecache directory so we
             # don't have to re-query the filesystem with os.listdir() as much
-            self.filecachelistdir.add(fname)
+            self.cachedfiles.add(fname)
 
     def scanSearchSet(self):
         print(len(self.searchSet))
