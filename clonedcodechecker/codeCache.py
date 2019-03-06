@@ -2,6 +2,7 @@ import yaml
 import cppFile as cpf
 import os
 import _common as common
+import hashlib
 try:
     from yaml import CSafeLoader as Loader
     from yaml import CSafeDumper as Dumper
@@ -32,7 +33,7 @@ class codeCache():
     def purge(self):
         for fname in os.listdir(self.filecache):
             os.remove(self.filecache + fname)
-        self.filecachelistdir = set(os.listdir(self.filecache))
+        self.cachedfiles = set(os.listdir(self.filecache))
 
     # add cppFile object to the codeCache. Use internally (from addFile())
     def add(self, cppfile):
@@ -40,10 +41,13 @@ class codeCache():
 
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
+        with open(filename, "r") as tohash:
+            hashed = hashlib.md5(tohash.read())
+
         fname = common.cacheFileName(filename)
         self.filelist.append(fname)
         # if the file has been processed
-        if fname in self.filecachelistdir:
+        if fname in self.cachedfiles:
             # basic exception handling. try/except
             try:
                 with open(self.filecache + fname, "r") as file:
@@ -51,6 +55,7 @@ class codeCache():
                     data = yaml.load(file, Loader=Loader)
                     # grab all the fields
                     filename = data['filename']
+                    hashed = data['hashed']
                     lineset = data['lineset']
                     allLines = []
                     blocks = data['blocks']
@@ -59,7 +64,7 @@ class codeCache():
                 print("load : ", filename)
                 # create a new cppFile from loaded file, add it to codeCache
                 self.add(cpf.cppFile(filename, lineset, allLines,
-                                     blocks, linestring, True))
+                                     blocks, linestring, hashed, True))
             # if there was a problem reading it, remove it from the filecache
             # directory and try to re-process from source.
             except Exception as e:
@@ -79,7 +84,7 @@ class codeCache():
             fname = common.cacheFileName(file.filename)
             # if the file is already in the filecache, skip the rest of this
             # loop and go back up to the while statement.
-            if fname in self.filecachelistdir:
+            if fname in self.cachedfiles:
                 for line in file.lineset:
                     self.searchSet.add(line)
                 continue
@@ -91,6 +96,7 @@ class codeCache():
             # them by name later)
             newdict = {}
             newdict["filename"] = file.filename
+            newdict["hashed"] = file.hashed
             newdict["lineset"] = file.lineset
             newdict["linestring"] = file.linestring
             newdict["blocks"] = file.blocks
