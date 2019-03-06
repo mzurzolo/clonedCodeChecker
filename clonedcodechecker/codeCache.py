@@ -41,7 +41,7 @@ class codeCache():
 
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
-        with open(filename, "r") as tohash:
+        with open(filename, "r", encoding='utf-8') as tohash:
             hashed = hashlib.md5(tohash.read())
 
         fname = common.cacheFileName(filename)
