@@ -14,11 +14,11 @@ class codeCache():
 
     __slots__ = ["files", "searchSet", "filecache", "cachedfiles", "filelist"]
 
-    def __init__(self, files=set(), searchSet=set(),
+    def __init__(self, files=None, searchSet=None,
                  filecache="./.filecache/", cachedfiles=None, filelist=None):
 
-        self.files = files
-        self.searchSet = searchSet
+        self.files = set()
+        self.searchSet = set()
         # the directory of processed files
         self.filecache = filecache
         self.cachedfiles = cachedfiles
