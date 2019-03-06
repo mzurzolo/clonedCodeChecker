@@ -31,7 +31,7 @@ class cppFile:
             # opening a file this way will close it automatically when the
             # 'with' block finishes.
             with open(filename, "rb") as tohash:
-                hashed = hashlib.md5(tohash.read())
+                hashed = hashlib.md5(tohash.read()).hexdigest()
 
             self.hashed = hashed
 

@@ -42,7 +42,7 @@ class codeCache():
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
         with open(filename, "rb") as tohash:
-            hashed = hashlib.md5(tohash.read())
+            hashed = hashlib.md5(tohash.read()).hexdigest()
 
         fname = common.cacheFileName(filename)
         self.filelist.append(fname)
