@@ -12,16 +12,14 @@ except Exception:
 
 class codeCache():
 
-    __slots__ = ["files", "searchSet", "filecache", "cachedfiles", "filelist"]
+    __slots__ = ["filecache", "cachedfiles", "filelist"]
 
-    def __init__(self, files=set(), searchSet=set(),
-                 filecache="./.filecache/", cachedfiles=None, filelist=None):
+    def __init__(self, filecache="./.filecache/",
+                 cachedfiles=None, filelist=None):
 
-        self.files = files
-        self.searchSet = searchSet
         # the directory of processed files
         self.filecache = filecache
-        self.cachedfiles = cachedfiles
+        self.cachedfiles = set()
         self.filelist = []
 
     # must be set after filecache is changed to the proper directory
