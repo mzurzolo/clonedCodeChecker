@@ -51,8 +51,7 @@ def main():
     parser.add_argument('-p', help="Purge C++ Code Cache",
                         action="store_true")
     # parser.add_argument('-f', help="Search for duplicate code in given file")
-    parser.add_argument('-o', help="Specify directory for the output file",
-                        action="store_true")
+    parser.add_argument('-o', help=argparse.SUPPRESS)
     parser.add_argument('-e', help=argparse.SUPPRESS)
     parser.add_argument('-r', help="Search for duplicate code in given " +
                         "directory and any sub-directories (recursive)",
@@ -63,7 +62,7 @@ def main():
     args = parser.parse_args()
 
     #########################################################################
-    codecache.filecache = args.e
+    codecache.filecache = args.e + "/.filecache/"
     codecache.sync_cachedfiles()
     #########################################################################
 
@@ -76,8 +75,6 @@ def main():
     else:
         load_cpp_files(args.d)
 
-    if args.o:
-        codecache.output()
 
 # This is the entry point.
 # It means "if this file was run from the command line, do this stuff

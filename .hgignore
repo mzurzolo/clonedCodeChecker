@@ -3,3 +3,4 @@ syntax: glob
 *.pyc
 *.class
 .filecache/*
+ccc_env/*
