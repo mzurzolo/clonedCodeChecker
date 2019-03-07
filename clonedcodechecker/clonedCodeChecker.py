@@ -53,6 +53,16 @@ def recursive_walk_testm(directory="."):
         codecache.saveCache()
 
 
+# Testing matches. eventually the matcher will be a tokenizer
+def recursive_walk_testm(directory="."):
+    for current, _folders, files in os.walk(directory):
+        if current[-1] is not "/":
+            load_cpp_files(current+"/")
+        else:
+            load_cpp_files(current)
+        codecache.testmatch()
+        codecache.saveCache()
+
 def main():
 
     # this is where the command line interface we interact with is defined.
@@ -65,8 +75,7 @@ def main():
     parser.add_argument('-p', help="Purge C++ Code Cache",
                         action="store_true")
     # parser.add_argument('-f', help="Search for duplicate code in given file")
-    parser.add_argument('-o', help="Specify directory for the output file",
-                        default="./report.txt")
+    parser.add_argument('-o', help=argparse.SUPPRESS)
     parser.add_argument('-e', help=argparse.SUPPRESS)
     parser.add_argument('-r', help="Search for duplicate code in given " +
                         "directory and any sub-directories (recursive)",
@@ -78,7 +87,7 @@ def main():
     args = parser.parse_args()
 
     #########################################################################
-    codecache.filecache = args.e + "./filecache/"
+    codecache.filecache = args.e + "/.filecache/"
     codecache.sync_cachedfiles()
     #########################################################################
 

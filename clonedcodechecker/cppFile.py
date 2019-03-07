@@ -37,6 +37,7 @@ class cppFile:
 
             with open(filename, 'r') as file:
                 lines = file.readlines()
+
             self.allLines = lines
             # every line as one long string. we may want this for processing
             # large code blocks
