@@ -51,8 +51,7 @@ def main():
     parser.add_argument('-p', help="Purge C++ Code Cache",
                         action="store_true")
     # parser.add_argument('-f', help="Search for duplicate code in given file")
-    parser.add_argument('-o', help="Specify directory for the output file",
-                        default="./report.txt")
+    parser.add_argument('-o', help=argparse.SUPPRESS)
     parser.add_argument('-e', help=argparse.SUPPRESS)
     parser.add_argument('-r', help="Search for duplicate code in given " +
                         "directory and any sub-directories (recursive)",
