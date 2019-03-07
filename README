@@ -26,16 +26,27 @@ outgoing = hg push Github ; hg push SF-Git
 #############################################################################
 Developers using Git:
 
+After making the configuration changes below, please use
+git fetchall and git pushall instead of git fetch and git push
+
 Please add the following entries to your .git/config file:
 # you need to change the USERNAME in the url and pushurl to your username
 # on Github and SourceForge
 
 [remote "origin"]
 	url = git@github.com:USERNAME/clonedCodeChecker.git
-	url = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
 	fetch = +refs/heads/*:refs/remotes/origin/*
 	pushurl = git@github.com:USERNAME/clonedCodeChecker.git
+[remote "SF"]
+	url = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
+	fetch = +refs/heads/*:refs/remotes/SF/*
 	pushurl = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[alias]
+	fetchall = !git fetch origin master && git fetch SF master
+	pushall = !git push origin master && git push SF master
 
 #############################################################################
 #############################################################################
