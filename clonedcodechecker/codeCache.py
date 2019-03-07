@@ -2,6 +2,7 @@ import yaml
 import cppFile as cpf
 import os
 import _common as common
+import matcher as matchER
 import hashlib
 try:
     from yaml import CSafeLoader as Loader
@@ -13,7 +14,9 @@ except Exception:
 
 class codeCache():
 
-    __slots__ = ["files", "searchSet", "filecache", "cachedfiles", "filelist"]
+
+    __slots__ = ["files", "searchSet", "filecache", "cachedfiles", "filelist", "matcher"]
+    
 
     def __init__(self, files=None, searchSet=None,
                  filecache="./.filecache/", cachedfiles=None, filelist=None):
@@ -24,6 +27,10 @@ class codeCache():
         self.filecache = filecache
         self.cachedfiles = cachedfiles
         self.filelist = []
+
+        
+        self.matcher = matchER.matcher()
+
 
     # must be set after filecache is changed to the proper directory
     # in clonedCodeChecker.py
