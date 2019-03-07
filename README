@@ -6,6 +6,9 @@ The installer will alter your .bashrc file.
 #############################################################################
 Developers using Mercurial:
 
+After making the configuration changes below, please use
+hg pushall and hg pullall instead of hg push and hg pull
+
 Please add the following entries to your .hg/hgrc file:
 # you need to change the USERNAME in the paths Github and SF-Git to your
 # username on Github and SourceForge
@@ -18,9 +21,9 @@ hggit =
 Github = git+ssh://git@github.com:USERNAME/clonedCodeChecker.git
 SF-Git = git+ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
 
-[hooks]
-changegroup = hg pull Github ; hg pull SF-Git
-outgoing = hg push Github ; hg push SF-Git
+[alias]
+pushall = !hg bookmark -r default master && hg push Github && hg push SF-Git && hg push
+pullall = !hg pull Github && hg pull SF-Git && hg pull
 
 #############################################################################
 #############################################################################
