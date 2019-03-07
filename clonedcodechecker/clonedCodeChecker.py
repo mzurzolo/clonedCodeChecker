@@ -42,6 +42,16 @@ def recursive_walk(directory="."):
         # filecache.
         codecache.saveCache()
 
+# Testing matches. eventually the matcher will be a tokenizer
+def recursive_walk_testm(directory="."):
+    for current, _folders, files in os.walk(directory):
+        if current[-1] is not "/":
+            load_cpp_files(current+"/")
+        else:
+            load_cpp_files(current)
+        codecache.testmatch()
+        codecache.saveCache()
+
 
 # Testing matches. eventually the matcher will be a tokenizer
 def recursive_walk_testm(directory="."):

@@ -4,6 +4,7 @@ import os
 import _common as common
 import matcher as matchER
 import hashlib
+import matcher as matchER
 try:
     from yaml import CSafeLoader as Loader
     from yaml import CSafeDumper as Dumper
@@ -27,10 +28,8 @@ class codeCache():
         self.filecache = filecache
         self.cachedfiles = cachedfiles
         self.filelist = []
-
         
         self.matcher = matchER.matcher()
-
 
     # must be set after filecache is changed to the proper directory
     # in clonedCodeChecker.py
@@ -124,6 +123,11 @@ class codeCache():
             # keep track of what gets added to the filecache directory so we
             # don't have to re-query the filesystem with os.listdir() as much
             self.cachedfiles.add(fname)
+
+    def testmatch(self):
+        for file in self.files:
+            self.matcher.printMatches(file.linestring)
+
 
     def scanSearchSet(self):
         print(len(self.searchSet))
