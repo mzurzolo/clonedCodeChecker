@@ -19,7 +19,9 @@ Github = git+ssh://git@github.com:USERNAME/clonedCodeChecker.git
 SF-Git = git+ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
 
 [hooks]
+prechangegroup = hg pull Github ; hg pull SF-Git
 changegroup = hg pull Github ; hg pull SF-Git ; hg push Github ; hg push SF-Git
+outgoing = hg pull Github ; hg pull SF-Git ; hg push Github ; hg push SF-Git
 
 #############################################################################
 #############################################################################
