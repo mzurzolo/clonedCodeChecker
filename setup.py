@@ -11,7 +11,7 @@ setup(name='clonedcodechecker',
               Tajhay Felder <felder62@students.rowan.edu>,\
               Kevin Eivich <eivichk6@students.rowan.edu>,\
               Dylan Anderson <dylanjanderson4@gmail.com>,\
-              Emily Fliegel <fliege39@students.rowan.edu>',              
+              Emily Fliegel <fliege39@students.rowan.edu>',
       author_email='listed in author',
       license='BSD-3',
       packages=['clonedcodechecker'],
