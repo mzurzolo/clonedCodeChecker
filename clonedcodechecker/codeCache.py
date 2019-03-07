@@ -115,3 +115,13 @@ class codeCache():
         print(len(self.searchSet))
         for line in self.searchSet:
             input(line)
+            
+    def output(self):
+        save_path = os.getcwd()
+        #Create a file that the output will be put into
+        name_of_file = "output_file: "
+        completeName = os.path.join(save_path, name_of_file + ".txt")
+        output_file = open(completeName, "a+")
+        input_to_file = "matcher()"
+        output_file.write(input_to_file)
+        output_file.close()

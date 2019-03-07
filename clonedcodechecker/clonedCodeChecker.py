@@ -52,7 +52,7 @@ def main():
                         action="store_true")
     # parser.add_argument('-f', help="Search for duplicate code in given file")
     parser.add_argument('-o', help="Specify directory for the output file",
-                        default="./report.txt")
+                        action="store_true")
     parser.add_argument('-e', help=argparse.SUPPRESS)
     parser.add_argument('-r', help="Search for duplicate code in given " +
                         "directory and any sub-directories (recursive)",
@@ -76,6 +76,8 @@ def main():
     else:
         load_cpp_files(args.d)
 
+    if args.o:
+        codecache.output()
 
 # This is the entry point.
 # It means "if this file was run from the command line, do this stuff
