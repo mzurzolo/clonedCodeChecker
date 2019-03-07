@@ -1,6 +1,41 @@
 End Users can download INSTALLER.sh (from the scripts directory) individually.
 The installer will alter your .bashrc file.
-If this message is seen on SourceForge's Git repo, automatic sync is
-happening correctly.
-Automation v2
-Automation? v3
+
+
+#############################################################################
+#############################################################################
+Developers using Mercurial:
+
+Please add the following entries to your .hg/hgrc file:
+# you need to change the USERNAME in the paths Github and SF-Git to your
+# username on Github and SourceForge
+
+[extensions]
+hgext.bookmarks =
+hggit =
+
+[paths]
+Github = git+ssh://git@github.com:USERNAME/clonedCodeChecker.git
+SF-Git = git+ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
+
+[hooks]
+prechangegroup = hg pull Github ; hg pull SF-Git
+outgoing = hg push Github ; hg push SF-Git
+
+#############################################################################
+#############################################################################
+Developers using Git:
+
+Please add the following entries to your .git/config file:
+# you need to change the USERNAME in the url and pushurl to your username
+# on Github and SourceForge
+
+[remote "origin"]
+	url = git@github.com:USERNAME/clonedCodeChecker.git
+	url = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	pushurl = git@github.com:USERNAME/clonedCodeChecker.git
+	pushurl = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
+
+#############################################################################
+#############################################################################
