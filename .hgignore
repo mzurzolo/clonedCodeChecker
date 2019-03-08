@@ -4,3 +4,5 @@ syntax: glob
 *.class
 .filecache/*
 ccc_env/*
+py37/*
+.bashrc

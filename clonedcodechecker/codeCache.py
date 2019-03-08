@@ -2,9 +2,8 @@ import yaml
 import cppFile as cpf
 import os
 import _common as common
-import matcher as matchER
 import hashlib
-import matcher as matchER
+import matcher
 try:
     from yaml import CSafeLoader as Loader
     from yaml import CSafeDumper as Dumper
@@ -15,9 +14,8 @@ except Exception:
 
 class codeCache():
 
-
-    __slots__ = ["files", "searchSet", "filecache", "cachedfiles", "filelist", "matcher"]
-    
+    __slots__ = ["files", "searchSet", "filecache",
+                 "cachedfiles", "filelist", "matcher"]
 
     def __init__(self, files=None, searchSet=None,
                  filecache="./.filecache/", cachedfiles=None, filelist=None):
@@ -28,8 +26,7 @@ class codeCache():
         self.filecache = filecache
         self.cachedfiles = cachedfiles
         self.filelist = []
-        
-        self.matcher = matchER.matcher()
+        self.matcher = matcher.matcher()
 
     # must be set after filecache is changed to the proper directory
     # in clonedCodeChecker.py
@@ -48,7 +45,7 @@ class codeCache():
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
         with open(filename, "rb") as tohash:
-            hashed = hashlib.md5(tohash.read()).hexdigest()
+            hashed = hashlib.blake2s(tohash.read()).hexdigest()
 
         fname = common.cacheFileName(filename)
         self.filelist.append(fname)
@@ -57,20 +54,29 @@ class codeCache():
             # basic exception handling. try/except
             try:
                 with open(self.filecache + fname, "r") as file:
-                    # load up the file
                     data = yaml.load(file, Loader=Loader)
-                    # grab all the fields
-                    filename = data['filename']
-                    hashed = data['hashed']
-                    lineset = data['lineset']
-                    allLines = []
-                    blocks = data['blocks']
-                    linestring = data['linestring']
-                # successfully loaded
-                print("load : ", filename)
-                # create a new cppFile from loaded file, add it to codeCache
-                self.add(cpf.cppFile(filename, lineset, allLines,
-                                     blocks, linestring, hashed, True))
+                    if hashed == data['hashed']:
+                        # grab all the fields
+                        filename = data['filename']
+                        lineset = data['lineset']
+                        allLines = data['allLines']
+                        blocks = data['blocks']
+                        linestring = data['linestring']
+                        # successfully loaded
+                        print("load : ", filename)
+                        # create a new cppFile from loaded file and
+                        # add it to codeCache
+                        self.add(cpf.cppFile(filename=filename,
+                                             lineset=lineset,
+                                             allLines=allLines,
+                                             blocks=blocks,
+                                             linestring=linestring,
+                                             hashed=hashed,
+                                             loaded=True))
+                    else:
+                        os.remove(self.filecache + fname)
+                        self.add(cpf.cppFile(filename=common.abspath(filename),
+                                             hashed=hashed))
             # if there was a problem reading it, remove it from the filecache
             # directory and try to re-process from source.
             except Exception as e:
@@ -79,7 +85,8 @@ class codeCache():
         # if the file isn't in the filecache, load/process it from source,
         # create a cppFile object, add it to codeCache
         else:
-            self.add(cpf.cppFile(common.abspath(filename)))
+            self.add(cpf.cppFile(filename=common.abspath(filename),
+                                 hashed=hashed))
 
     def saveCache(self):
         outdir = self.filecache
@@ -103,10 +110,11 @@ class codeCache():
             # them by name later)
             newdict = {}
             newdict["filename"] = file.filename
-            newdict["hashed"] = file.hashed
             newdict["lineset"] = file.lineset
-            newdict["linestring"] = file.linestring
+            newdict["allLines"] = file.allLines
             newdict["blocks"] = file.blocks
+            newdict["linestring"] = file.linestring
+            newdict["hashed"] = file.hashed
 
             # "{}{}".format(var1,var2) puts var1 and var2 into an empty string
             # another example:
@@ -128,15 +136,14 @@ class codeCache():
         for file in self.files:
             self.matcher.printMatches(file.linestring)
 
-
     def scanSearchSet(self):
         print(len(self.searchSet))
         for line in self.searchSet:
             input(line)
-            
+
     def output(self):
         save_path = os.getcwd()
-        #Create a file that the output will be put into
+        # Create a file that the output will be put into
         name_of_file = "output_file: "
         completeName = os.path.join(save_path, name_of_file + ".txt")
         output_file = open(completeName, "a+")

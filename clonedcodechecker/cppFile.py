@@ -1,6 +1,7 @@
 
 import hashlib
 
+
 class cppFile:
 
     __slots__ = ["filename", "lineset", "allLines",
@@ -11,18 +12,28 @@ class cppFile:
     # linestring already populated (this happens in codeCache's addFile()
     # method). Otherwise, the file is loaded from source to populate these
     # fields.
-    def __init__(self, filename='', lineset=set(),
-                 allLines=[], blocks=set(), linestring='',
+    def __init__(self, filename='', lineset=None,
+                 allLines=None, blocks=None, linestring='',
                  hashed=None, loaded=False):
 
         self.filename = filename
-        self.lineset = lineset
-        # lines do allow duplicates
-        self.allLines = allLines
+        # sets do not allow duplicates
+        if not lineset:
+            self.lineset = set()
+        else:
+            self.lineset = lineset
         # blocks are generic, larger units of code
-        self.blocks = blocks
+        if not blocks:
+            self.blocks = set()
+        else:
+            self.blocks = blocks
+        # lists do allow duplicates
+        if not allLines:
+            self.allLines = []
+        else:
+            self.allLines = allLines
+
         self.linestring = linestring
-        self.hashed = hashed
 
         # setting loaded to True prevents this stuff from running. codeCache
         # passes True when it creates a cppFile that was already in it's
@@ -30,8 +41,9 @@ class cppFile:
         if not loaded:
             # opening a file this way will close it automatically when the
             # 'with' block finishes.
-            with open(filename, "rb") as tohash:
-                hashed = hashlib.md5(tohash.read()).hexdigest()
+            if not hashed:
+                with open(filename, "rb") as tohash:
+                    hashed = hashlib.blake2s(tohash.read()).hexdigest()
 
             self.hashed = hashed
 
