@@ -45,8 +45,6 @@ class codeCache():
 
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
-        with open(filename, "rb") as tohash:
-            hashed = hashlib.blake2s(tohash.read()).hexdigest()
 
         fname = common.cacheFileName(filename)
         self.filelist.append(fname)
@@ -56,38 +54,34 @@ class codeCache():
             try:
                 with open(self.filecache + fname, "r") as file:
                     data = yaml.load(file, Loader=Loader)
-                    if hashed == data['hashed']:
-                        # grab all the fields
-                        filename = data['filename']
-                        lineset = data['lineset']
-                        allLines = data['allLines']
-                        blocks = data['blocks']
-                        linestring = data['linestring']
-                        # successfully loaded
-                        print("load : ", filename)
-                        # create a new cppFile from loaded file and
-                        # add it to codeCache
-                        self.add(cpf.cppFile(filename=filename,
-                                             lineset=lineset,
-                                             allLines=allLines,
-                                             blocks=blocks,
-                                             linestring=linestring,
-                                             hashed=hashed,
-                                             loaded=True))
-                    else:
-                        os.remove(self.filecache + fname)
-                        self.add(cpf.cppFile(filename=common.abspath(filename),
-                                             hashed=hashed))
+                    # grab all the fields
+                    filename = data['filename']
+                    lineset = data['lineset']
+                    allLines = data['allLines']
+                    blocks = data['blocks']
+                    linestring = data['linestring']
+                    # successfully loaded
+                    print("load : ", filename)
+                    # create a new cppFile from loaded file and
+                    # add it to codeCache
+                    self.add(cpf.cppFile(filename=filename,
+                                         lineset=lineset,
+                                         allLines=allLines,
+                                         blocks=blocks,
+                                         linestring=linestring,
+                                         loaded=True))
+
             # if there was a problem reading it, remove it from the filecache
             # directory and try to re-process from source.
             except Exception as e:
                 print(e)
                 os.remove(self.filecache + fname)
+                self.add(cpf.cppFile(
+                    filename=common.abspath(filename)))
         # if the file isn't in the filecache, load/process it from source,
         # create a cppFile object, add it to codeCache
         else:
-            self.add(cpf.cppFile(filename=common.abspath(filename),
-                                 hashed=hashed))
+            self.add(cpf.cppFile(filename=common.abspath(filename)))
 
     def saveCache(self):
         outdir = self.filecache
@@ -113,7 +107,6 @@ class codeCache():
             newdict["allLines"] = file.allLines
             newdict["blocks"] = file.blocks
             newdict["linestring"] = file.linestring
-            newdict["hashed"] = file.hashed
             # "{}{}".format(var1,var2) puts var1 and var2 into an empty string
             # another example:
             # "Var 1: {} here is var 2: {}... {}".format(1,2,"see?")
@@ -143,9 +136,6 @@ class codeCache():
     def output(self):
         save_path = os.getcwd()
         # Create a file that the output will be put into
-        name_of_file = "output_file: "
-        completeName = os.path.join(save_path, name_of_file + ".txt")
-        output_file = open(completeName, "a+")
-        input_to_file = "matcher()"
-        output_file.write(input_to_file)
-        output_file.close()
+        name_of_file = "report.txt"
+        completeName = os.path.join(save_path, name_of_file)
+        self.matcher.showMultiple(completeName)

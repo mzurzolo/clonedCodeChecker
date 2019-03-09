@@ -4,8 +4,7 @@ import hashlib
 
 class cppFile:
 
-    __slots__ = ["filename", "lineset", "allLines",
-                 "hashed", "blocks", "linestring"]
+    __slots__ = ["filename", "lineset", "allLines", "blocks", "linestring"]
 
     # this is the constructor. when a cppFile gets loaded from filecache,
     # it gets created with a filename, lineset, allLines, blocks, and
@@ -13,8 +12,7 @@ class cppFile:
     # method). Otherwise, the file is loaded from source to populate these
     # fields.
     def __init__(self, filename='', lineset=None,
-                 allLines=None, blocks=None, linestring='',
-                 hashed=None, loaded=False):
+                 allLines=None, blocks=None, linestring='', loaded=False):
 
         self.filename = filename
         # sets do not allow duplicates
@@ -39,14 +37,6 @@ class cppFile:
         # passes True when it creates a cppFile that was already in it's
         # filecache
         if not loaded:
-            # opening a file this way will close it automatically when the
-            # 'with' block finishes.
-            if not hashed:
-                with open(filename, "rb") as tohash:
-                    hashed = hashlib.blake2s(tohash.read()).hexdigest()
-
-            self.hashed = hashed
-
             with open(filename, 'r') as file:
                 lines = file.readlines()
 

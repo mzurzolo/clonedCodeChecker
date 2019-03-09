@@ -45,8 +45,10 @@ class matcher:
                 continue
             self.lineMatches[line].append(fname)
 
-    def showMultiple(self):
-        for k in self.lineMatches.keys():
-            if (len(self.lineMatches[k]) > 1):
-                print(k)
-                # input(self.lineMatches[k])
+    def showMultiple(self, outfile):
+        with open(outfile, "w") as f:
+            for k in self.lineMatches.keys():
+                if (len(self.lineMatches[k]) > 1):
+                    print(k, file=f)
+                    print(self.lineMatches[k], file=f)
+                    # input(self.lineMatches[k])
