@@ -18,7 +18,8 @@ class codeCache():
                  "cachedfiles", "filelist", "matcher"]
 
     def __init__(self, files=None, searchSet=None,
-                 filecache="./.filecache/", cachedfiles=None, filelist=None):
+                 filecache="./.filecache/", cachedfiles=None,
+                 filelist=None, lineMatches=None):
 
         self.files = set()
         self.searchSet = set()
@@ -96,16 +97,14 @@ class codeCache():
             file = self.files.pop()
             # get a filecache name for it
             fname = common.cacheFileName(file.filename)
+            # unique lines (over all analyzed files)
+            for line in file.lineset:
+                self.searchSet.add(line)
+            self.matcher.matchLines(fname, file.lineset)
             # if the file is already in the filecache, skip the rest of this
             # loop and go back up to the while statement.
             if fname in self.cachedfiles:
-                for line in file.lineset:
-                    self.searchSet.add(line)
                 continue
-
-            for line in file.lineset:
-                self.searchSet.add(line)
-
             # a dictionary makes it easy to dump cppFile's fields (and retrieve
             # them by name later)
             newdict = {}
@@ -115,7 +114,6 @@ class codeCache():
             newdict["blocks"] = file.blocks
             newdict["linestring"] = file.linestring
             newdict["hashed"] = file.hashed
-
             # "{}{}".format(var1,var2) puts var1 and var2 into an empty string
             # another example:
             # "Var 1: {} here is var 2: {}... {}".format(1,2,"see?")
@@ -131,6 +129,7 @@ class codeCache():
             # keep track of what gets added to the filecache directory so we
             # don't have to re-query the filesystem with os.listdir() as much
             self.cachedfiles.add(fname)
+            # self.matcher.showMultiple()
 
     def testmatch(self):
         for file in self.files:

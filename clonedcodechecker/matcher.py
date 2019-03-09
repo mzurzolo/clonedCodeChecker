@@ -5,7 +5,11 @@ import re
 
 class matcher:
 
+    __slots__ = ["lineMatches", "tok_regex"]
+
     def __init__(self):
+
+        self.lineMatches = {}
 
         NUMBER = '[0-9]+[.]?[0-9]*'      # Integer or decimal number
         ASSIGN = '='                     # Assignment operator
@@ -32,3 +36,17 @@ class matcher:
         for token in self.tok_regex.finditer(code):
             print(token.lastgroup, end=' ')
             input(token.group())
+
+    def matchLines(self, fname, lineset):
+        allkeys = self.lineMatches.keys()
+        for line in lineset:
+            if line not in allkeys:
+                self.lineMatches[line] = [fname]
+                continue
+            self.lineMatches[line].append(fname)
+
+    def showMultiple(self):
+        for k in self.lineMatches.keys():
+            if (len(self.lineMatches[k]) > 1):
+                print(k)
+                # input(self.lineMatches[k])
