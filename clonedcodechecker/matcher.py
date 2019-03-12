@@ -5,11 +5,12 @@ import re
 
 class matcher:
 
-    __slots__ = ["lineMatches", "tok_regex"]
+    __slots__ = ["lineMatches", "tok_regex", "totalLineset"]
 
     def __init__(self):
 
         self.lineMatches = {}
+        self.totalLineset = set()
 
         NUMBER = '[0-9]+[.]?[0-9]*'      # Integer or decimal number
         ASSIGN = '='                     # Assignment operator
@@ -26,7 +27,7 @@ class matcher:
         ('ID', ID),
         ('OP', OP),
         ('WHITESPACE', WHITESPACE),
-        ('MISMATCH', MISMATCH),
+        ('MISMATCH', MISMATCH)
         ]
         te = '|'.join(('(?P<{}>{})'.format(pair[0], pair[1])
                        for pair in token_specification))
@@ -38,14 +39,14 @@ class matcher:
             input(token.group())
 
     def matchLines(self, fname, lineset):
-        allkeys = self.lineMatches.keys()
-        for line in lineset:
-            if line not in allkeys:
-                self.lineMatches[line] = [fname]
-                continue
+        for line in lineset.difference(self.totalLineset):
+            self.lineMatches[line] = [fname]
+        for line in lineset.intersection(self.totalLineset):
             self.lineMatches[line].append(fname)
+        self.totalLineset = self.totalLineset.union(lineset)
 
     def showMultiple(self, outfile):
+        print(outfile)
         with open(outfile, "w") as f:
             for k in self.lineMatches.keys():
                 if (len(self.lineMatches[k]) > 1):

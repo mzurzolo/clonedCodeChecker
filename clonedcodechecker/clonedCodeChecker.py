@@ -41,7 +41,6 @@ def recursive_walk(directory="."):
         # we decide whether a file should be in memory, or saved off to the
         # filecache.
         codecache.saveCache()
-    codecache.matcher.showMultiple()
 
 
 # Testing matches. eventually the matcher will be a tokenizer
@@ -92,6 +91,7 @@ def main():
     if args.r:
         recursive_walk(args.d)
         codecache.saveCache()
+        codecache.output()
     else:
         load_cpp_files(args.d)
 

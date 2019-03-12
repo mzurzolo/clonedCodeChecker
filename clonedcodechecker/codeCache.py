@@ -26,7 +26,6 @@ class codeCache():
         # the directory of processed files
         self.filecache = filecache
         self.cachedfiles = cachedfiles
-        self.filelist = []
         self.matcher = matcher.matcher()
 
     # must be set after filecache is changed to the proper directory
@@ -47,29 +46,28 @@ class codeCache():
     def addFile(self, filename):
 
         fname = common.cacheFileName(filename)
-        self.filelist.append(fname)
         # if the file has been processed
         if fname in self.cachedfiles:
             # basic exception handling. try/except
             try:
                 with open(self.filecache + fname, "r") as file:
                     data = yaml.load(file, Loader=Loader)
-                    # grab all the fields
-                    filename = data['filename']
-                    lineset = data['lineset']
-                    allLines = data['allLines']
-                    blocks = data['blocks']
-                    linestring = data['linestring']
-                    # successfully loaded
-                    print("load : ", filename)
-                    # create a new cppFile from loaded file and
-                    # add it to codeCache
-                    self.add(cpf.cppFile(filename=filename,
-                                         lineset=lineset,
-                                         allLines=allLines,
-                                         blocks=blocks,
-                                         linestring=linestring,
-                                         loaded=True))
+                # grab all the fields
+                filename = data['filename']
+                lineset = data['lineset']
+                allLines = [] # data['allLines']
+                blocks = data['blocks']
+                linestring = ''# data['linestring']
+                # successfully loaded
+                print("load : ", filename)
+                # create a new cppFile from loaded file and
+                # add it to codeCache
+                self.add(cpf.cppFile(filename=filename,
+                                     lineset=lineset,
+                                     allLines=allLines,
+                                     blocks=blocks,
+                                     linestring=linestring,
+                                     loaded=True))
 
             # if there was a problem reading it, remove it from the filecache
             # directory and try to re-process from source.
@@ -91,9 +89,8 @@ class codeCache():
             file = self.files.pop()
             # get a filecache name for it
             fname = common.cacheFileName(file.filename)
-            # unique lines (over all analyzed files)
-            for line in file.lineset:
-                self.searchSet.add(line)
+
+            # match individual lines (for now)
             self.matcher.matchLines(fname, file.lineset)
             # if the file is already in the filecache, skip the rest of this
             # loop and go back up to the while statement.
@@ -104,9 +101,9 @@ class codeCache():
             newdict = {}
             newdict["filename"] = file.filename
             newdict["lineset"] = file.lineset
-            newdict["allLines"] = file.allLines
+            # newdict["allLines"] = file.allLines
             newdict["blocks"] = file.blocks
-            newdict["linestring"] = file.linestring
+            # newdict["linestring"] = file.linestring
             # "{}{}".format(var1,var2) puts var1 and var2 into an empty string
             # another example:
             # "Var 1: {} here is var 2: {}... {}".format(1,2,"see?")
