@@ -3,7 +3,7 @@ import os
 # filenames made from the absolute path of the file will be unique
 
 
-def cacheFileName(path):
+def cache_filename(path):
     if path != abspath(path):
         path = abspath(path)
     # remove the first /, replace slashes with dots, add file extension

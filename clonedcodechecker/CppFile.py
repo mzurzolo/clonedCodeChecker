@@ -1,8 +1,8 @@
+"""CppFile is the single unit that
+represents a loaded file in the CodeCache"""
 
-import hashlib
 
-
-class cppFile:
+class CppFile:
 
     __slots__ = ["filename", "lineset", "allLines", "blocks", "linestring"]
 

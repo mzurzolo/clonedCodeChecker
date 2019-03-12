@@ -6,3 +6,4 @@ syntax: glob
 ccc_env/*
 py37/*
 .bashrc
+report.txt

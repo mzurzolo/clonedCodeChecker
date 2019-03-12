@@ -1,8 +1,7 @@
-import yaml
-import cppFile as cpf
 import os
+import yaml
+import CppFile as cpf
 import _common as common
-import hashlib
 import matcher
 try:
     from yaml import CSafeLoader as Loader
@@ -12,7 +11,7 @@ except Exception:
     from yaml import SafeDumper as Dumper
 
 
-class codeCache():
+class CodeCache():
 
     __slots__ = ["files", "searchSet", "filecache",
                  "cachedfiles", "filelist", "matcher"]
@@ -26,7 +25,7 @@ class codeCache():
         # the directory of processed files
         self.filecache = filecache
         self.cachedfiles = cachedfiles
-        self.matcher = matcher.matcher()
+        self.matcher = matcher.Matcher()
 
     # must be set after filecache is changed to the proper directory
     # in clonedCodeChecker.py
@@ -45,7 +44,7 @@ class codeCache():
     # use this externally (from clonedCodeChecker's main())
     def addFile(self, filename):
 
-        fname = common.cacheFileName(filename)
+        fname = common.cache_filename(filename)
         # if the file has been processed
         if fname in self.cachedfiles:
             # basic exception handling. try/except
@@ -62,7 +61,7 @@ class codeCache():
                 print("load : ", filename)
                 # create a new cppFile from loaded file and
                 # add it to codeCache
-                self.add(cpf.cppFile(filename=filename,
+                self.add(cpf.CppFile(filename=filename,
                                      lineset=lineset,
                                      allLines=allLines,
                                      blocks=blocks,
@@ -74,12 +73,12 @@ class codeCache():
             except Exception as e:
                 print(e)
                 os.remove(self.filecache + fname)
-                self.add(cpf.cppFile(
+                self.add(cpf.CppFile(
                     filename=common.abspath(filename)))
         # if the file isn't in the filecache, load/process it from source,
         # create a cppFile object, add it to codeCache
         else:
-            self.add(cpf.cppFile(filename=common.abspath(filename)))
+            self.add(cpf.CppFile(filename=common.abspath(filename)))
 
     def saveCache(self):
         outdir = self.filecache
@@ -88,10 +87,10 @@ class codeCache():
             # pop it off the set (and call it file)
             file = self.files.pop()
             # get a filecache name for it
-            fname = common.cacheFileName(file.filename)
+            fname = common.cache_filename(file.filename)
 
             # match individual lines (for now)
-            self.matcher.matchLines(fname, file.lineset)
+            self.matcher.match_lines(fname, file.lineset)
             # if the file is already in the filecache, skip the rest of this
             # loop and go back up to the while statement.
             if fname in self.cachedfiles:
@@ -119,11 +118,11 @@ class codeCache():
             # keep track of what gets added to the filecache directory so we
             # don't have to re-query the filesystem with os.listdir() as much
             self.cachedfiles.add(fname)
-            # self.matcher.showMultiple()
+            # self.matcher.show_multiple()
 
     def testmatch(self):
         for file in self.files:
-            self.matcher.printMatches(file.linestring)
+            self.matcher.print_matches(file.linestring)
 
     def scanSearchSet(self):
         print(len(self.searchSet))
@@ -134,5 +133,5 @@ class codeCache():
         save_path = os.getcwd()
         # Create a file that the output will be put into
         name_of_file = "report.txt"
-        completeName = os.path.join(save_path, name_of_file)
-        self.matcher.showMultiple(completeName)
+        complete_name = os.path.join(save_path, name_of_file)
+        self.matcher.show_multiple(complete_name)
