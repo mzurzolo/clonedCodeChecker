@@ -4,7 +4,8 @@ represents a loaded file in the CodeCache"""
 
 class CppFile:
 
-    __slots__ = ["filename", "lineset", "allLines", "blocks", "linestring"]
+    __slots__ = ["filename", "lineset", "allLines",
+                 "blocks", "linestring", "t_modefied"]
 
     # this is the constructor. when a cppFile gets loaded from filecache,
     # it gets created with a filename, lineset, allLines, blocks, and
@@ -12,7 +13,8 @@ class CppFile:
     # method). Otherwise, the file is loaded from source to populate these
     # fields.
     def __init__(self, filename='', lineset=None,
-                 allLines=None, blocks=None, linestring='', loaded=False):
+                 allLines=None, blocks=None, linestring='',
+                 t_modefied=None, loaded=False):
 
         self.filename = filename
         # sets do not allow duplicates
@@ -32,6 +34,7 @@ class CppFile:
             self.allLines = allLines
 
         self.linestring = linestring
+        self.t_modefied = t_modefied
 
         # setting loaded to True prevents this stuff from running. codeCache
         # passes True when it creates a cppFile that was already in it's

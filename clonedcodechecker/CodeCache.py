@@ -1,15 +1,14 @@
 import os
 import yaml
-import CppFile as cpf
-import _common as common
-import matcher
 try:
     from yaml import CSafeLoader as Loader
     from yaml import CSafeDumper as Dumper
 except Exception:
     from yaml import SafeLoader as Loader
     from yaml import SafeDumper as Dumper
-
+import CppFile as cpf
+import _common as common
+import matcher
 
 class CodeCache():
 
@@ -46,6 +45,7 @@ class CodeCache():
 
         fname = common.cache_filename(filename)
         # if the file has been processed
+        new_t_modefied = os.stat(filename).st_mtime
         if fname in self.cachedfiles:
             # basic exception handling. try/except
             try:
@@ -57,16 +57,26 @@ class CodeCache():
                 allLines = [] # data['allLines']
                 blocks = data['blocks']
                 linestring = ''# data['linestring']
-                # successfully loaded
-                print("load : ", filename)
-                # create a new cppFile from loaded file and
-                # add it to codeCache
-                self.add(cpf.CppFile(filename=filename,
-                                     lineset=lineset,
-                                     allLines=allLines,
-                                     blocks=blocks,
-                                     linestring=linestring,
-                                     loaded=True))
+                t_modefied = data['t_modefied']
+                if new_t_modefied == t_modefied:
+                    # successfully loaded
+                    print("load : ", filename)
+                    # create a new cppFile from loaded file and
+                    # add it to codeCache
+                    self.add(cpf.CppFile(filename=filename,
+                                         lineset=lineset,
+                                         allLines=allLines,
+                                         blocks=blocks,
+                                         linestring=linestring,
+                                         t_modefied=t_modefied,
+                                         loaded=True))
+
+                else:
+                    os.remove(self.filecache + fname)
+                    self.sync_cachedfiles()
+                    self.add(cpf.CppFile(
+                        filename=common.abspath(filename),
+                        t_modefied=new_t_modefied))
 
             # if there was a problem reading it, remove it from the filecache
             # directory and try to re-process from source.
@@ -74,11 +84,13 @@ class CodeCache():
                 print(e)
                 os.remove(self.filecache + fname)
                 self.add(cpf.CppFile(
-                    filename=common.abspath(filename)))
+                    filename=common.abspath(filename),
+                    t_modefied=new_t_modefied))
         # if the file isn't in the filecache, load/process it from source,
         # create a cppFile object, add it to codeCache
         else:
-            self.add(cpf.CppFile(filename=common.abspath(filename)))
+            self.add(cpf.CppFile(filename=common.abspath(filename),
+                                 t_modefied=new_t_modefied))
 
     def saveCache(self):
         outdir = self.filecache
@@ -102,6 +114,7 @@ class CodeCache():
             newdict["lineset"] = file.lineset
             # newdict["allLines"] = file.allLines
             newdict["blocks"] = file.blocks
+            newdict["t_modefied"] = file.t_modefied
             # newdict["linestring"] = file.linestring
             # "{}{}".format(var1,var2) puts var1 and var2 into an empty string
             # another example:
@@ -129,9 +142,5 @@ class CodeCache():
         for line in self.searchSet:
             input(line)
 
-    def output(self):
-        save_path = os.getcwd()
-        # Create a file that the output will be put into
-        name_of_file = "report.txt"
-        complete_name = os.path.join(save_path, name_of_file)
-        self.matcher.show_multiple(complete_name)
+    def output(self, outputpath):
+        self.matcher.show_multiple(outputpath)
