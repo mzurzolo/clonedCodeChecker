@@ -5,6 +5,7 @@ import argparse
 import _common as common
 import CodeCache as cC
 
+
 # "directory="." " means that directory is optional. If load_cpp_files is not
 # passed a directory, it uses ".", which is the current directory
 def load_cpp_files(directory="."):
