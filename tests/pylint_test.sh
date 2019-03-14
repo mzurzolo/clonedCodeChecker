@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 
 pylint --rcfile=$CCC_ENV/.pylint.cfg $CCC_ENV/clonedcodechecker > $CCC_ENV/pylint.log
