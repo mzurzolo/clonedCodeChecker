@@ -1,63 +1,69 @@
-"""cloned_code_checker was designed to act as a static analysis tool for
-C/C++ Source Code"""
+"""cloned_code_checker is a static analysis tool for C/C++ Source Code."""
+
 import os
 import argparse
-import _common as common
-import CodeCache as cC
+from code_cache import CodeCache
 
 
 # "directory="." " means that directory is optional. If load_cpp_files is not
 # passed a directory, it uses ".", which is the current directory
 def load_cpp_files(directory="."):
-    """iterate through the list of files in directory, load them"""
-    for file in os.listdir(directory):
-        # filenames and folder names that begin with a . are hidden. We don't
-        # want hidden files
-        # if the file has a .cpp extension and is visible:
-        if file.endswith(".cpp") and not file.startswith("."):
-            # add it to the CODE_CACHE (process it)
-            CODE_CACHE.addFile(common.abspath(directory + file))
-            # if the file has a .c extension and is visible:
-        if file.endswith(".c") and not file.startswith("."):
-            # add it to the CODE_CACHE (process it)
-            CODE_CACHE.addFile(common.abspath(directory + file))
-        # if the file has a .h extension and is visible:
-        if file.endswith(".h") and not file.startswith("."):
-            # add it to the CODE_CACHE (process it)
-            CODE_CACHE.addFile(common.abspath(directory + file))
+    """Iterate through the list of files in directory, load them."""
+    absolute_files = [
+        os.path.realpath(file.path)
+        for file
+        in os.scandir(directory)
+        if file.is_file()
+        and not file.name.startswith(".")]
+    source_files = [
+        file for file
+        in absolute_files
+        if any([file.endswith(".cpp"),
+                file.endswith(".c"),
+                file.endswith(".h")])]
+
+    for file in source_files:
+        # add it to the CODE_CACHE (process it)
+        CODE_CACHE.add_file(file)
 
 
 def recursive_walk(directory="."):
-    """this iterates through every subdirectory, starting at 'directory'
-    for processing by the clonedcodechecker"""
+    """Recursive directory walk."""
     for current, _folders, files in os.walk(directory):
         # current is a string. [-1] is negative-indexing. it means "the last"
         # element in current
-        if current[-1] != "/":
-            load_cpp_files(current+"/")
-        else:
-            load_cpp_files(current)
-        # savecache clears files out of memory. We have to think through how
-        # we decide whether a file should be in memory, or saved off to the
-        # filecache.
-        CODE_CACHE.saveCache()
+        absolute_files = [
+            os.path.join(os.path.realpath(current), file)
+            for file
+            in files
+            if not file.startswith(".")]
+        source_files = [
+            file for file
+            in absolute_files
+            if any([file.endswith(".cpp"),
+                    file.endswith(".c"),
+                    file.endswith(".h")])]
+
+        for file in source_files:
+            # add it to the CODE_CACHE (process it)
+            CODE_CACHE.add_file(file)
+        CODE_CACHE.save_cache()
 
 
 # Testing matches. eventually the matcher will be a tokenizer
 def recursive_walk_testm(directory="."):
-    """test function"""
+    """Test function."""
     for current, _folders in os.walk(directory):
         if current[-1] != "/":
             load_cpp_files(current+"/")
         else:
             load_cpp_files(current)
         CODE_CACHE.testmatch()
-        CODE_CACHE.saveCache()
+        CODE_CACHE.save_cache()
 
 
 def main():
-    """Parse arguments supplied by user,
-     drive program based on those arguments"""
+    """Parse arguments, drive program."""
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
     # defaults can be specified. action="store_true" means that the option
@@ -97,9 +103,9 @@ def main():
         recursive_walk_testm(args.d)
 
     if args.r:
-        recursive_walk(args.d)
-        CODE_CACHE.saveCache()
-        CODE_CACHE.output(args.o)
+        recursive_walk(directory=args.d)
+        CODE_CACHE.save_cache()
+        CODE_CACHE.output("{}/report.txt".format(args.o))
     else:
         load_cpp_files(args.d)
 
@@ -109,5 +115,5 @@ def main():
 if __name__ == "__main__":
     # CODE_CACHE is the 'container' object. It holds cppFile objects
     # I create it here so every function above has access to it.
-    CODE_CACHE = cC.CodeCache()
+    CODE_CACHE = CodeCache()
     main()

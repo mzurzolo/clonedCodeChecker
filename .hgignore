@@ -7,3 +7,6 @@ ccc_env/*
 py37/*
 .bashrc
 report.txt
+.ropeproject/config.py
+pylint.cfg
+pylint.log
