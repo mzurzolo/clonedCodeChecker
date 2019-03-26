@@ -2,6 +2,7 @@
 
 import os
 import argparse
+from threading import Thread
 from code_cache import CodeCache
 
 
@@ -15,51 +16,61 @@ def load_cpp_files(directory="."):
         in os.scandir(directory)
         if file.is_file()
         and not file.name.startswith(".")]
-    source_files = [
+
+    source_h_files = [
+        file for file
+        in absolute_files
+        if any([file.endswith(".hpp"),
+                file.endswith(".h")])]
+
+    source_c_files = [
         file for file
         in absolute_files
         if any([file.endswith(".cpp"),
-                file.endswith(".c"),
-                file.endswith(".h")])]
+                file.endswith(".c")])]
 
-    for file in source_files:
-        # add it to the CODE_CACHE (process it)
-        CODE_CACHE.add_file(file)
+    CODE_CACHE.search_set.extend(source_c_files)
+    CODE_CACHE.search_set.extend(source_h_files)
+
+    adder_thread = Thread(target=CODE_CACHE.thread_add)
+    saver_thread = Thread(target=CODE_CACHE.thread_save)
+    adder_thread.start()
+    saver_thread.start()
 
 
 def recursive_walk(directory="."):
     """Recursive directory walk."""
+    hfiles = set()
+    cfiles = set()
     for current, _folders, files in os.walk(directory):
-        # current is a string. [-1] is negative-indexing. it means "the last"
-        # element in current
         absolute_files = [
             os.path.join(os.path.realpath(current), file)
             for file
             in files
             if not file.startswith(".")]
-        source_files = [
+
+        source_h_files = [
+            file for file
+            in absolute_files
+            if any([file.endswith(".hpp"),
+                    file.endswith(".h")])]
+
+        source_c_files = [
             file for file
             in absolute_files
             if any([file.endswith(".cpp"),
-                    file.endswith(".c"),
-                    file.endswith(".h")])]
+                    file.endswith(".c")])]
 
-        for file in source_files:
-            # add it to the CODE_CACHE (process it)
-            CODE_CACHE.add_file(file)
-        CODE_CACHE.save_cache()
+        hfiles.update(source_h_files)
+        cfiles.update(source_c_files)
 
+    CODE_CACHE.search_set.extend(cfiles)
+    CODE_CACHE.search_set.extend(hfiles)
 
-# Testing matches. eventually the matcher will be a tokenizer
-def recursive_walk_testm(directory="."):
-    """Test function."""
-    for current, _folders in os.walk(directory):
-        if current[-1] != "/":
-            load_cpp_files(current+"/")
-        else:
-            load_cpp_files(current)
-        CODE_CACHE.testmatch()
-        CODE_CACHE.save_cache()
+    adder_thread = Thread(target=CODE_CACHE.thread_add)
+    saver_thread = Thread(target=CODE_CACHE.thread_save)
+    adder_thread.start()
+    saver_thread.start()
 
 
 def main():
@@ -99,12 +110,8 @@ def main():
     if args.p:
         CODE_CACHE.purge()
 
-    if args.m:
-        recursive_walk_testm(args.d)
-
     if args.r:
         recursive_walk(directory=args.d)
-        CODE_CACHE.save_cache()
         CODE_CACHE.output("{}/report.txt".format(args.o))
     else:
         load_cpp_files(args.d)

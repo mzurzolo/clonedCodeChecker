@@ -1,12 +1,16 @@
 """code_cache holds the CodeCache and CppFile classes, and the YAML object."""
 
 import os
+from collections import deque, namedtuple
 from ruamel.yaml import YAML
 import _common as common
 import matcher
 
-YA_ML = YAML(typ='safe')
-YA_ML.default_style = False
+YA_ML_Dumper = YAML(typ='safe')
+YA_ML_Loader = YAML(typ='safe')
+YA_ML_Dumper.default_style = False
+YA_ML_Loader.default_style = False
+Token = namedtuple("Token", ['token', 'value', 'span'])
 
 
 class CodeCache():
@@ -17,8 +21,8 @@ class CodeCache():
 
     def __init__(self, filecache="./.filecache/", cachedfiles=None):
         """Get new CodeCache object."""
-        self.files = set()
-        self.search_set = set()
+        self.files = deque()
+        self.search_set = deque()
         # the directory of processed files
         self.filecache = filecache
         self.cachedfiles = cachedfiles
@@ -36,50 +40,59 @@ class CodeCache():
             os.remove(self.filecache + fname)
         self.cachedfiles = set(os.listdir(self.filecache))
 
-    # use this externally (from clonedCodeChecker's main())
+    def thread_add(self):
+        """Add files to the CodeCache (threaded)."""
+        while self.search_set:
+            self.files.appendleft(self.add_file(self.search_set.pop()))
+            continue
+
+    def thread_save(self):
+        """Save files to the filecache (threaded)."""
+        while any([self.files, self.search_set]):
+            while self.files:
+                self.save_file(self.files.pop())
+            continue
+
     def add_file(self, filename):
         """Add a new file to the CodeCache for analysis."""
         fname = common.cache_filename(filename)
         cachedfile = os.path.join(self.filecache, fname)
-        new_file = CppFile(filename=filename, cachedfile=cachedfile)
 
         if fname in self.cachedfiles:
             try:
-                if new_file.load_from_cache():
-                    self.sync_cachedfiles()
+                with open(cachedfile, 'r') as file:
+                    new_file = YA_ML_Loader.load(file)
+                if os.stat(filename).st_mtime == new_file['t_modified']:
+                    print('reloaded: ----------------', filename)
+                    return new_file
             except Exception as e:
                 print(e)
                 os.remove(cachedfile)
                 self.sync_cachedfiles()
-        else:
-            new_file.load_from_source()
+        new_file = CppFile(filename=filename)
+        new_file.load_from_source()
+        print("loaded: --------------------", filename)
+        return new_file
 
-        self.files.add(new_file)
+    def save_file(self, file):
+        """Clear file out of memory, dumping new file into the filecache."""
+        # get a filecache name for it
+        fname = common.cache_filename(file.filename)
+        filepath = os.path.join(self.filecache, fname)
+        # match individual lines (for now)
+        # if the file is already in the filecache, skip the rest of this
+        # loop and go back up to the while statement.
+        if fname in self.cachedfiles:
+            print("returned")
+            return
 
-    def save_cache(self):
-        """Clear files out of memory, dumping new files into the filecache."""
-        outdir = self.filecache
-        # while the codeCache has cppFile objects:
-        while self.files:
-            # pop it off the set (and call it file)
-            file = self.files.pop()
-            # get a filecache name for it
-            fname = common.cache_filename(file.filename)
+        with open(filepath, "w") as outfile:
+            YA_ML_Dumper.dump(file, outfile)
 
-            # match individual lines (for now)
-            self.matcher.match_lines(fname, file.lineset)
-            # if the file is already in the filecache, skip the rest of this
-            # loop and go back up to the while statement.
-            if fname in self.cachedfiles:
-                continue
-
-            with open(os.path.join(outdir, fname), "w") as outfile:
-                YA_ML.dump(dict(file), outfile)
-            print("saved : ", fname)
-            # keep track of what gets added to the filecache directory so we
-            # don't have to re-query the filesystem with os.listdir() as much
-            self.cachedfiles.add(fname)
-            # self.matcher.show_multiple()
+        print("saved : ", fname)
+        # keep track of what gets added to the filecache directory so we
+        # don't have to re-query the filesystem with os.listdir() as much
+        self.cachedfiles.add(fname)
 
     def testmatch(self):
         """Tell matcher to test the tokenizer."""
@@ -103,13 +116,14 @@ class CppFile:
     t_modified: the last time the file was modified (epoch timestamp)
     as reported by the filesystem.
     """
-
+    Token = namedtuple("Token", ['token', 'value', 'span'])
 
     def __init__(self, filename, cachedfile=None):
         """Create new CppFile object."""
         self.filename = filename
         self.cachedfile = cachedfile
         self.lineset = None
+        self.tokenlist = None
         self.all_lines = None
         self.blocks = None
         self.linestring = None
@@ -117,56 +131,33 @@ class CppFile:
 
     def keys(self):
         """Duck typing for dictionary."""
-        return ['filename', 'cachedfile', 'lineset', 'all_lines',
+        return ['filename', 'cachedfile', 'lineset', 'tokenlist', 'all_lines',
                 'blocks', 'linestring', 't_modified']
 
     def __getitem__(self, key):
         """Duck typing for dictionary."""
         return dict(zip(
-                        ('filename', 'cachedfile', 'lineset', 'all_lines',
-                         'blocks', 'linestring', 't_modified'),
+                        ('filename', 'cachedfile', 'lineset', 'tokenlist',
+                         'all_lines', 'blocks', 'linestring', 't_modified'),
                         (self.filename, self.cachedfile, self.lineset,
-                         self.all_lines, self.blocks, self.linestring,
-                         self.t_modified)))[key]
-
-    def load_from_cache(self):
-        """Try to load the file from the filecache.
-
-        Returns False on successful load to tell the CodeCache it does not
-        need to check the filecache for changes.
-        """
-        if self.cachedfile:
-            # data = yaml.load(file)
-            with open(self.cachedfile, 'r') as file:
-                data = YA_ML.load(file)
-
-            t_modified = data['t_modified']
-
-            if self.t_modified == t_modified:
-                # grab all the fields
-                self.lineset = data['lineset']
-                self.all_lines = data['all_lines']
-                self.blocks = data['blocks']
-                self.linestring = data['linestring']
-                print("load : ", self.filename)
-            else:
-                os.remove(self.cachedfile)
-                self.load_from_source()
-                return True
-
-        return False
+                         self.tokenlist, self.all_lines, self.blocks,
+                         self.linestring, self.t_modified)))[key]
 
     def load_from_source(self):
         """Load the file from the absolute path."""
         with open(self.filename, 'r') as file:
             lines = file.readlines()
 
+        with open(self.filename, 'r') as file:
+            lineread = file.read()
+
         self.all_lines = lines
         # every line as one long string. we may want this for processing
         # large code blocks
-        self.linestring = ''.join(self.all_lines)
+        self.linestring = lineread
         # keeps only unique lines
         self.lineset = set(self.all_lines)
 
 
-# yaml.register_class(CppFile)
+YA_ML_Dumper.register_class(CppFile)
+YA_ML_Loader.register_class(CppFile)

@@ -4,7 +4,9 @@ This is where the tokenizer lives, and where matches across files are stored.
 """
 
 import re
+from collections import namedtuple
 
+Token = namedtuple("Token", ['token', 'value', 'span'])
 
 class Matcher:
     """
@@ -131,7 +133,7 @@ class Matcher:
     def tokenize(self, text):
         """Yield 3-tuples for every found match."""
         for token in self.tok_regex.finditer(text):
-            yield (token.lastgroup, token.group(), token.span())
+            yield Token(token.lastgroup, token.group(), token.span())
 
     def get_tokens(self, text):
         """Return a list of all tokens in the text."""
