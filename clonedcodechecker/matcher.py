@@ -24,22 +24,105 @@ class Matcher:
         self.line_matches = {}
         self.total_lineset = set()
 
-        number = '[0-9]+[.]?[0-9]*'      # Integer or decimal number
-        assign = '='                     # Assignment operator
-        e_n_d = ';'                        # Statement terminator
-        i_d = '[A-Za-z_]+'                # Identifiers
-        o_p = '[+]|[-]|(?<!/)[*](?!/)|(?<!/)/(?!/)'  # Arithmetic operators
-        whitespace = r'[\s]+'               # spaces, tabs, and newlines
-        mismatch = '.'                   # Any other character
+        # Comments
+        double_slash_comment = r'//.*?\n'      # comment up to newline
+        slash_star_comment = r'/\*.*?\*/'       # comment open to close
+        # Preprocessor
+        include = r'#[/s]*?include.*?\n'
+        define = r'#[/s]*?define.*?\n'
+        ifdef = r'#ifdef.*?\n'
+        endif = r'#[\s]*?endif.*?\n'
+        undef = r'#[/s]*?undef.*?\n'
+        # Containers
+        brace = r'[\{\}]'
+        bracket = r'[\[\]]'
+        paren = r'[()]'
+        # Operators
+        arithmetic_op = r'\/|\*|\-|\+|\%|\+\+|\-\-'
+        # readable: [/,*,-,+,%,++,--]
+        relational_op = r'\=\=|\!\=|\<[=]|\>[=]|\<|\>'
+        # readable: [==,!=,<,<=,>,>=]
+        logical_op = r'&&|\|\||\!'
+        # readable: [&&,||,!]
+        bitwise_op = r'&|\||\^|\~|\<\<|\>\>'
+        # readable: [&,|,^,~,<<,>>]
+        arithmetic_and_assign = r'\+\=|\-\=|\*\=|\/\=|\%\='
+        # readable: [+=,-=,*=,/=,%=]
+        bitwise_and_assign = r'\<\<\=|\>\>\=|\&\=|\^\=|\|\='
+        # readable: [<<=,>>=,&=,^=,|=]
+        # Specials
+        scope_resolution = r'\:\:'
+        addr_of = r'&[A-Za-z_]+'
+        pass_by_ref = r'[A-Za-z_]+&'
+        pointer = r'\*[A-Za-z_]+|\-\>'
+        conditional = r'\?\:'
+        dot = r'[.]'
+        # Other
+        assign = r'='
+        sep = ','
+        e_n_d = r';'
+        at_symbol = r'@'
+        single_colon = r':'
+        question_mark = r'\?'
+        dollar_sign = r'\$'
+        pound = r'#'
+        quote = r'\"|\'|\`'
+        backslash = r'\\'
+        # Unicode
+        cp_right = u'\N{COPYRIGHT SIGN}'
+        empty_set = u'\N{LATIN CAPITAL LETTER O WITH STROKE}'
+        empty_set_lc = u'\N{LATIN SMALL LETTER O WITH STROKE}'
+        b_sharp = u'\N{LATIN CAPITAL LETTER SHARP S}'
+        b_sharp_lc = u'\N{LATIN SMALL LETTER SHARP S}'
+        # Regular
+        number = r'[0-9]+?'
+        i_d = r'[A-Za-z_]+'
+        whitespace = r'[\s]+'
+        # Trash
+        mismatch = '.'
 
         token_specification = [
-            ('NUMBER', number),
-            ('ASSIGN', assign),
+            ('DOUBLE_SLASH_COMMENT', double_slash_comment),  # Comments
+            ('SLASH_STAR_COMMENT', slash_star_comment),
+            ('INCLUDE', include),                            # Preprocessor
+            ('DEFINE', define),
+            ('IFDEF', ifdef),
+            ('ENDIF', endif),
+            ('UNDEF', undef),
+            ('BRACE', brace),                                # Containers
+            ('BRACKET', bracket),
+            ('PAREN', paren),
+            ('RELATIONAL_OP', relational_op),                # Operators
+            ('LOGICAL_OP', logical_op),
+            ('BITWISE_OP', bitwise_op),
+            ('ARITHMETIC_AND_ASSIGN', arithmetic_and_assign),
+            ('BITWISE_AND_ASSIGN', bitwise_and_assign),
+            ('SCOPE_RESOLUTION', scope_resolution),         # Specials
+            ('ADDR_OF', addr_of),
+            ('PASS_BY_REF', pass_by_ref),
+            ('POINTER', pointer),
+            ('CONDITIONAL', conditional),
+            ('DOT', dot),
+            ('ASSIGN', assign),                             # Other
+            ('SEP', sep),
             ('END', e_n_d),
+            ('AT_SYMBOL', at_symbol),
+            ('SINGLE_COLON', single_colon),
+            ('QUESTION_MARK', question_mark),
+            ('DOLLAR_SIGN', dollar_sign),
+            ('POUND', pound),
+            ('QUOTE', quote),
+            ('BACKSLASH', backslash),
+            ('CP_RIGHT', cp_right),                         # Unicode
+            ('EMPTY_SET', empty_set),
+            ('EMPTY_SET_LC', empty_set_lc),
+            ('B_SHARP', b_sharp),
+            ('B_SHARP_LC', b_sharp_lc),
+            ('NUMBER', number),                             # Regular
             ('ID', i_d),
-            ('OP', o_p),
             ('WHITESPACE', whitespace),
-            ('MISMATCH', mismatch)
+            ('ARITHMETIC_OP', arithmetic_op),
+            ('MISMATCH', mismatch)                          # Trash
             ]
         t_string = '|'.join(('(?P<{}>{})'.format(pair[0], pair[1])
                              for pair in token_specification))
