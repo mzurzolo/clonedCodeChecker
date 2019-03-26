@@ -126,7 +126,16 @@ class Matcher:
             ]
         t_string = '|'.join(('(?P<{}>{})'.format(pair[0], pair[1])
                              for pair in token_specification))
-        self.tok_regex = re.compile(t_string)
+        self.tok_regex = re.compile(t_string, re.S | re.A)
+
+    def tokenize(self, text):
+        """Yield 3-tuples for every found match."""
+        for token in self.tok_regex.finditer(text):
+            yield (token.lastgroup, token.group(), token.span())
+
+    def get_tokens(self, text):
+        """Return a list of all tokens in the text."""
+        return [token for token in self.tokenize(text)]
 
     def print_matches(self, code):
         """Test the tokenizer."""
