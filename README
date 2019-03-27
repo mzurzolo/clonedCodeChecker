@@ -1,63 +1,8 @@
-End Users can download INSTALLER.sh (from the scripts directory) individually.
-The installer will alter your .bashrc file.
+To install:
+  If you haven't already navigated to the extracted directory:
 
-Developers:
-After cloning the repository (or before you start work)
-run:
-		source ./scripts/work_here.sh
-from the top level of the repository.
-This is the least destructive method of getting the working directory
-ready for development/testing.
+      cd clonedcodechecker-sprint2
 
+  Then run the following command:
 
-#############################################################################
-#############################################################################
-Developers using Mercurial:
-
-After making the configuration changes below, please use
-hg pushall and hg pullall instead of hg push and hg pull
-
-Please add the following entries to your .hg/hgrc file:
-# you need to change the USERNAME in the paths Github and SF-Git to your
-# username on Github and SourceForge
-
-[extensions]
-hgext.bookmarks =
-hggit =
-
-[paths]
-Github = git+ssh://git@github.com:USERNAME/clonedCodeChecker.git
-SF-Git = git+ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
-
-[alias]
-pushall = !hg bookmark -r default master && hg push Github && hg push SF-Git && hg push
-pullall = !hg pull Github && hg pull SF-Git && hg pull
-
-#############################################################################
-#############################################################################
-Developers using Git:
-
-After making the configuration changes below, please use
-git fetchall and git pushall instead of git fetch and git push
-
-Please add the following entries to your .git/config file:
-# you need to change the USERNAME in the url and pushurl to your username
-# on Github and SourceForge
-
-[remote "origin"]
-	url = git@github.com:USERNAME/clonedCodeChecker.git
-	fetch = +refs/heads/*:refs/remotes/origin/*
-	pushurl = git@github.com:USERNAME/clonedCodeChecker.git
-[remote "SF"]
-	url = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
-	fetch = +refs/heads/*:refs/remotes/SF/*
-	pushurl = ssh://USERNAME@git.code.sf.net/p/clonedcodechecker/git
-[branch "master"]
-	remote = origin
-	merge = refs/heads/master
-[alias]
-	fetchall = !git fetch origin master && git fetch SF master
-	pushall = !git push origin master && git push SF master
-
-#############################################################################
-#############################################################################
+python3 -m pip install --user --no-index --find-links=./ clonedcodechecker
