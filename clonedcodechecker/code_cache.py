@@ -17,7 +17,7 @@ class CodeCache():
     """The CodeCache holds CppFiles, the Matcher, and controls filecache."""
 
     __slots__ = ["files", "search_set", "filecache",
-                 "cachedfiles", "filelist", "matcher"]
+                 "cachedfiles", "filelist", "matcher", "output_dir"]
 
     def __init__(self, filecache="./.filecache/", cachedfiles=None):
         """Get new CodeCache object."""
@@ -27,6 +27,7 @@ class CodeCache():
         self.filecache = filecache
         self.cachedfiles = cachedfiles
         self.matcher = matcher.Matcher()
+        self.output_dir = None
 
     # must be set after filecache is changed to the proper directory
     # in clonedCodeChecker.py
@@ -52,6 +53,7 @@ class CodeCache():
             while self.files:
                 self.save_file(self.files.pop())
             continue
+        self.output()
 
     def add_file(self, filename):
         """Add a new file to the CodeCache for analysis."""
@@ -72,6 +74,7 @@ class CodeCache():
         new_file = CppFile(filename=filename)
         new_file.load_from_source()
         print("loaded: --------------------", filename)
+        self.matcher.match_lines(new_file)
         return new_file
 
     def save_file(self, file):
@@ -99,9 +102,9 @@ class CodeCache():
         for file in self.files:
             self.matcher.print_matches(file.linestring)
 
-    def output(self, outputpath):
+    def output(self):
         """Tell matcher to print the report."""
-        self.matcher.show_multiple(outputpath)
+        self.matcher.print_output(self.output_dir)
 
 
 class CppFile:

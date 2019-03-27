@@ -145,19 +145,19 @@ class Matcher:
             print(token.lastgroup, end=' ')
             input(token.group())
 
-    def match_lines(self, fname, lineset):
+    def match_lines(self, file):
         """Tracks what files have what lines.
 
         Take a set of lines from a file and the file's name,
         add the lines to line_matches.
         """
-        for line in lineset.difference(self.total_lineset):
-            self.line_matches[line] = [fname]
-        for line in lineset.intersection(self.total_lineset):
-            self.line_matches[line].append(fname)
-        self.total_lineset = self.total_lineset.union(lineset)
+        for line in file.lineset.difference(self.total_lineset):
+            self.line_matches[line] = [file.filename]
+        for line in file.lineset.intersection(self.total_lineset):
+            self.line_matches[line].append(file.filename)
+        self.total_lineset = self.total_lineset.union(file.lineset)
 
-    def show_multiple(self, outfile):
+    def print_output(self, outfile):
         """Print the line_matches dictionary to outfile."""
         print(outfile)
         with open(outfile, "w") as file:

@@ -109,7 +109,7 @@ def main():
 
     if args.r:
         recursive_walk(directory=args.d)
-        CODE_CACHE.output("{}/report.txt".format(args.o))
+        CODE_CACHE.output_dir = "{}/report.txt".format(args.o)
     else:
         if args.d:
             load_cpp_files(args.d)
