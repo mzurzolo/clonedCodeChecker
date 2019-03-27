@@ -3,7 +3,7 @@
 import os
 import argparse
 from threading import Thread
-from code_cache import CodeCache
+from clonedcodechecker.code_cache import CodeCache
 
 
 # "directory="." " means that directory is optional. If load_cpp_files is not
@@ -97,9 +97,6 @@ def main():
                         help="{}{}".format(
                             "Search for duplicate code in given ",
                             "directory (but not sub-directories)"))
-    parser.add_argument('-m',
-                        action="store_true",
-                        help="Activate matcher")
 
     args = parser.parse_args()
     #########################################################################
@@ -114,7 +111,8 @@ def main():
         recursive_walk(directory=args.d)
         CODE_CACHE.output("{}/report.txt".format(args.o))
     else:
-        load_cpp_files(args.d)
+        if args.d:
+            load_cpp_files(args.d)
 
 
 # This is the entry point.

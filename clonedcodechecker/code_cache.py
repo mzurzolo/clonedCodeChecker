@@ -3,8 +3,8 @@
 import os
 from collections import deque, namedtuple
 from ruamel.yaml import YAML
-import _common as common
-import matcher
+import clonedcodechecker._common as common
+import clonedcodechecker.matcher as matcher
 
 YA_ML_Dumper = YAML(typ='safe')
 YA_ML_Loader = YAML(typ='safe')

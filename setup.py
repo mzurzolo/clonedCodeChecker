@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(name='clonedcodechecker',
       version='0.0.1',
@@ -14,5 +14,7 @@ setup(name='clonedcodechecker',
               Emily Fliegel <fliege39@students.rowan.edu>',
       author_email='listed in author',
       license='BSD-3',
-      packages=['clonedcodechecker'],
-      zip_safe=False)
+      packages=find_packages(),
+      install_requires=['ruamel.yaml'],
+      scripts=['bin/ccc'],
+      include_package_data=True)
