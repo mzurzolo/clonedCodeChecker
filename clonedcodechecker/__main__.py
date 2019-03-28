@@ -101,15 +101,14 @@ def main():
     args = parser.parse_args()
     #########################################################################
     CODE_CACHE.filecache = args.e + "/.filecache/"
+    CODE_CACHE.output_dir = "{}/report.txt".format(args.o)
     CODE_CACHE.sync_cachedfiles()
     #########################################################################
-
     if args.p:
         CODE_CACHE.purge()
 
     if args.r:
         recursive_walk(directory=args.d)
-        CODE_CACHE.output_dir = "{}/report.txt".format(args.o)
     else:
         if args.d:
             load_cpp_files(args.d)

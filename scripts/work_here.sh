@@ -10,3 +10,4 @@ if [ ! -d "$TARGET/py37" ] ; then
   python3 -m pip install -r $TARGET/requirements_dev.txt
   python setup.py install
 fi
+python setup.py install
