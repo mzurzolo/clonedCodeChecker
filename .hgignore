@@ -1,12 +1,12 @@
 syntax: glob
 
-*.pyc
-*.class
-.filecache/*
+__pycache__
 ccc_env/*
 py37/*
-.bashrc
 report.txt
-.ropeproject/config.py
 pylint.cfg
 pylint.log
+.*
+build
+dist
+clonedcodechecker.egg*
