@@ -5,4 +5,4 @@ VERSION=0.0.1
 
 mkdir -p $HOME/.filecache
 
-python3 -m clonedcodechecker -e $HOME -o "$(pwd)" "$@"
+python3 -m clonedcodechecker.clonedcodechecker -e $HOME -o "$(pwd)" "$@"

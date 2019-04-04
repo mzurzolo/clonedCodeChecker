@@ -1,10 +1,12 @@
 import unittest
-import clonedcodechecker
+import clonedcodechecker.clonedcodechecker as CCC
+
 
 class MainUnitTest(unittest.TestCase):
+    ccc = CCC.ClonedCodeChecker()
 
     def setUp(self):
         pass
 
     def test_launch(self):
-        print(dir())
+        assert self.ccc.main()
