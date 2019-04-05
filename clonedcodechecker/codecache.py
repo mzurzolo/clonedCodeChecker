@@ -38,22 +38,13 @@ class CodeCache():
     def purge(self):
         """Remove all files from the filecache."""
         for fname in os.listdir(self.filecache):
-            os.remove(self.filecache + fname)
+            os.remove(os.path.join(self.filecache, fname))
         self.cachedfiles = set(os.listdir(self.filecache))
 
-    def thread_add(self):
-        """Add files to the CodeCache (threaded)."""
+    def process_files(self):
+        """Process files and save to filecache."""
         while self.search_set:
-            self.files.appendleft(self.add_file(self.search_set.pop()))
-            continue
-
-    def thread_save(self):
-        """Save files to the filecache (threaded)."""
-        while any([self.files, self.search_set]):
-            while self.files:
-                self.save_file(self.files.pop())
-            continue
-        self.output()
+            self.save_file(self.add_file(self.search_set.pop()))
 
     def add_file(self, filename):
         """Add a new file to the CodeCache for analysis."""
@@ -73,8 +64,8 @@ class CodeCache():
                 self.sync_cachedfiles()
         new_file = CppFile(filename=filename)
         new_file.load_from_source()
-        print("loaded: --------------------", filename)
         self.matcher.match_lines(new_file)
+        print("loaded: --------------------", filename)
         return new_file
 
     def save_file(self, file):
@@ -115,7 +106,6 @@ class CppFile:
     lineset: an unordered collection of unique lines in the file
     all_lines: all lines in the file
     blocks: collections of lines into logical pieces/blocks of code
-    linestring: the whole file, in one big string. useful for the tokenizer
     t_modified: the last time the file was modified (epoch timestamp)
     as reported by the filesystem.
     """
@@ -129,35 +119,31 @@ class CppFile:
         self.tokenlist = None
         self.all_lines = None
         self.blocks = None
-        self.linestring = None
         self.t_modified = os.stat(filename).st_mtime
 
     def keys(self):
         """Duck typing for dictionary."""
         return ['filename', 'cachedfile', 'lineset', 'tokenlist', 'all_lines',
-                'blocks', 'linestring', 't_modified']
+                'blocks', 't_modified']
 
     def __getitem__(self, key):
         """Duck typing for dictionary."""
         return dict(zip(
                         ('filename', 'cachedfile', 'lineset', 'tokenlist',
-                         'all_lines', 'blocks', 'linestring', 't_modified'),
+                         'all_lines', 'blocks', 't_modified'),
                         (self.filename, self.cachedfile, self.lineset,
                          self.tokenlist, self.all_lines, self.blocks,
-                         self.linestring, self.t_modified)))[key]
+                         self.t_modified)))[key]
 
     def load_from_source(self):
         """Load the file from the absolute path."""
-        with open(self.filename, 'r') as file:
-            lines = file.readlines()
 
         with open(self.filename, 'r') as file:
             lineread = file.read()
 
-        self.all_lines = lines
-        # every line as one long string. we may want this for processing
-        # large code blocks
-        self.linestring = lineread
+        self.all_lines = [splt_line.strip()
+                          for splt_line in lineread.split('\n')]
+
         # keeps only unique lines
         self.lineset = set(self.all_lines)
 

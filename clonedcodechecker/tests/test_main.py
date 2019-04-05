@@ -1,5 +1,9 @@
 import unittest
-import clonedcodechecker.clonedcodechecker as CCC
+import clonedcodechecker as CCC
+print(dir())
+print(dir(CCC))
+print(dir(CCC.clonedcodechecker))
+print(dir(CCC.clonedcodechecker.ClonedCodeChecker()))
 
 
 class MainUnitTest(unittest.TestCase):

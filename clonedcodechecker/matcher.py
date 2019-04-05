@@ -4,9 +4,25 @@ This is where the tokenizer lives, and where matches across files are stored.
 """
 
 import re
-from collections import namedtuple
+from collections import namedtuple, ChainMap, deque
+from _collections_abc import Mapping
 
 Token = namedtuple("Token", ['token', 'value', 'span'])
+
+
+class MergeUpdater(ChainMap):
+    """Subclassed ChainMap with an altered update function."""
+
+    def update(self, other):
+        """Update appends instead of replacing."""
+        if isinstance(other, Mapping):
+            for key in other:
+                try:
+                    self[key].append(other[key])
+                except KeyError:
+                    self[key] = deque()
+                    self[key].append(other[key])
+
 
 class Matcher:
     """
@@ -19,12 +35,13 @@ class Matcher:
     total_lineset: the set of all lines that have been seen by the matcher.
     """
 
-    __slots__ = ["line_matches", "tok_regex", "total_lineset"]
+    __slots__ = ["line_matches", "tok_regex", "total_lineset", "mergeupdater"]
 
     def __init__(self):
         """Build regular expression (tokenizer) object."""
         self.line_matches = {}
         self.total_lineset = set()
+        self.mergeupdater = MergeUpdater()
 
         # Comments
         double_slash_comment = r'//.*?\n'      # comment up to newline
@@ -151,18 +168,24 @@ class Matcher:
         Take a set of lines from a file and the file's name,
         add the lines to line_matches.
         """
-        for line in file.lineset.difference(self.total_lineset):
-            self.line_matches[line] = [file.filename]
-        for line in file.lineset.intersection(self.total_lineset):
-            self.line_matches[line].append(file.filename)
-        self.total_lineset = self.total_lineset.union(file.lineset)
+        new_dict = dict(zip(file.lineset, [file.filename] * len(file.lineset)))
+
+        for ignore in ['', '/*', '*/', '{', '}']:
+            try:
+                new_dict.pop(ignore)
+            except KeyError:
+                pass
+
+        self.mergeupdater.update(new_dict)
 
     def print_output(self, outfile):
         """Print the line_matches dictionary to outfile."""
         print(outfile)
         with open(outfile, "w") as file:
-            for k in self.line_matches:
-                if len(self.line_matches[k]) > 1:
-                    print(k, file=file)
-                    print(self.line_matches[k], file=file)
-                    # input(self.line_matches[k])
+            for key in self.mergeupdater.keys():
+                if len(self.mergeupdater[key]) > 1:
+                    print('line:         ', key, file=file)
+                    print("was found in: ", file=file)
+                    for val in self.mergeupdater[key]:
+                        print('\t', '\t', '\t', val, file=file)
+                    print('', file=file)
