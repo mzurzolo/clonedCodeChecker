@@ -7,7 +7,7 @@ import re
 from collections import namedtuple, ChainMap, deque
 from _collections_abc import Mapping
 
-Token = namedtuple("Token", ['token', 'value', 'span'])
+Token = namedtuple("Token", ['token', 'value', 'span', 'line'])
 
 
 class MergeUpdater(ChainMap):
@@ -143,17 +143,54 @@ class Matcher:
             ('ARITHMETIC_OP', arithmetic_op),
             ('MISMATCH', mismatch)                          # Trash
             ]
+        #t_string = '|'.join(('(?P<{}>{})'.format(pair[0], pair[1])
+        #                     for pair in token_specification))
+        #self.tok_regex = re.compile(t_string, re.S | re.A)
+        double_slash_comment = r'//.*?\n'      # comment up to newline
+        slash_star_comment = r'/\*.*?\*/'       # comment open to close
+        # Containers (more)
+        brace_c = r'\{.*?\}'
+        bracket_c = r'\[.*?\]'
+        paren_c = r'\(.*?\)'
+        newline = r'\n'
+        other = r'.*?\n'
+        token_specification2 = [
+            ('DOUBLE_SLASH_COMMENT', double_slash_comment),  # Comments
+            ('SLASH_STAR_COMMENT', slash_star_comment),
+            ('BRACE_C', brace_c),
+            ('BRACKET_C', bracket_c),
+            ('PAREN_C', paren_c),
+            ('NEWLINE', newline),
+            ('OTHER', other)
+        ]
         t_string = '|'.join(('(?P<{}>{})'.format(pair[0], pair[1])
-                             for pair in token_specification))
+                             for pair in token_specification2))
         self.tok_regex = re.compile(t_string, re.S | re.A)
 
     def tokenize(self, text):
-        """Yield 3-tuples for every found match."""
+        """Yield 4-tuples for every found match."""
+        linecount = 0
         for token in self.tok_regex.finditer(text):
-            yield Token(token.lastgroup, token.group(), token.span())
+            if token.lastgroup == 'NEWLINE':
+                linecount += 1
+            elif token.lastgroup == 'OTHER':
+                linecount += 1
+            else:
+                pass
+            if token.lastgroup == 'SLASH_STAR_COMMENT':
+                #input(linecount)
+                #input(token.group())
+                linecount += len(token.group().split("\n"))
+                #input(linecount)
+            if all([token.lastgroup != 'DOUBLE_SLASH_COMMENT',
+                    token.lastgroup != 'SLASH_STAR_COMMENT',
+                    token.lastgroup != 'NEWLINE']):
+                        yield Token(token.lastgroup, token.group(), token.span(), linecount)
+
 
     def get_tokens(self, text):
         """Return a list of all tokens in the text."""
+        #print(text)
         return [token for token in self.tokenize(text)]
 
     def print_matches(self, code):

@@ -1,16 +1,19 @@
 import unittest
-import clonedcodechecker as CCC
-print(dir())
-print(dir(CCC))
-print(dir(CCC.clonedcodechecker))
-print(dir(CCC.clonedcodechecker.ClonedCodeChecker()))
+import pytest
+import os
+from clonedcodechecker import clonedcodechecker as CCC
 
+ccc = CCC.ClonedCodeChecker()
+ccc_codecache = CCC.CodeCache()
 
-class MainUnitTest(unittest.TestCase):
-    ccc = CCC.ClonedCodeChecker()
+def test_imports():
+    assert all([isinstance(ccc, CCC.ClonedCodeChecker),
+                isinstance(ccc_codecache, CCC.CodeCache)])
 
-    def setUp(self):
-        pass
-
-    def test_launch(self):
-        assert self.ccc.main()
+def test_paths():
+    assert all([ccc.output_location == os.path.join(
+        os.getcwd(),
+        "report.txt"),
+                ccc.filecache_location == os.path.join(
+                    os.path.expanduser("~"),
+                    ".filecache")])
