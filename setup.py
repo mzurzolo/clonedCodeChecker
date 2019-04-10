@@ -19,7 +19,7 @@ setup(name='clonedcodechecker',
       install_requires=['ruamel.yaml'],
       entry_points={
           'console_scripts': [
-              'ccc = clonedcodechecker.clonedcodechecker:__main__'
+              'ccc = clonedcodechecker.codechecker:main'
           ]
       },
       include_package_data=True)
