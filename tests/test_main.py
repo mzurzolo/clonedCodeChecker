@@ -6,11 +6,11 @@ import clonedcodechecker as CCC
 print(dir())
 print(dir(CCC))
 ccc = CCC.codechecker.ClonedCodeChecker()
-ccc_codecache = CCC.CodeCache()
+ccc_codecache = CCC.codecache.CodeCache()
 
 def test_imports():
-    assert all([isinstance(ccc, CCC.ClonedCodeChecker),
-                isinstance(ccc_codecache, CCC.CodeCache)])
+    assert all([isinstance(ccc, CCC.codechecker.ClonedCodeChecker),
+                isinstance(ccc_codecache, CCC.codecache.CodeCache)])
 
 def test_paths():
     assert all([ccc.output_location == os.path.join(

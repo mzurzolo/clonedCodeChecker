@@ -2,7 +2,7 @@
 
 import os
 import argparse
-import clonedcodechecker.codecache as codecache
+from clonedcodechecker.codecache import CodeCache
 
 
 class ClonedCodeChecker():
@@ -10,7 +10,7 @@ class ClonedCodeChecker():
 
     def __init__(self):
         """Get new ClonedCodeChecker object."""
-        self.code_cache = codecache.CodeCache()
+        self.code_cache = CodeCache()
 
         self.output_location = os.path.join(
             os.getcwd(),
@@ -35,27 +35,18 @@ class ClonedCodeChecker():
             if file.is_file()
             and not file.name.startswith(".")]
 
-        source_h_files = [
-            file for file
-            in absolute_files
-            if any([file.endswith(".hpp"),
-                    file.endswith(".h")])]
-
         source_c_files = [
             file for file
             in absolute_files
             if any([file.endswith(".cpp"),
                     file.endswith(".c")])]
 
-        self.code_cache.search_set.extend(source_h_files)
-        self.code_cache.process_files()
         self.code_cache.search_set.extend(source_c_files)
         self.code_cache.process_files()
         self.code_cache.output()
 
     def recursive_walk(self, directory="."):
         """Recursive directory walk."""
-        hfiles = set()
         cfiles = set()
         for current, _folders, files in os.walk(directory):
             absolute_files = [
@@ -64,23 +55,14 @@ class ClonedCodeChecker():
                 in files
                 if not file.startswith(".")]
 
-            source_h_files = [
-                file for file
-                in absolute_files
-                if any([file.endswith(".hpp"),
-                        file.endswith(".h")])]
-
             source_c_files = [
                 file for file
                 in absolute_files
                 if any([file.endswith(".cpp"),
                         file.endswith(".c")])]
 
-            hfiles.update(source_h_files)
             cfiles.update(source_c_files)
 
-        self.code_cache.search_set.extend(hfiles)
-        self.code_cache.process_files()
         self.code_cache.search_set.extend(cfiles)
         self.code_cache.process_files()
         self.code_cache.output()
