@@ -1,9 +1,11 @@
 import unittest
 import pytest
 import os
-from clonedcodechecker import clonedcodechecker as CCC
+import clonedcodechecker as CCC
 
-ccc = CCC.ClonedCodeChecker()
+print(dir())
+print(dir(CCC))
+ccc = CCC.codechecker.ClonedCodeChecker()
 ccc_codecache = CCC.CodeCache()
 
 def test_imports():
