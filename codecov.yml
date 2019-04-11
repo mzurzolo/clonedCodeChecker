@@ -1,0 +1,9 @@
+codecov:
+  branch: master
+
+coverage:
+  precision: 2
+
+status:
+  project: yes
+  patch: yes
