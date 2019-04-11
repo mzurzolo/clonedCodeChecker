@@ -4,11 +4,10 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install tox-travis coveralls codecov
+  - pip install tox-travis codecov
 # command to run tests
 script:
   - tox
 
 after_success:
-  - coveralls
-  - codecov
+  - bash < (curl -s https://codecov.io/bash)
