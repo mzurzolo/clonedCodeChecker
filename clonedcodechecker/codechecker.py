@@ -130,4 +130,4 @@ def main(argS=sys.argv[1:]):
 if __name__ == "__main__":
     # code_cache is the 'container' object. It holds cppFile objects
     # I create it here so every function above has access to it.
-    sys.exit(main(argS=sys.argv[1:]))
+    main(argS=sys.argv[1:])
