@@ -58,16 +58,20 @@ class CodeCache():
         fname = cache_filename(filename)
         # Full path for the file in the filecache
         cachedfile = os.path.join(self.filecache, fname)
+        # Last time the file was modefied
+        t_modified = os.stat(filename).st_mtime
 
-        if fname in self.cachedfiles:
-            try:
-                new_file = CppFile(filename=filename, cachedfile=cachedfile)
-                return new_file
-            except Exception as e:
-                print(e)
+        try:
+            with open(cachedfile, 'r') as file:
+                new_file = YA_ML.load(file)
+            if new_file.t_modified != t_modified:
                 os.remove(cachedfile)
-                self.sync_cachedfiles()
-        new_file = CppFile(filename=filename)
+                raise OSError
+        except OSError:
+            new_file = CppFile(filename=filename,
+                               cachedfile=cachedfile,
+                               t_modified=t_modified)
+
         self.matcher.match_lines(new_file)
         print("loaded: --------------------", filename)
         return new_file
@@ -114,22 +118,15 @@ class CppFile(UserDict):
     as reported by the filesystem.
     """
 
-    def __init__(self, filename=None, cachedfile=None):
+    def __init__(self, filename=None, cachedfile=None, t_modified=None):
         """Create new CppFile object."""
         self.filename = filename
         self.cachedfile = cachedfile
-        self.t_modified = os.stat(filename).st_mtime
+        self.t_modified = t_modified
         self.__loadall__()
 
     def __loadall__(self):
         """Load the file from the filecache or from the absolute path."""
-        if self.cachedfile:
-            with open(self.cachedfile, 'r') as file:
-                tmp = YA_ML.load(file)
-                if tmp.t_modified == self.t_modified:
-                    self = tmp
-                    return
-
         with open(self.filename, 'r') as file:
             self.linestring = file.read()
 

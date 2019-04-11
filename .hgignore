@@ -6,7 +6,7 @@ py37/*
 report.txt
 pylint.cfg
 pylint.log
-.*
+.rope*
 build
 dist
 clonedcodechecker.egg*
