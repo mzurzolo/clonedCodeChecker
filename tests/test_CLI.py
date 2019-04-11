@@ -8,10 +8,6 @@ def test_purge():
 def test_recursive():
     CCC.codechecker.main(['-r'])
 
-def test_d_flag():
-    CCC.codechecker.main(['-d ../'])
-
-
 def test_help():
     CCC.codechecker.main(['-h'])
 
