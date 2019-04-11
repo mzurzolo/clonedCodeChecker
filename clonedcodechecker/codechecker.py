@@ -9,7 +9,7 @@ from clonedcodechecker.codecache import CodeCache
 class ClonedCodeChecker():
     """The ClonedCodeChecker collects files for its CodeCache."""
 
-    def __init__(self, output_location=None, filecache_location=None):
+    def __init__(self, output_location='.', filecache_location='.'):
         """Get new ClonedCodeChecker object."""
         self.code_cache = CodeCache()
         self.output_location = output_location
