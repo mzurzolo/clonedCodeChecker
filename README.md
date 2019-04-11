@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/mzurzolo/clonedCodeChecker.svg?branch=master)](https://travis-ci.org/mzurzolo/clonedCodeChecker)
-
+[![Coverage Status](https://coveralls.io/repos/github/mzurzolo/clonedCodeChecker/badge.svg?branch=master)](https://coveralls.io/github/mzurzolo/clonedCodeChecker?branch=master)
 
 To install:
   If you haven't already navigated to the extracted directory:
