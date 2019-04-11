@@ -2,10 +2,7 @@
 [![codecov](https://codecov.io/gh/mzurzolo/clonedCodeChecker/branch/master/graph/badge.svg)](https://codecov.io/gh/mzurzolo/clonedCodeChecker)
 
 To install:
-  If you haven't already navigated to the extracted directory:
-
-      cd clonedcodechecker-sprint2
-
-  Then run the following command:
+  Zipped Distributions (for offline install) can be found under RELEASES.
+  Unzip, cd to the extracted folder, and run the following command:
 
 python3 -m pip install --user --no-index --find-links=./ clonedcodechecker
