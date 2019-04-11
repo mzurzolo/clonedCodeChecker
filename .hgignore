@@ -10,3 +10,7 @@ pylint.log
 build
 dist
 clonedcodechecker.egg*
+htmlcov
+.eggs
+.pytest*
+.coverage

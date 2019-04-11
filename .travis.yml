@@ -4,7 +4,10 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install tox
+  - pip install tox-travis coveralls
 # command to run tests
 script:
   - tox
+
+after_success:
+  - coveralls
