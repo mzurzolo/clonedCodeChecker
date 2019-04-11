@@ -1,6 +1,7 @@
 """cloned_code_checker is a static analysis tool for C/C++ Source Code."""
 
 import os
+import sys
 import argparse
 from clonedcodechecker.codecache import CodeCache
 
@@ -8,17 +9,11 @@ from clonedcodechecker.codecache import CodeCache
 class ClonedCodeChecker():
     """The ClonedCodeChecker collects files for its CodeCache."""
 
-    def __init__(self):
+    def __init__(self, output_location=None, filecache_location=None):
         """Get new ClonedCodeChecker object."""
         self.code_cache = CodeCache()
-
-        self.output_location = os.path.join(
-            os.getcwd(),
-            "report.txt")
-
-        self.filecache_location = os.path.join(
-            os.path.expanduser("~"),
-            ".filecache")
+        self.output_location = output_location
+        self.filecache_location = filecache_location
         try:
             os.mkdir(self.filecache_location)
         except FileExistsError:
@@ -68,14 +63,8 @@ class ClonedCodeChecker():
         self.code_cache.output()
 
 
-def main():
+def main(argS=sys.argv[1:]):
     """Parse arguments, drive program."""
-    output_location = os.path.join(os.getcwd(), "report.txt")
-    filecache_location = os.path.join(os.path.expanduser("~"), ".filecache")
-    try:
-        os.mkdir(filecache_location)
-    except FileExistsError:
-        pass
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
     # defaults can be specified. action="store_true" means that the option
@@ -96,10 +85,31 @@ def main():
                         help="{}{}".format(
                             "Search for duplicate code in given ",
                             "directory (but not sub-directories)"))
+    parser.add_argument('-t',
+                        action="store_true",
+                        help=argparse.SUPPRESS)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argS)
 
-    ccc = ClonedCodeChecker()
+    output_location = os.path.join(
+        os.getcwd(),
+        "report.txt")
+
+    filecache_location = os.path.join(
+        os.path.expanduser("~"),
+        ".filecache")
+
+    if args.t:
+        output_location = "report.txt"
+        filecache_location = ".filecache"
+
+    try:
+        os.mkdir(filecache_location)
+    except FileExistsError:
+        pass
+
+    ccc = ClonedCodeChecker(output_location=output_location,
+                            filecache_location=filecache_location)
     #########################################################################
     ccc.code_cache.filecache = filecache_location
     ccc.code_cache.output_dir = output_location
@@ -120,4 +130,4 @@ def main():
 if __name__ == "__main__":
     # code_cache is the 'container' object. It holds cppFile objects
     # I create it here so every function above has access to it.
-    main()
+    sys.exit(main(argS=sys.argv[1:]))

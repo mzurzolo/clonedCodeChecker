@@ -2,14 +2,14 @@
 branch = True
 parallel = True
 source =
-    clonedcodechecker
-    tests
+    clonedcodechecker/
+    tests/
 
 [paths]
 source =
-    clonedcodechecker
-    tests
+    clonedcodechecker/
+    tests/
 
 [report]
 show_missing = True
-precision = True
+precision = 2

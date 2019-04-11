@@ -2,6 +2,7 @@
 
 from setuptools import setup,find_packages
 from setuptools import wheel
+import sys
 
 setup(name='clonedcodechecker',
       version='0.0.1',
