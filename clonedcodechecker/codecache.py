@@ -46,10 +46,7 @@ class CodeCache():
         """Process files and save to filecache."""
         while self.search_set:
             current_file = self.add_file(self.search_set.pop())
-            self.matcher.match_lines(current_file)
-            all_tokens = self.matcher.get_tokens(current_file.linestring)
-            #for t in all_tokens:
-            #    input(t)
+            self.matcher.match_tokens(current_file)
             self.save_file(current_file)
 
     def add_file(self, filename):
@@ -72,7 +69,6 @@ class CodeCache():
                                cachedfile=cachedfile,
                                t_modified=t_modified)
 
-        self.matcher.match_lines(new_file)
         print("loaded: --------------------", filename)
         return new_file
 

@@ -47,16 +47,16 @@ class Matcher:
         slash_star_comment = r'/\*.*?\*/'       # comment open to close
         # Containers (more)
         brace_c = r'\{.*?\}'
-        bracket_c = r'\[.*?\]'
-        paren_c = r'\(.*?\)'
+        #bracket_c = r'\[.*?\]'
+        #paren_c = r'\(.*?\)'
         newline = r'\n'
         other = r'.*?\n'
         token_specification = [
             ('DOUBLE_SLASH_COMMENT', double_slash_comment),  # Comments
             ('SLASH_STAR_COMMENT', slash_star_comment),
             ('BRACE_C', brace_c),
-            ('BRACKET_C', bracket_c),
-            ('PAREN_C', paren_c),
+            #('BRACKET_C', bracket_c),
+            #('PAREN_C', paren_c),
             ('NEWLINE', newline),
             ('OTHER', other)
         ]
@@ -80,7 +80,8 @@ class Matcher:
                     [
                         token.lastgroup != 'DOUBLE_SLASH_COMMENT',
                         token.lastgroup != 'SLASH_STAR_COMMENT',
-                        token.lastgroup != 'NEWLINE'
+                        token.lastgroup != 'NEWLINE',
+                        token.lastgroup == 'BRACE_C'
                     ]):
                 yield Token(
                     token.lastgroup,
@@ -92,28 +93,14 @@ class Matcher:
         """Return a list of all tokens in the text."""
         return [token for token in self.tokenize(text)]
 
-    def print_matches(self, code):
-        """Test the tokenizer."""
-        for token in self.tok_regex.finditer(code):
-            print(token.lastgroup, end=' ')
-            input(token.group())
-
-    def match_lines(self, file):
-        """Tracks what files have what lines.
-
-        Take a set of lines from a file and the file's name,
-        add the lines to line_matches.
-        """
+    def match_tokens(self, file):
+        """Test the token matcher."""
+        all_tokens = [tok.value for tok
+                      in self.get_tokens(file.linestring)]
         new_dict = dict(
-            zip(set(file.all_lines),
+            zip(set(all_tokens),
                 [file.filename] * len(set(file.all_lines)))
         )
-
-        for ignore in ['', '/*', '*/', '{', '}']:
-            try:
-                new_dict.pop(ignore)
-            except KeyError:
-                pass
 
         self.mergeupdater.update(new_dict)
 
