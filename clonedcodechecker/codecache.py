@@ -67,7 +67,7 @@ class CodeCache():
             if new_file.t_modified != t_modified:
                 os.remove(cachedfile)
                 raise OSError
-        except (OSError, FileNotFoundError):
+        except (OSError, FileNotFoundError) as e:
             new_file = CppFile(filename=filename,
                                cachedfile=cachedfile,
                                t_modified=t_modified)
@@ -84,17 +84,13 @@ class CodeCache():
         # match individual lines (for now)
         # if the file is already in the filecache, skip the rest of this
         # loop and go back up to the while statement.
-        if fname in self.cachedfiles:
-            print("returned")
-            return
-
-        with open(filepath, "w") as outfile:
-            YA_ML.dump(file, outfile)
+        try:
+            with open(filepath, "x") as outfile:
+                YA_ML.dump(file, outfile)
+        except FileExistsError:
+            pass
 
         print("saved : ", fname)
-        # keep track of what gets added to the filecache directory so we
-        # don't have to re-query the filesystem with os.listdir() as much
-        self.cachedfiles.add(fname)
 
     def testmatch(self):
         """Tell matcher to test the tokenizer."""
