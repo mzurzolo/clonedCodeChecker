@@ -10,3 +10,6 @@ def test_recursive():
 
 def test_t_flag():
     CCC.codechecker.main(['-t'])
+
+def test_dr_flags():
+    CCC.codechecker.main(['-r', '-d', '/home'])
