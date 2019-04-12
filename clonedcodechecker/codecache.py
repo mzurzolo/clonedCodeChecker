@@ -67,7 +67,7 @@ class CodeCache():
             if new_file.t_modified != t_modified:
                 os.remove(cachedfile)
                 raise OSError
-        except OSError:
+        except (OSError, FileNotFoundError):
             new_file = CppFile(filename=filename,
                                cachedfile=cachedfile,
                                t_modified=t_modified)
