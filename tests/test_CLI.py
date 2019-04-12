@@ -7,7 +7,7 @@ def test_t_flag():
 
 def test_dr_flags():
     CCC.codechecker.main(['-d', '/home/travis/virtualenv'])
-    CCC.codechecker.main(['-r', '/home/travis/virtualenv'])
+    CCC.codechecker.main(['-r', '-d', '/home/travis/virtualenv'])
     CCC.codechecker.main(['-r', '-d', '/home/travis/virtualenv'])
 
 def test_purge():
