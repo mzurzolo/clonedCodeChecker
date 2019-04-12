@@ -2,9 +2,6 @@ import unittest
 import pytest
 import clonedcodechecker as CCC
 
-def test_purge():
-    CCC.codechecker.main(['-p'])
-
 def test_recursive():
     CCC.codechecker.main(['-r'])
 
@@ -13,3 +10,6 @@ def test_t_flag():
 
 def test_dr_flags():
     CCC.codechecker.main(['-r', '-d', '/home/travis/virtualenv'])
+
+def test_purge():
+    CCC.codechecker.main(['-p'])
