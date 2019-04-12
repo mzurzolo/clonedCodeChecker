@@ -122,11 +122,5 @@ class CppFile(UserDict):
         with open(self.filename, 'r') as file:
             self.linestring = file.read()
 
-        self.all_lines = [splt_line.strip()
-                          for splt_line in self.linestring.split('\n')]
-
-        # keeps only unique lines
-        self.lineset = set(self.all_lines)
-
 
 YA_ML.register_class(CppFile)

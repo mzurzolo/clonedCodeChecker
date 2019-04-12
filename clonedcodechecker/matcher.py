@@ -46,23 +46,20 @@ class Matcher:
         double_slash_comment = r'//.*?\n'      # comment up to newline
         slash_star_comment = r'/\*.*?\*/'       # comment open to close
         # Containers (more)
-        brace_c = r'\n.*?\{.*?\}'
-        #bracket_c = r'\[.*?\]'
-        #paren_c = r'\(.*?\)'
+        brace_c = r'.*?\{.*?\}'
         newline = r'\n'
-        other = r'.*?\n'
+        other = r'.'
         token_specification = [
             ('DOUBLE_SLASH_COMMENT', double_slash_comment),  # Comments
             ('SLASH_STAR_COMMENT', slash_star_comment),
-            ('BRACE_C', brace_c),
-            #('BRACKET_C', bracket_c),
-            #('PAREN_C', paren_c),
             ('NEWLINE', newline),
+            ('BRACE_C', brace_c),
             ('OTHER', other)
         ]
-        t_string = '|'.join(('(?P<{}>{})'.format(pair[0], pair[1])
+        t_string = '|'.join(('(?P<{}>{})'.format(pair[0],
+                                                 pair[1])
                              for pair in token_specification))
-        self.tok_regex = re.compile(t_string, re.S | re.A)
+        self.tok_regex = re.compile(t_string, re.S)
 
     def tokenize(self, text):
         """Yield 4-tuples for every found match."""
@@ -70,19 +67,14 @@ class Matcher:
         for token in self.tok_regex.finditer(text):
             if token.lastgroup == 'NEWLINE':
                 linecount += 1
-            elif token.lastgroup == 'OTHER':
-                linecount += 1
-            else:
-                pass
+                continue
+            if token.lastgroup == 'DOUBLE_SLASH_COMMENT':
+                linecount += len(token.group().split("\n"))
+                continue
             if token.lastgroup == 'SLASH_STAR_COMMENT':
                 linecount += len(token.group().split("\n"))
-            if all(
-                    [
-                        token.lastgroup != 'DOUBLE_SLASH_COMMENT',
-                        token.lastgroup != 'SLASH_STAR_COMMENT',
-                        token.lastgroup != 'NEWLINE',
-                        token.lastgroup == 'BRACE_C'
-                    ]):
+                continue
+            if token.lastgroup == 'BRACE_C':
                 yield Token(
                     token.lastgroup,
                     token.group(),
@@ -95,11 +87,11 @@ class Matcher:
 
     def match_tokens(self, file):
         """Test the token matcher."""
-        all_tokens = [tok.value for tok
+        all_tokens = [token.value for token
                       in self.get_tokens(file.linestring)]
         new_dict = dict(
             zip(set(all_tokens),
-                [file.filename] * len(set(file.all_lines)))
+                [file.filename] * len(set(all_tokens)))
         )
 
         self.mergeupdater.update(new_dict)
