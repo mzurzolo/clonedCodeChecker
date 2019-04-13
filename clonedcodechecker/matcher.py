@@ -46,7 +46,7 @@ class Matcher:
         double_slash_comment = r'//.*?\n'      # comment up to newline
         slash_star_comment = r'/\*.*?\*/'       # comment open to close
         # Containers (more)
-        brace_c = r'.*?\{.*?\}'
+        brace_c = r'[ \t]*?[A-Za-z]+[ \t]+[A-Za-z]+[ \t]*?\(.*?\)[ \t]*?\{.*?\}'
         newline = r'\n'
         other = r'.'
         token_specification = [
