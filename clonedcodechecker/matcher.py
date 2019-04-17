@@ -5,9 +5,8 @@ This is where the tokenizer lives, and where matches across files are stored.
 
 import re
 from collections import namedtuple, ChainMap, deque
-from _collections_abc import Mapping
 
-Token = namedtuple("Token", ['token', 'value', 'span', 'line'])
+Token = namedtuple("Token", ["token", "value", "span", "line"])
 
 
 class MergeUpdater(ChainMap):
@@ -15,13 +14,12 @@ class MergeUpdater(ChainMap):
 
     def update(self, other):
         """Update appends instead of replacing."""
-        if isinstance(other, Mapping):
-            for key in other:
-                try:
-                    self[key].append(other[key])
-                except KeyError:
-                    self[key] = deque()
-                    self[key].append(other[key])
+        for key in other:
+            try:
+                self[key].append(other[key])
+            except KeyError:
+                self[key] = deque()
+                self[key].append(other[key])
 
 
 class Matcher:
@@ -43,58 +41,102 @@ class Matcher:
         self.total_lineset = set()
         self.mergeupdater = MergeUpdater()
 
-        double_slash_comment = r'//.*?\n'      # comment up to newline
-        slash_star_comment = r'/\*.*?\*/'       # comment open to close
-        # Containers (more)
-        brace_c = r'[ \t]*?\S+[ \t]+\S+[ \t]+\S+[ \t]*?\(.*?\)\s*?\{.*?\}'
-        newline = r'\n'
-        other = r'.'
-        token_specification = [
-            ('DOUBLE_SLASH_COMMENT', double_slash_comment),  # Comments
-            ('SLASH_STAR_COMMENT', slash_star_comment),
-            ('NEWLINE', newline),
-            ('BRACE_C', brace_c),
-            ('OTHER', other)
+        token_spec = [
+            (
+                "FIRST_FILTER",
+                r"""(?P<DOUBLE_SLASH_COMMENT>//.*?\n)|
+                                 (?P<SLASH_STAR_COMMENT>/\*.*?\*/)|
+                                 (?P<WHITESPACE>\s+)|
+                                 (?P<TO_NEXT_BRACE>.*?\})|
+                                 (?P<NOTWHITESPACE>\S+\s+)
+                                 """,
+            ),
+            ("OPEN_BRACE", r"""(?P<OPEN_BRACE>\{)"""),
+            ("CLOSE_BRACE", r"""(?P<CLOSE_BRACE>\})"""),
+            ("LINE_COUNTER", r"""\n"""),
+            ("MEMBER", r"""(?P<MEMBER>(\S+\s*)+?\S+\s*\(.*?\)\s*?\{.*?\})"""),
         ]
-        t_string = '|'.join(('(?P<{}>{})'.format(pair[0],
-                                                 pair[1])
-                             for pair in token_specification))
-        self.tok_regex = re.compile(t_string, re.S)
+
+        self.tok_regex = {}
+        for pair in token_spec:
+            self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
 
     def tokenize(self, text):
-        """Yield 4-tuples for every found match."""
-        linecount = 0
-        for token in self.tok_regex.finditer(text):
-            if token.lastgroup == 'NEWLINE':
-                linecount += 1
-                continue
-            if token.lastgroup == 'DOUBLE_SLASH_COMMENT':
-                linecount += len(token.group().split("\n"))
-                continue
-            if token.lastgroup == 'SLASH_STAR_COMMENT':
-                linecount += len(token.group().split("\n"))
-                continue
-            if token.lastgroup == 'BRACE_C':
-                yield Token(
-                    token.lastgroup,
-                    token.group(),
-                    token.span(),
-                    linecount)
+        """Yield tuples of text and line position for every found match."""
+        lines = 1
+        member_accumulator = ""
+        member_list = []
+        for token in self.tok_regex["FIRST_FILTER"].finditer(text):
 
-    def get_tokens(self, text):
-        """Return a list of all tokens in the text."""
-        return [token for token in self.tokenize(text)]
+            if token.lastgroup == "DOUBLE_SLASH_COMMENT":
+                if member_accumulator == "":
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(token.group())
+                    )
+                    continue
 
-    def match_tokens(self, file):
+            if token.lastgroup == "SLASH_STAR_COMMENT":
+                if member_accumulator == "":
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(token.group())
+                    )
+                    continue
+
+            if token.lastgroup == "WHITESPACE":
+                if member_accumulator == "":
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(token.group())
+                    )
+                    continue
+
+            member_accumulator += token.group()
+            if token.lastgroup == "TO_NEXT_BRACE":
+                open_count = len(
+                    self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
+                )
+                close_count = len(
+                    self.tok_regex["CLOSE_BRACE"].findall(member_accumulator)
+                )
+                if open_count == close_count:
+                    startline = lines
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(
+                            member_accumulator
+                        )
+                    )
+                    endline = lines
+                    member_list.append((member_accumulator, startline, endline))
+                    member_accumulator = ""
+
+        if member_accumulator != "":
+            if self.tok_regex["CLOSE_BRACE"].findall(member_accumulator):
+                open_count = len(
+                    self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
+                )
+                close_count = len(
+                    self.tok_regex["CLOSE_BRACE"].findall(member_accumulator)
+                )
+                if open_count == close_count:
+                    startline = lines
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(
+                            member_accumulator
+                        )
+                    )
+                    endline = lines
+                    member_list.append((member_accumulator, startline, endline))
+                    member_accumulator = ""
+
+            lines += len(
+                self.tok_regex["LINE_COUNTER"].findall(member_accumulator)
+            )
+
+        return (member_list, lines)
+
+    def match_tokens(self, filename, member_tokens):
         """Test the token matcher."""
-        all_tokens = [token.value for token
-                      in self.get_tokens(file.linestring)]
-        new_dict = dict(
-            zip(set(all_tokens),
-                [file.filename] * len(set(all_tokens)))
-        )
-
-        self.mergeupdater.update(new_dict)
+        for token in member_tokens:
+            self.mergeupdater.update({token[0]: (filename, token[1], token[2])})
 
     def print_output(self, outfile):
         """Print the line_matches dictionary to outfile."""
@@ -102,8 +144,8 @@ class Matcher:
         with open(outfile, "w") as file:
             for key in self.mergeupdater.keys():
                 if len(self.mergeupdater[key]) > 1:
-                    print('line:         ', key, file=file)
+                    print("line:         ", key, file=file)
                     print("was found in: ", file=file)
                     for val in self.mergeupdater[key]:
-                        print('\t', '\t', '\t', val, file=file)
-                    print('', file=file)
+                        print("\t", "\t", "\t", val, file=file)
+                    print("", file=file)

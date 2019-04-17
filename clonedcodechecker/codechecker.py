@@ -6,10 +6,10 @@ import argparse
 from clonedcodechecker.codecache import CodeCache
 
 
-class ClonedCodeChecker():
+class ClonedCodeChecker:
     """The ClonedCodeChecker collects files for its CodeCache."""
 
-    def __init__(self, output_location='.', filecache_location='.'):
+    def __init__(self, output_location=".", filecache_location="."):
         """Get new ClonedCodeChecker object."""
         self.code_cache = CodeCache()
         self.output_location = output_location
@@ -25,16 +25,28 @@ class ClonedCodeChecker():
         """Iterate through the list of files in directory, load them."""
         absolute_files = [
             os.path.realpath(file.path)
-            for file
-            in os.scandir(directory)
-            if file.is_file()
-            and not file.name.startswith(".")]
+            for file in os.scandir(directory)
+            if file.is_file() and not file.name.startswith(".")
+        ]
 
         source_c_files = [
-            file for file
-            in absolute_files
-            if any([file.endswith(".cpp"),
-                    file.endswith(".c")])]
+            file
+            for file in absolute_files
+            if file.endswith(
+                (
+                    ".cpp",
+                    ".Cpp",
+                    ".cPp",
+                    ".cpP",
+                    ".CPp",
+                    ".cPP",
+                    ".CpP",
+                    ".CPP",
+                    ".C",
+                    ".c",
+                )
+            )
+        ]
 
         self.code_cache.search_set.extend(source_c_files)
         self.code_cache.process_files()
@@ -46,15 +58,28 @@ class ClonedCodeChecker():
         for current, _folders, files in os.walk(directory):
             absolute_files = [
                 os.path.join(os.path.realpath(current), file)
-                for file
-                in files
-                if not file.startswith(".")]
+                for file in files
+                if not file.startswith(".")
+            ]
 
             source_c_files = [
-                file for file
-                in absolute_files
-                if any([file.endswith(".cpp"),
-                        file.endswith(".c")])]
+                file
+                for file in absolute_files
+                if file.endswith(
+                    (
+                        ".cpp",
+                        ".Cpp",
+                        ".cPp",
+                        ".cpP",
+                        ".CPp",
+                        ".cPP",
+                        ".CpP",
+                        ".CPP",
+                        ".C",
+                        ".c",
+                    )
+                )
+            ]
 
             cfiles.update(source_c_files)
 
@@ -72,48 +97,41 @@ def main(argS=sys.argv[1:]):
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p',
-                        action="store_true",
-                        help="Purge C++ Code Cache")
-    parser.add_argument('-r',
-                        action="store_true",
-                        help="{}{}".format(
-                            "Search for duplicate code in given ",
-                            "directory and any sub-directories (recursive)"))
-    parser.add_argument('-d',
-                        default="./",
-                        help="{}{}".format(
-                            "Search for duplicate code in given ",
-                            "directory (but not sub-directories)"))
-    parser.add_argument('-t',
-                        action="store_true",
-                        help=argparse.SUPPRESS)
+    parser.add_argument("-p", action="store_true", help="Purge C++ Code Cache")
+    parser.add_argument(
+        "-r",
+        action="store_true",
+        help="{}{}".format(
+            "Search for duplicate code in given ",
+            "directory and any sub-directories (recursive)",
+        ),
+    )
+    parser.add_argument(
+        "-d",
+        default="./",
+        help="{}{}".format(
+            "Search for duplicate code in given ",
+            "directory (but not sub-directories)",
+        ),
+    )
 
     args = parser.parse_args(argS)
 
-    output_location = os.path.join(
-        os.getcwd(),
-        "report.txt")
+    output_location = os.path.join(os.getcwd(), "report.txt")
 
-    filecache_location = os.path.join(
-        os.path.expanduser("~"),
-        ".filecache")
-
-    if args.t:
-        output_location = "report.txt"
-        filecache_location = ".filecache"
+    filecache_location = os.path.join(os.path.expanduser("~"), ".filecache")
 
     try:
         os.mkdir(filecache_location)
     except FileExistsError:
         pass
 
-    ccc = ClonedCodeChecker(output_location=output_location,
-                            filecache_location=filecache_location)
+    ccc = ClonedCodeChecker(
+        output_location=output_location, filecache_location=filecache_location
+    )
     #########################################################################
     ccc.code_cache.filecache = filecache_location
     ccc.code_cache.output_dir = output_location
-    ccc.code_cache.sync_cachedfiles()
     #########################################################################
     if args.p:
         ccc.code_cache.purge()

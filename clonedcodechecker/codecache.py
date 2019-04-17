@@ -1,11 +1,11 @@
 """code_cache holds the CodeCache and CppFile classes, and the YAML object."""
 
 import os
-from collections import deque, UserDict
+from collections import deque, defaultdict
 from ruamel.yaml import YAML
 from clonedcodechecker.matcher import Matcher
 
-YA_ML = YAML(typ='safe')
+YA_ML = YAML(typ="safe")
 YA_ML.default_style = False
 
 
@@ -14,39 +14,41 @@ def cache_filename(path):
     return path.replace("/", ".")[1:] + ".yaml"
 
 
-class CodeCache():
+class CodeCache:
     """The CodeCache holds CppFiles, the Matcher, and controls filecache."""
 
-    __slots__ = ["files", "search_set", "filecache",
-                 "cachedfiles", "filelist", "matcher", "output_dir"]
+    __slots__ = [
+        "files",
+        "search_set",
+        "filecache",
+        "filelist",
+        "matcher",
+        "output_dir",
+    ]
 
-    def __init__(self, filecache="./.filecache/", cachedfiles=None):
+    def __init__(self, filecache="./.filecache/"):
         """Get new CodeCache object."""
         self.files = deque()
         self.search_set = deque()
         # the directory of processed files
         self.filecache = filecache
-        self.cachedfiles = cachedfiles
         self.matcher = Matcher()
         self.output_dir = None
-
-    # must be set after filecache is changed to the proper directory
-    # in clonedCodeChecker.py
-    def sync_cachedfiles(self):
-        """Check what files are in the filecache."""
-        self.cachedfiles = set(os.listdir(self.filecache))
 
     def purge(self):
         """Remove all files from the filecache."""
         for fname in os.listdir(self.filecache):
             os.remove(os.path.join(self.filecache, fname))
-        self.cachedfiles = set(os.listdir(self.filecache))
 
     def process_files(self):
         """Process files and save to filecache."""
         while self.search_set:
             current_file = self.add_file(self.search_set.pop())
-            self.matcher.match_tokens(current_file)
+            member_tokens, linesize = self.matcher.tokenize(
+                current_file.linestring
+            )
+            current_file.linesize = linesize
+            self.matcher.match_tokens(current_file.filename, member_tokens)
             self.save_file(current_file)
 
     def add_file(self, filename):
@@ -59,15 +61,15 @@ class CodeCache():
         t_modified = os.stat(filename).st_mtime
 
         try:
-            with open(cachedfile, 'r') as file:
+            with open(cachedfile, "r") as file:
                 new_file = YA_ML.load(file)
             if new_file.t_modified != t_modified:
                 os.remove(cachedfile)
                 raise OSError
-        except (OSError, FileNotFoundError) as e:
-            new_file = CppFile(filename=filename,
-                               cachedfile=cachedfile,
-                               t_modified=t_modified)
+        except (OSError, FileNotFoundError):
+            new_file = CppFile(
+                filename=filename, cachedfile=cachedfile, t_modified=t_modified
+            )
 
         print("loaded: --------------------", filename)
         return new_file
@@ -88,17 +90,12 @@ class CodeCache():
 
         print("saved : ", fname)
 
-    def testmatch(self):
-        """Tell matcher to test the tokenizer."""
-        for file in self.files:
-            self.matcher.print_matches(file.linestring)
-
     def output(self):
         """Tell matcher to print the report."""
         self.matcher.print_output(self.output_dir)
 
 
-class CppFile(UserDict):
+class CppFile(defaultdict):
     """CppFile represents a single loaded source file in the code_cache.
 
     filename: absolute path of source file
@@ -119,7 +116,7 @@ class CppFile(UserDict):
 
     def __loadall__(self):
         """Load the file from the filecache or from the absolute path."""
-        with open(self.filename, 'r') as file:
+        with open(self.filename, "r") as file:
             self.linestring = file.read()
 
 
