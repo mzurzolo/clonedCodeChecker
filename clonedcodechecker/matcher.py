@@ -48,7 +48,7 @@ class Matcher:
                                  (?P<SLASH_STAR_COMMENT>/\*.*?\*/)|
                                  (?P<PREPROCESSOR>\#.*?\n)|
                                  (?P<WHITESPACE>\s+)|
-                                 (?P<SEMICOLONWS>\;\s*)|
+                                 (?P<SEMICOLONWS>;\s*)|
                                  (?P<TO_NEXT_BRACE>.*?\})|
                                  (?P<NOTWHITESPACE>\S+\s+)
                                  """,
@@ -100,6 +100,7 @@ class Matcher:
                     continue
 
             if token.lastgroup == "SEMICOLONWS":
+                #input(token.group())
                 if member_accumulator == "":
                     lines += len(
                         self.tok_regex["LINE_COUNTER"].findall(token.group())
@@ -142,7 +143,7 @@ class Matcher:
                                 member_accumulator
                             )
                         )
-                        endline = lines
+                        endline = lines + 1
                         member_list.append((member_accumulator, startline, endline))
                         member_accumulator = ""
 
@@ -163,8 +164,8 @@ class Matcher:
         with open(outfile, "w") as file:
             for key in self.mergeupdater.keys():
                 if len(self.mergeupdater[key]) > 1:
-                    print("line:         ", key, file=file)
-                    print("was found in: ", file=file)
+                    print("Duplicate member found in: \n", file=file)
                     for val in self.mergeupdater[key]:
-                        print("\t", "\t", "\t", val, file=file)
-                    print("", file=file)
+                        print("\t", "\t", "\t", "\t", "\t", val, file=file)
+                    print("Member:         \n\n", key, file=file)
+                    print("\n\n", file=file)
