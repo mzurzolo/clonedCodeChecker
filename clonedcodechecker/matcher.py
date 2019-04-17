@@ -46,13 +46,16 @@ class Matcher:
                 "FIRST_FILTER",
                 r"""(?P<DOUBLE_SLASH_COMMENT>//.*?\n)|
                                  (?P<SLASH_STAR_COMMENT>/\*.*?\*/)|
+                                 (?P<PREPROCESSOR>\#.*?\n)|
                                  (?P<WHITESPACE>\s+)|
+                                 (?P<SEMICOLONWS>\;\s*)|
                                  (?P<TO_NEXT_BRACE>.*?\})|
                                  (?P<NOTWHITESPACE>\S+\s+)
                                  """,
             ),
             ("OPEN_BRACE", r"""(?P<OPEN_BRACE>\{)"""),
             ("CLOSE_BRACE", r"""(?P<CLOSE_BRACE>\})"""),
+            ("PAREN_PAIR", r"""(?P<PAREN_PAIR>\)\s*?\{)"""),
             ("LINE_COUNTER", r"""\n"""),
             ("MEMBER", r"""(?P<MEMBER>(\S+\s*)+?\S+\s*\(.*?\)\s*?\{.*?\})"""),
         ]
@@ -82,7 +85,21 @@ class Matcher:
                     )
                     continue
 
+            if token.lastgroup == "PREPROCESSOR":
+                if member_accumulator == "":
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(token.group())
+                    )
+                    continue
+
             if token.lastgroup == "WHITESPACE":
+                if member_accumulator == "":
+                    lines += len(
+                        self.tok_regex["LINE_COUNTER"].findall(token.group())
+                    )
+                    continue
+
+            if token.lastgroup == "SEMICOLONWS":
                 if member_accumulator == "":
                     lines += len(
                         self.tok_regex["LINE_COUNTER"].findall(token.group())
@@ -91,41 +108,43 @@ class Matcher:
 
             member_accumulator += token.group()
             if token.lastgroup == "TO_NEXT_BRACE":
-                open_count = len(
-                    self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
-                )
-                close_count = len(
-                    self.tok_regex["CLOSE_BRACE"].findall(member_accumulator)
-                )
-                if open_count == close_count:
-                    startline = lines
-                    lines += len(
-                        self.tok_regex["LINE_COUNTER"].findall(
-                            member_accumulator
-                        )
+                if self.tok_regex["PAREN_PAIR"].findall(member_accumulator):
+                    open_count = len(
+                        self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
                     )
-                    endline = lines
-                    member_list.append((member_accumulator, startline, endline))
-                    member_accumulator = ""
+                    close_count = len(
+                        self.tok_regex["CLOSE_BRACE"].findall(member_accumulator)
+                    )
+                    if open_count == close_count:
+                        startline = lines
+                        lines += len(
+                            self.tok_regex["LINE_COUNTER"].findall(
+                                member_accumulator
+                            )
+                        )
+                        endline = lines
+                        member_list.append((member_accumulator, startline, endline))
+                        member_accumulator = ""
 
         if member_accumulator != "":
             if self.tok_regex["CLOSE_BRACE"].findall(member_accumulator):
-                open_count = len(
-                    self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
-                )
-                close_count = len(
-                    self.tok_regex["CLOSE_BRACE"].findall(member_accumulator)
-                )
-                if open_count == close_count:
-                    startline = lines
-                    lines += len(
-                        self.tok_regex["LINE_COUNTER"].findall(
-                            member_accumulator
-                        )
+                if self.tok_regex["PAREN_PAIR"].findall(member_accumulator):
+                    open_count = len(
+                        self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
                     )
-                    endline = lines
-                    member_list.append((member_accumulator, startline, endline))
-                    member_accumulator = ""
+                    close_count = len(
+                        self.tok_regex["CLOSE_BRACE"].findall(member_accumulator)
+                    )
+                    if open_count == close_count:
+                        startline = lines
+                        lines += len(
+                            self.tok_regex["LINE_COUNTER"].findall(
+                                member_accumulator
+                            )
+                        )
+                        endline = lines
+                        member_list.append((member_accumulator, startline, endline))
+                        member_accumulator = ""
 
             lines += len(
                 self.tok_regex["LINE_COUNTER"].findall(member_accumulator)

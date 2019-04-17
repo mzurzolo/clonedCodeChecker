@@ -88,7 +88,7 @@ class ClonedCodeChecker:
         self.code_cache.output()
 
 
-def main(argS=sys.argv[1:]):
+def main(argS=None):
     """Parse arguments, drive program."""
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -139,8 +139,7 @@ def main(argS=sys.argv[1:]):
     if args.r:
         ccc.recursive_walk(directory=args.d)
     else:
-        if args.d:
-            ccc.load_cpp_files(args.d)
+        ccc.load_cpp_files(args.d)
 
 
 # This is the entry point.
