@@ -4,7 +4,7 @@ import os
 import clonedcodechecker as CCC
 
 def test_coverage():
-    CCC.codechecker.main(['-tpr'])
+    CCC.codechecker.main(['-pr'])
 
 def test_imports():
     ccc = CCC.codechecker.ClonedCodeChecker()
