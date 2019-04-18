@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-from setuptools import setup,find_packages
-from setuptools import wheel
-import sys
+from setuptools import setup, find_packages
 
 setup(name='clonedcodechecker',
       version='0.0.1',
