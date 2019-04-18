@@ -3,17 +3,24 @@
 import os
 import sys
 import argparse
+from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
 
 
 class ClonedCodeChecker:
     """The ClonedCodeChecker collects files for its CodeCache."""
 
-    def __init__(self, output_location=".", filecache_location="."):
+    def __init__(
+        self,
+        output_location=".",
+        filecache_location=".",
+        starttime=datetime.now(),
+    ):
         """Get new ClonedCodeChecker object."""
         self.code_cache = CodeCache()
         self.output_location = output_location
         self.filecache_location = filecache_location
+        self.starttime = starttime
         try:
             os.mkdir(self.filecache_location)
         except FileExistsError:
@@ -50,7 +57,7 @@ class ClonedCodeChecker:
 
         self.code_cache.search_set.extend(source_c_files)
         self.code_cache.process_files()
-        self.code_cache.output()
+        self.code_cache.output(self.starttime)
 
     def recursive_walk(self, directory="."):
         """Recursive directory walk."""
@@ -85,10 +92,10 @@ class ClonedCodeChecker:
 
         self.code_cache.search_set.extend(cfiles)
         self.code_cache.process_files()
-        self.code_cache.output()
+        self.code_cache.output(self.starttime)
 
 
-def main(argS=None):
+def main(arg_s=None):
     """Parse arguments, drive program."""
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -96,6 +103,7 @@ def main(argS=None):
     # defaults to false, and the argument's presence makes it true. For example
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
+    starttime = datetime.now()
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", action="store_true", help="Purge C++ Code Cache")
     parser.add_argument(
@@ -115,7 +123,7 @@ def main(argS=None):
         ),
     )
 
-    args = parser.parse_args(argS)
+    args = parser.parse_args(arg_s)
 
     output_location = os.path.join(os.getcwd(), "report.txt")
 
@@ -127,7 +135,9 @@ def main(argS=None):
         pass
 
     ccc = ClonedCodeChecker(
-        output_location=output_location, filecache_location=filecache_location
+        output_location=output_location,
+        filecache_location=filecache_location,
+        starttime=starttime,
     )
     #########################################################################
     ccc.code_cache.filecache = filecache_location

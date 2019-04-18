@@ -4,6 +4,7 @@ This is where the tokenizer lives, and where matches across files are stored.
 """
 
 import re
+from datetime import datetime
 from collections import namedtuple, ChainMap, deque
 
 Token = namedtuple("Token", ["token", "value", "span", "line"])
@@ -33,12 +34,11 @@ class Matcher:
     total_lineset: the set of all lines that have been seen by the matcher.
     """
 
-    __slots__ = ["line_matches", "tok_regex", "total_lineset", "mergeupdater"]
-
     def __init__(self):
         """Build regular expression (tokenizer) object."""
         self.line_matches = {}
         self.total_lineset = set()
+        self.total_linecount = 0
         self.mergeupdater = MergeUpdater()
 
         token_spec = [
@@ -53,6 +53,11 @@ class Matcher:
                                  (?P<NOTWHITESPACE>\S+\s+)
                                  """,
             ),
+            (
+                "COMMENT_FILTER",
+                r"""(?P<DOUBLE_SLASH_COMMENT>//.*?\n)|
+                             (?P<SLASH_STAR_COMMENT>/\*.*?\*/)""",
+            ),
             ("OPEN_BRACE", r"""(?P<OPEN_BRACE>\{)"""),
             ("CLOSE_BRACE", r"""(?P<CLOSE_BRACE>\})"""),
             ("PAREN_PAIR", r"""(?P<PAREN_PAIR>\)\s*?\{)"""),
@@ -64,9 +69,8 @@ class Matcher:
         for pair in token_spec:
             self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
 
-    def tokenize(self, text):
+    def tokenize(self, text, startline=1):
         """Yield tuples of text and line position for every found match."""
-        lines = 1
         member_accumulator = ""
         member_list = []
         for token in self.tok_regex["FIRST_FILTER"].finditer(text):
@@ -81,74 +85,81 @@ class Matcher:
                         token.lastgroup == "SEMICOLONWS",
                     ]
                 ):
-                    lines += len(
+                    startline += len(
                         self.tok_regex["LINE_COUNTER"].findall(token.group())
                     )
                     continue
 
             member_accumulator += token.group()
             if token.lastgroup == "TO_NEXT_BRACE":
-                if self.tok_regex["PAREN_PAIR"].findall(member_accumulator):
+                comment_filtered = re.sub(
+                    self.tok_regex["COMMENT_FILTER"], "", member_accumulator
+                )
+                if self.tok_regex["PAREN_PAIR"].findall(comment_filtered):
                     open_count = len(
-                        self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
+                        self.tok_regex["OPEN_BRACE"].findall(comment_filtered)
                     )
                     close_count = len(
-                        self.tok_regex["CLOSE_BRACE"].findall(
-                            member_accumulator
-                        )
+                        self.tok_regex["CLOSE_BRACE"].findall(comment_filtered)
                     )
                     if open_count == close_count:
-                        startline = lines
-                        lines += len(
+                        startline_here = startline
+                        startline += len(
                             self.tok_regex["LINE_COUNTER"].findall(
                                 member_accumulator
                             )
                         )
-                        endline = lines
+                        endline = startline
                         member_list.append(
-                            (member_accumulator, startline, endline)
+                            (comment_filtered, startline_here, endline)
                         )
                         member_accumulator = ""
 
         if member_accumulator != "":
-            if self.tok_regex["CLOSE_BRACE"].findall(member_accumulator):
-                if self.tok_regex["PAREN_PAIR"].findall(member_accumulator):
+            comment_filtered = re.sub(
+                self.tok_regex["COMMENT_FILTER"], "", member_accumulator
+            )
+            if self.tok_regex["CLOSE_BRACE"].findall(comment_filtered):
+                if self.tok_regex["PAREN_PAIR"].findall(comment_filtered):
                     open_count = len(
-                        self.tok_regex["OPEN_BRACE"].findall(member_accumulator)
+                        self.tok_regex["OPEN_BRACE"].findall(comment_filtered)
                     )
                     close_count = len(
-                        self.tok_regex["CLOSE_BRACE"].findall(
-                            member_accumulator
-                        )
+                        self.tok_regex["CLOSE_BRACE"].findall(comment_filtered)
                     )
                     if open_count == close_count:
-                        startline = lines
-                        lines += len(
+                        startline_here = startline
+                        startline += len(
                             self.tok_regex["LINE_COUNTER"].findall(
                                 member_accumulator
                             )
                         )
-                        endline = lines + 1
+                        endline = startline + 1
                         member_list.append(
-                            (member_accumulator, startline, endline)
+                            (comment_filtered, startline_here, endline)
                         )
                         member_accumulator = ""
 
-            lines += len(
+            startline += len(
                 self.tok_regex["LINE_COUNTER"].findall(member_accumulator)
             )
 
-        return (member_list, lines)
+        return (member_list, startline)
 
     def match_tokens(self, filename, member_tokens):
         """Test the token matcher."""
         for token in member_tokens:
             self.mergeupdater.update({token[0]: (filename, token[1], token[2])})
 
-    def print_output(self, outfile):
+    def print_output(self, outfile, starttime=None):
         """Print the line_matches dictionary to outfile."""
         print(outfile)
         with open(outfile, "w") as file:
+            print("ClonedCodeChecker", file=file)
+            print("Version: 0.0.1", file=file)
+            print("Start time: {}".format(starttime), file=file)
+            print("Run time: {}".format(datetime.now() - starttime), file=file)
+            print("Lines analyzed: {}".format(self.total_linecount), file=file)
             for key in self.mergeupdater.keys():
                 if len(self.mergeupdater[key]) > 1:
                     print("Duplicate member found in: \n", file=file)
@@ -156,3 +167,9 @@ class Matcher:
                         print("\t", "\t", "\t", "\t", "\t", val, file=file)
                     print("Member:         \n\n", key, file=file)
                     print("\n\n", file=file)
+
+        print("ClonedCodeChecker")
+        print("Version: 0.0.1")
+        print("Start time: {}".format(starttime))
+        print("Run time: {}".format(datetime.now() - starttime))
+        print("Lines analyzed: {}".format(self.total_linecount))

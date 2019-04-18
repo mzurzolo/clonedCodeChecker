@@ -48,6 +48,7 @@ class CodeCache:
                 current_file.linestring
             )
             current_file.linesize = linesize
+            self.matcher.total_linecount += linesize
             self.matcher.match_tokens(current_file.filename, member_tokens)
             self.save_file(current_file)
 
@@ -71,7 +72,7 @@ class CodeCache:
                 filename=filename, cachedfile=cachedfile, t_modified=t_modified
             )
 
-        print("loaded: --------------------", filename)
+        print(filename)
         return new_file
 
     def save_file(self, file):
@@ -88,11 +89,9 @@ class CodeCache:
         except FileExistsError:
             pass
 
-        print("saved : ", fname)
-
-    def output(self):
+    def output(self, starttime=None):
         """Tell matcher to print the report."""
-        self.matcher.print_output(self.output_dir)
+        self.matcher.print_output(self.output_dir, starttime=starttime)
 
 
 class CppFile(defaultdict):
