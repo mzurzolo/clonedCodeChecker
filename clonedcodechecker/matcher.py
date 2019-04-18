@@ -71,37 +71,12 @@ class Matcher:
         member_list = []
         for token in self.tok_regex["FIRST_FILTER"].finditer(text):
 
-            if token.lastgroup == "DOUBLE_SLASH_COMMENT":
-                if member_accumulator == "":
-                    lines += len(
-                        self.tok_regex["LINE_COUNTER"].findall(token.group())
-                    )
-                    continue
-
-            if token.lastgroup == "SLASH_STAR_COMMENT":
-                if member_accumulator == "":
-                    lines += len(
-                        self.tok_regex["LINE_COUNTER"].findall(token.group())
-                    )
-                    continue
-
-            if token.lastgroup == "PREPROCESSOR":
-                if member_accumulator == "":
-                    lines += len(
-                        self.tok_regex["LINE_COUNTER"].findall(token.group())
-                    )
-                    continue
-
-            if token.lastgroup == "WHITESPACE":
-                if member_accumulator == "":
-                    lines += len(
-                        self.tok_regex["LINE_COUNTER"].findall(token.group())
-                    )
-                    continue
-
-            if token.lastgroup == "SEMICOLONWS":
-                #input(token.group())
-                if member_accumulator == "":
+            if member_accumulator == "":
+                if any([token.lastgroup == "DOUBLE_SLASH_COMMENT",
+                        token.lastgroup == "SLASH_STAR_COMMENT",
+                        token.lastgroup == "PREPROCESSOR",
+                        token.lastgroup == "WHITESPACE",
+                        token.lastgroup == "SEMICOLONWS"]):
                     lines += len(
                         self.tok_regex["LINE_COUNTER"].findall(token.group())
                     )
