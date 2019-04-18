@@ -3,7 +3,6 @@ import pytest
 import clonedcodechecker as CCC
 
 def test_t_flag():
-    CCC.codechecker.main([])
 
 def test_dr_flags():
     CCC.codechecker.main(['-d', '/home/travis/virtualenv'])
