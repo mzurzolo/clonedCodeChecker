@@ -72,6 +72,7 @@ class Matcher:
     def tokenize(self, text, startline=1):
         """Yield tuples of text and line position for every found match."""
         member_accumulator = ""
+        comment_filtered = ""
         member_list = []
         for token in self.tok_regex["FIRST_FILTER"].finditer(text):
 
@@ -91,10 +92,10 @@ class Matcher:
                     continue
 
             member_accumulator += token.group()
+            comment_filtered += re.sub(
+                self.tok_regex["COMMENT_FILTER"], "", token.group()
+            )
             if token.lastgroup == "TO_NEXT_BRACE":
-                comment_filtered = re.sub(
-                    self.tok_regex["COMMENT_FILTER"], "", member_accumulator
-                )
                 if self.tok_regex["PAREN_PAIR"].findall(comment_filtered):
                     open_count = len(
                         self.tok_regex["OPEN_BRACE"].findall(comment_filtered)
@@ -114,11 +115,9 @@ class Matcher:
                             (comment_filtered, startline_here, endline)
                         )
                         member_accumulator = ""
+                        comment_filtered = ""
 
         if member_accumulator != "":
-            comment_filtered = re.sub(
-                self.tok_regex["COMMENT_FILTER"], "", member_accumulator
-            )
             if self.tok_regex["CLOSE_BRACE"].findall(comment_filtered):
                 if self.tok_regex["PAREN_PAIR"].findall(comment_filtered):
                     open_count = len(
