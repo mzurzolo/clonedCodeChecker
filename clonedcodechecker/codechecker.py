@@ -55,9 +55,10 @@ class ClonedCodeChecker:
             )
         ]
 
+        filecount = len(source_c_files)
         self.code_cache.search_set.extend(source_c_files)
         self.code_cache.process_files()
-        self.code_cache.output(self.starttime)
+        self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
     def recursive_walk(self, directory="."):
         """Recursive directory walk."""
@@ -89,10 +90,10 @@ class ClonedCodeChecker:
             ]
 
             cfiles.update(source_c_files)
-
+        filecount = len(cfiles)
         self.code_cache.search_set.extend(cfiles)
         self.code_cache.process_files()
-        self.code_cache.output(self.starttime)
+        self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
 
 def main(arg_s=None):
@@ -157,4 +158,4 @@ def main(arg_s=None):
 if __name__ == "__main__":
     # code_cache is the 'container' object. It holds cppFile objects
     # I create it here so every function above has access to it.
-    main(argS=sys.argv[1:])
+    main(arg_s=sys.argv[1:])

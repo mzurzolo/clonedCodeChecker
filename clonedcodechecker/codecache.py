@@ -44,12 +44,6 @@ class CodeCache:
         """Process files and save to filecache."""
         while self.search_set:
             current_file = self.add_file(self.search_set.pop())
-            member_tokens, linesize = self.matcher.tokenize(
-                current_file.linestring
-            )
-            current_file.linesize = linesize
-            self.matcher.total_linecount += linesize
-            self.matcher.match_tokens(current_file.filename, member_tokens)
             self.save_file(current_file)
 
     def add_file(self, filename):
@@ -60,7 +54,7 @@ class CodeCache:
         cachedfile = os.path.join(self.filecache, fname)
         # Last time the file was modefied
         t_modified = os.stat(filename).st_mtime
-
+        print(filename)
         try:
             with open(cachedfile, "r") as file:
                 new_file = YA_ML.load(file)
@@ -72,7 +66,11 @@ class CodeCache:
                 filename=filename, cachedfile=cachedfile, t_modified=t_modified
             )
 
-        print(filename)
+            member_tokens, linesize = self.matcher.tokenize(new_file.linestring)
+            new_file.linesize = linesize
+            new_file.member_tokens = member_tokens
+        self.matcher.total_linecount += new_file.linesize
+        self.matcher.match_tokens(new_file.filename, new_file.member_tokens)
         return new_file
 
     def save_file(self, file):
@@ -80,6 +78,7 @@ class CodeCache:
         # get a filecache name for it
         fname = cache_filename(file.filename)
         filepath = os.path.join(self.filecache, fname)
+        file.linestring = ""
         # match individual lines (for now)
         # if the file is already in the filecache, skip the rest of this
         # loop and go back up to the while statement.
@@ -89,9 +88,11 @@ class CodeCache:
         except FileExistsError:
             pass
 
-    def output(self, starttime=None):
+    def output(self, starttime=None, filecount=None):
         """Tell matcher to print the report."""
-        self.matcher.print_output(self.output_dir, starttime=starttime)
+        self.matcher.print_output(
+            self.output_dir, starttime=starttime, filecount=filecount
+        )
 
 
 class CppFile(defaultdict):
@@ -106,11 +107,20 @@ class CppFile(defaultdict):
     as reported by the filesystem.
     """
 
-    def __init__(self, filename=None, cachedfile=None, t_modified=None):
+    def __init__(
+        self,
+        filename=None,
+        cachedfile=None,
+        t_modified=None,
+        linesize=None,
+        member_tokens=None,
+    ):
         """Create new CppFile object."""
         self.filename = filename
         self.cachedfile = cachedfile
         self.t_modified = t_modified
+        self.linesize = linesize
+        self.member_tokens = member_tokens
         self.__loadall__()
 
     def __loadall__(self):
