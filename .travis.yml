@@ -1,7 +1,17 @@
-sudo: false
+sudo: required
+services:
+  - docker
+env:
+  - OS_TYPE=centos OS_VERSION=7
 language: python
 python:
   - "3.6"
+
+before_install:
+  - sudo apt-get update
+  - sudo service docker restart
+  - sleep 5
+  - sudo docker pull centos:centos${OS_VERSION}
 # command to install dependencies
 install:
   - pip install -r requirements.txt
