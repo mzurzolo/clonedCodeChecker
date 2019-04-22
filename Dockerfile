@@ -4,5 +4,4 @@ WORKDIR /app
 
 COPY . /app
 
-ENTRYPOINT [ "pwd" ]
 CMD ["ls", 'laR']
