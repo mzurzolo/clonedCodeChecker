@@ -75,7 +75,7 @@ class Matcher:
         """Yield tuples of text and line position for every found match."""
         member_accumulator = ""
         comment_filtered = ""
-        member_list = []
+        member_list = deque()
         for token in self.tok_regex["FIRST_FILTER"].finditer(text):
             if member_accumulator == "":
                 if any(
@@ -113,7 +113,6 @@ class Matcher:
                         )
                     )
                     endline = startline + 1
-
                     member_list.append(
                         (comment_filtered, startline_here, endline)
                     )
@@ -153,7 +152,8 @@ class Matcher:
     def match_tokens(self, filename, member_tokens):
         """Test the token matcher."""
         for token in member_tokens:
-            self.mergeupdater.update({token[0]: (filename, token[1], token[2])})
+            if self.tok_regex["PAREN_PAIR"].findall(token[0]):
+                self.mergeupdater.update({token[0]: (filename, token[1], token[2])})
 
     def print_output(self, outfile, starttime=None, filecount=None):
         """Print the line_matches dictionary to outfile."""

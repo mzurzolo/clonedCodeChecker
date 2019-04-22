@@ -3,6 +3,7 @@
 import os
 import sys
 import argparse
+from collections import deque
 from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
 
@@ -62,7 +63,7 @@ class ClonedCodeChecker:
 
     def recursive_walk(self, directory="."):
         """Recursive directory walk."""
-        cfiles = set()
+        cfiles = deque()
         for current, _folders, files in os.walk(directory):
             absolute_files = [
                 os.path.join(os.path.realpath(current), file)
@@ -89,7 +90,7 @@ class ClonedCodeChecker:
                 )
             ]
 
-            cfiles.update(source_c_files)
+            cfiles.extend(source_c_files)
         filecount = len(cfiles)
         self.code_cache.search_set.extend(cfiles)
         self.code_cache.process_files()

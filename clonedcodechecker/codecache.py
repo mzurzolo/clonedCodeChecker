@@ -68,7 +68,7 @@ class CodeCache:
 
             member_tokens, linesize = self.matcher.tokenize(new_file.linestring)
             new_file.linesize = linesize
-            new_file.member_tokens = member_tokens
+            new_file.member_tokens = list(member_tokens)
         self.matcher.total_linecount += new_file.linesize
         self.matcher.match_tokens(new_file.filename, new_file.member_tokens)
         return new_file
@@ -125,7 +125,7 @@ class CppFile(defaultdict):
 
     def __loadall__(self):
         """Load the file from the filecache or from the absolute path."""
-        with open(self.filename, "r") as file:
+        with open(self.filename, "r", errors='ignore') as file:
             self.linestring = file.read()
 
 

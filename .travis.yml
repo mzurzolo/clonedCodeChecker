@@ -11,7 +11,10 @@ before_install:
   - sudo apt-get update
   - sudo service docker restart
   - sleep 5
-  - sudo docker pull centos:centos${OS_VERSION}
+  - sudo docker build --tag=centos7app .
+  - sleep 5
+  - sudo service docker restart
+  - sudo docker run centos7app
 # command to install dependencies
 install:
   - pip install -r requirements.txt
