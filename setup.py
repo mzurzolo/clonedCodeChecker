@@ -5,7 +5,7 @@ import setuptools
 
 
 def main():
-    now = datetime.now().timestamp()
+    now = datetime.now().date().timestamp()
 
     setuptools.setup(name='clonedcodechecker',
           version='0.0.1.{}'.format(now),
