@@ -1,27 +1,21 @@
 sudo: required
 services:
   - docker
-env:
-  - OS_TYPE=centos OS_VERSION=7
 language: python
 python:
   - "3.6"
 
 before_install:
+  - git clone --depth 1 https://github.com/opencv/opencv.git
   - sudo apt-get update
   - sudo service docker restart
   - sleep 5
-  - sudo docker build --tag=centos7app .
+  - sudo docker build --tag local/centos7app .
   - sleep 5
   - sudo service docker restart
-  - sudo docker run centos7app
-# command to install dependencies
-install:
-  - pip install -r requirements.txt
-  - pip install tox-travis codecov
 # command to run tests
 script:
-  - tox
+  - sudo docker run -iv "/home/travis/build/mzurzolo:/home local/centos7app /bin/sh -c "cd home/clonedCodeChecker ; python3 -m venv py37 ; source py37/bin/activate ; pip install -r requirements_travis.txt ; tox"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

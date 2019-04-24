@@ -1,5 +1,4 @@
 FROM centos:7
 
-WORKDIR /app
-
-COPY . /app
+RUN yum -y install epel-release
+RUN yum -y install python36
