@@ -8,8 +8,11 @@ def test_dr_flags():
     CCC.codechecker.main(['-r', '-d', '../opencv'])
     CCC.codechecker.main(['-r', '-d', '../opencv'])
     for fname in os.listdir('../opencv'):
-        with open('../opencv/' + fname, 'a') as file:
-            print('1', file=file)
+        try:
+            with open('../opencv/' + fname, 'a') as file:
+                print('1', file=file)
+        except:
+            continue
     CCC.codechecker.main(['-r', '-d', '../opencv'])
 
 def test_purge():
