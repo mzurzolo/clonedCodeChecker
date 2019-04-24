@@ -64,7 +64,6 @@ class Matcher:
             ("CLOSE_BRACE", r"""(?P<CLOSE_BRACE>\})"""),
             ("PAREN_PAIR", r"""(?P<PAREN_PAIR>\)\s*?\{)"""),
             ("LINE_COUNTER", r"""\n"""),
-            ("MEMBER", r"""(?P<MEMBER>(\S+\s*)+?\S+\s*\(.*?\)\s*?\{.*?\})"""),
         ]
 
         self.tok_regex = {}

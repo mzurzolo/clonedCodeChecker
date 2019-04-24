@@ -12,7 +12,7 @@ def main():
                             ).timestamp()
 
     setuptools.setup(name='clonedcodechecker',
-          version='0.0.1', #.{}'.format(now_midnight),
+          version='0.0.1.{}'.format(now_midnight),
           description='Cloned C++ Code Checker',
           url='https://sourceforge.net/p/clonedcodechecker/mercurial/ci/default/tree/',
           author='Michael Zurzolo <mikezurzolo@gmail.com>,\
