@@ -1,3 +1,4 @@
 ruamel.yaml==0.15.89
 tox
 codecov
+coverage
