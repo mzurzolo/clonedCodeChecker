@@ -11,3 +11,8 @@ def test_imports():
     ccc_codecache = CCC.codecache.CodeCache()
     assert all([isinstance(ccc, CCC.codechecker.ClonedCodeChecker),
                 isinstance(ccc_codecache, CCC.codecache.CodeCache)])
+
+
+def test_matcher():
+    tester = CCC.matcher.Matcher()
+    assert tester.tok_regex['FIRST_FILTER'].findall("//testing\n").lastgroup == 'DOUBLE_SLASH_COMMENT' 
