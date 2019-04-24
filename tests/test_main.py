@@ -15,4 +15,4 @@ def test_imports():
 
 def test_matcher():
     tester = CCC.matcher.Matcher()
-    assert tester.tok_regex['FIRST_FILTER'].find("//testing\n").lastgroup == 'DOUBLE_SLASH_COMMENT'
+    assert tester.tok_regex['FIRST_FILTER'].findall("//testing\n")[0].lastgroup == 'DOUBLE_SLASH_COMMENT'
