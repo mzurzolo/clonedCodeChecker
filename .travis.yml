@@ -7,14 +7,13 @@ python:
 
 before_install:
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-  - sudo service docker restart
-  - sleep 5
   - sudo docker build --tag local/centos7app .
-  - sleep 5
   - sudo service docker restart
-  - ci_env=`bash <(curl -s https://codecov.io/env)`
 install:
   - pip install coverage codecov
 # command to run tests
 script:
-  - sudo docker run $ci_env -iv "/home/travis/build/mzurzolo:/home/travis/build/mzurzolo" local/centos7app /bin/sh -c "python3 -m venv /home/travis/py36 ; source /home/travis/py36/bin/activate ; cd home/travis/build/mzurzolo/clonedCodeChecker ; pip install -r requirements_travis.txt ; tox ; <(curl -s https://codecov.io/bash)"
+  - sudo docker run -i local/centos7app /bin/sh -c "ls /home/project"
+  - tox
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
