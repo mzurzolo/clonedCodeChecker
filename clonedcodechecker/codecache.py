@@ -125,7 +125,7 @@ class CppFile(defaultdict):
 
     def __loadall__(self):
         """Load the file from the filecache or from the absolute path."""
-        with open(self.filename, "r", errors='ignore') as file:
+        with open(self.filename, "r", errors="ignore") as file:
             self.linestring = file.read()
 
 

@@ -153,7 +153,9 @@ class Matcher:
         """Test the token matcher."""
         for token in member_tokens:
             if self.tok_regex["PAREN_PAIR"].findall(token[0]):
-                self.mergeupdater.update({token[0]: (filename, token[1], token[2])})
+                self.mergeupdater.update(
+                    {token[0]: (filename, token[1], token[2])}
+                )
 
     def print_output(self, outfile, starttime=None, filecount=None):
         """Print the line_matches dictionary to outfile."""
