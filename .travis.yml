@@ -1,14 +1,10 @@
-sudo: required
-services:
-  - docker
+sudo: false
 language: python
 python:
   - "3.6"
 
 before_install:
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-  - sudo docker build --tag local/centos7app .
-  - sudo service docker restart
 install:
   - pip install -r requirements_travis.txt
 # command to run tests
