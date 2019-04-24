@@ -17,4 +17,4 @@ install:
   - pip install coverage codecov
 # command to run tests
 script:
-  - sudo docker run $ci_env -iv "/home/travis/build/mzurzolo:/home/travis/build/mzurzolo" local/centos7app /bin/sh -c "python3 -m venv /home/travis/py36 ; source /home/travis/py36/bin/activate ; cd home/travis/build/mzurzolo/clonedCodeChecker ; pip install -r requirements_travis.txt ; tox ; bash <(curl -s https://codecov.io/bash)"
+  - sudo docker run $ci_env -iv "/home/travis/build/mzurzolo:/home/travis/build/mzurzolo" local/centos7app /bin/sh -c "python3 -m venv /home/travis/py36 ; source /home/travis/py36/bin/activate ; cd home/travis/build/mzurzolo/clonedCodeChecker ; pip install -r requirements_travis.txt ; tox ; <(curl -s https://codecov.io/bash)"
