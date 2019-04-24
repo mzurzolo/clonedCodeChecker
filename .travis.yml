@@ -14,7 +14,7 @@ before_install:
   - sudo service docker restart
 # command to run tests
 script:
-  - sudo docker run -iv "/home/travis/build/mzurzolo:/home" local/centos7app /bin/sh -c "cd home/clonedCodeChecker ; python3 -m venv py37 ; source py37/bin/activate ; pip install -r requirements_travis.txt ; tox"
+  - sudo docker run -iv "/home:/home" local/centos7app /bin/sh -c "cd home/travis/build/mzurzolo/clonedCodeChecker ; python3 -m venv py37 ; source py37/bin/activate ; pip install -r requirements_travis.txt ; tox"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
