@@ -8,6 +8,5 @@ export CCC_ENV=$TARGET
 if [ ! -d "$TARGET/py37" ] ; then
   python3 -m venv $TARGET/py37
   python3 -m pip install -r $TARGET/requirements_dev.txt
-  pip install .
 fi
 pip install .

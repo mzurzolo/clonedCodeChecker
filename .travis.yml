@@ -10,7 +10,7 @@ before_install:
   - sudo docker build --tag local/centos7app .
   - sudo service docker restart
 install:
-  - pip install coverage codecov
+  - pip install -r requirements_travis.txt
 # command to run tests
 script:
   - sudo docker run -i local/centos7app /bin/sh -c "ls /home/project"
