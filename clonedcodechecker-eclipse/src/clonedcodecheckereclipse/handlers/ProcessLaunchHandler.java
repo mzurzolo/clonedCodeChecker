@@ -28,7 +28,7 @@ public class ProcessLaunchHandler extends AbstractHandler {
 		inputdialog.open();
 		String entered_directory = inputdialog.getValue();
 		ProcessBuilder processBuilder = new ProcessBuilder();
-		String commandString = "ccc" + " -rd " + entered_directory;
+		String commandString = "ccc" + " -rjd " + entered_directory;
 		processBuilder.command("bash", "-c", commandString);
 		try {
 

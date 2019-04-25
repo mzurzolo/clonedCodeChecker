@@ -120,6 +120,7 @@ def main(arg_s=None):
             "Search for duplicate code in given ", "directory (but not sub-directories)"
         ),
     )
+    parser.add_argument("-j", action="store_true", help=argparse.SUPPRESS)
 
     args = parser.parse_args(arg_s)
 
@@ -131,6 +132,9 @@ def main(arg_s=None):
         os.mkdir(filecache_location)
     except FileExistsError:
         pass
+
+    if args.j:
+        output_location = os.path.join(args.d, "report.txt")
 
     ccc = ClonedCodeChecker(
         output_location=output_location,
