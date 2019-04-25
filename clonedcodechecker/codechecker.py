@@ -12,10 +12,7 @@ class ClonedCodeChecker:
     """The ClonedCodeChecker collects files for its CodeCache."""
 
     def __init__(
-        self,
-        output_location=".",
-        filecache_location=".",
-        starttime=datetime.now(),
+        self, output_location=".", filecache_location=".", starttime=datetime.now()
     ):
         """Get new ClonedCodeChecker object."""
         self.code_cache = CodeCache()
@@ -120,8 +117,7 @@ def main(arg_s=None):
         "-d",
         default="./",
         help="{}{}".format(
-            "Search for duplicate code in given ",
-            "directory (but not sub-directories)",
+            "Search for duplicate code in given ", "directory (but not sub-directories)"
         ),
     )
 
