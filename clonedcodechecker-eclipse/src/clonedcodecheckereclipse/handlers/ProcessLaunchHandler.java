@@ -14,6 +14,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 
 public class ProcessLaunchHandler extends AbstractHandler {
 
+	public ProcessLaunchHandler() {
+
+	}
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
@@ -44,7 +48,6 @@ public class ProcessLaunchHandler extends AbstractHandler {
 			if (exitVal == 0) {
 				System.out.println("Success!");
 				System.out.println(output);
-				System.exit(0);
 			} else {
 				//abnormal...
 			}
