@@ -98,15 +98,23 @@ class Matcher:
                 quote_filtered = re.sub(
                     self.tok_regex["QUOTEFILTER"], "", comment_filtered
                 )
-                open_count = len(self.tok_regex["OPEN_BRACE"].findall(quote_filtered))
-                close_count = len(self.tok_regex["CLOSE_BRACE"].findall(quote_filtered))
+                open_count = len(
+                    self.tok_regex["OPEN_BRACE"].findall(quote_filtered)
+                )
+                close_count = len(
+                    self.tok_regex["CLOSE_BRACE"].findall(quote_filtered)
+                )
                 if open_count == close_count and quote_filtered.endswith("}"):
                     startline_here = startline
                     startline += len(
-                        self.tok_regex["LINE_COUNTER"].findall(member_accumulator)
+                        self.tok_regex["LINE_COUNTER"].findall(
+                            member_accumulator
+                        )
                     )
                     endline = startline + 1
-                    member_list.append((comment_filtered, startline_here, endline))
+                    member_list.append(
+                        (comment_filtered, startline_here, endline)
+                    )
                     member_accumulator = ""
                     comment_filtered = ""
 
@@ -115,18 +123,28 @@ class Matcher:
                 quote_filtered = re.sub(
                     self.tok_regex["QUOTEFILTER"], "", comment_filtered
                 )
-                open_count = len(self.tok_regex["OPEN_BRACE"].findall(quote_filtered))
-                close_count = len(self.tok_regex["CLOSE_BRACE"].findall(quote_filtered))
+                open_count = len(
+                    self.tok_regex["OPEN_BRACE"].findall(quote_filtered)
+                )
+                close_count = len(
+                    self.tok_regex["CLOSE_BRACE"].findall(quote_filtered)
+                )
                 if open_count == close_count and quote_filtered.endswith("}"):
                     startline_here = startline
                     startline += len(
-                        self.tok_regex["LINE_COUNTER"].findall(member_accumulator)
+                        self.tok_regex["LINE_COUNTER"].findall(
+                            member_accumulator
+                        )
                     )
                     endline = startline + 1
-                    member_list.append((comment_filtered, startline_here, endline))
+                    member_list.append(
+                        (comment_filtered, startline_here, endline)
+                    )
                     member_accumulator = ""
 
-            startline += len(self.tok_regex["LINE_COUNTER"].findall(member_accumulator))
+            startline += len(
+                self.tok_regex["LINE_COUNTER"].findall(member_accumulator)
+            )
 
         return (member_list, startline)
 
@@ -134,7 +152,9 @@ class Matcher:
         """Test the token matcher."""
         for token in member_tokens:
             if self.tok_regex["PAREN_PAIR"].findall(token[0]):
-                self.mergeupdater.update({token[0]: (filename, token[1], token[2])})
+                self.mergeupdater.update(
+                    {token[0]: (filename, token[1], token[2])}
+                )
 
     def print_output(self, outfile, starttime=None, filecount=None):
         """Print the line_matches dictionary to outfile."""
@@ -145,7 +165,9 @@ class Matcher:
             print("Start time: {}".format(starttime), file=file)
             print("Run time: {}".format(datetime.now() - starttime), file=file)
             print("Files analyzed: {}".format(filecount), file=file)
-            print("Lines analyzed: {}\n".format(self.total_linecount), file=file)
+            print(
+                "Lines analyzed: {}\n".format(self.total_linecount), file=file
+            )
             for key in self.mergeupdater.keys():
                 if len(self.mergeupdater[key]) > 1:
                     print("Duplicate member found in: \n", file=file)

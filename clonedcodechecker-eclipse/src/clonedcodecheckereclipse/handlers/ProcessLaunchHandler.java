@@ -10,12 +10,11 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 public class ProcessLaunchHandler extends AbstractHandler {
-
+	
 	public ProcessLaunchHandler() {
-
+		
 	}
 
 	@Override
@@ -24,11 +23,11 @@ public class ProcessLaunchHandler extends AbstractHandler {
 		InputDialog inputdialog = new InputDialog(window.getShell(),
 									"Cloned Code Checker",
 									"Please enter a directory to check:",
-									System.getProperty("user.dir"), null);
+									System.getProperty("user.data"), null);
 		inputdialog.open();
 		String entered_directory = inputdialog.getValue();
 		ProcessBuilder processBuilder = new ProcessBuilder();
-		String commandString = "ccc" + " -rjd " + entered_directory;
+		String commandString = "/home/mzurzolo/CODE/SWE1/april24/py37/bin/ccc" + " -rjd " + entered_directory;
 		processBuilder.command("bash", "-c", commandString);
 		try {
 
