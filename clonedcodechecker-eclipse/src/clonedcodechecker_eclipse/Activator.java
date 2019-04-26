@@ -1,8 +1,7 @@
 package clonedcodechecker_eclipse;
 
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.*;
 /**
  * The activator class controls the plug-in life cycle
  */
