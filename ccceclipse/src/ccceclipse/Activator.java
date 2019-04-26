@@ -1,11 +1,7 @@
-package clonedcodechecker_eclipse;
+package ccceclipse;
 
-
-import org.osgi.framework.*;
-/**
- * The activator class controls the plug-in life cycle
- */
-
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
@@ -24,4 +20,3 @@ public class Activator implements BundleActivator {
 	}
 
 }
-
