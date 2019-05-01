@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: clonedcodechecker
+Bundle-SymbolicName: clonedcodechecker;singleton:=true
+Require-Bundle: javax.inject,org.eclipse.osgi,org.eclipse.jface,org.ec
+ lipse.e4.ui.services,org.eclipse.e4.core.di.annotations,org.eclipse.c
+ ore.runtime
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: %Bundle-Vendor
+Import-Package: javax.annotation;version="1.2.0"
+Export-Package: clonedcodechecker,clonedcodechecker.handlers
+Bundle-Name: %Bundle-Name
+Bundle-Version: 1.0.0.201905011953
+Bundle-Activator: clonedcodechecker.Activator
+

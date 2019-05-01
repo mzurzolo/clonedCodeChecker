@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="ccceclipse.fragment"
+         id="clonedcodechecker.fragment"
          point="org.eclipse.e4.workbench.model">
       <fragment
             apply="initial"

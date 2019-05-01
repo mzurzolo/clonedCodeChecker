@@ -1,4 +1,4 @@
-package ccceclipse;
+package clonedcodechecker;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

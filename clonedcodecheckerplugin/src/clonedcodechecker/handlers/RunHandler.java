@@ -1,4 +1,4 @@
-package ccceclipse.handlers;
+package clonedcodechecker.handlers;
 
 import java.io.BufferedReader;
 import java.io.IOException;

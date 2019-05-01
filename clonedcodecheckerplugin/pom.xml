@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>clonedcodechecker</groupId>
+  <artifactId>clonedcodechecker</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <includeAllDependencies>true</includeAllDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+      <repository>
+        <id>central</id>
+        <name>Central Repository</name>
+        <url>http://repo.maven.apache.org/maven2</url>
+      </repository>
+      <repository>
+        <id>eclipse-latest</id>
+        <layout>p2</layout>
+        <url>http://download.eclipse.org/releases/latest</url>
+     </repository>
+    </repositories>
+    <pluginRepositories>
+      <pluginRepository>
+        <id>centralplugin</id>
+        <name>Central Repository Plugins</name>
+        <url>http://repo.maven.apache.org/maven2</url>
+      </pluginRepository>
+  </pluginRepositories>
+</project>
