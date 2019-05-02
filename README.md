@@ -12,14 +12,14 @@
 
 1. Get the project: `git clone https://github.com/mzurzolo/clonedCodeChecker.git`
 2. cd into the project `cd clonedCodeChecker`
-..* **Easily-removable, python-only install:**
-....* *You will not be able to use the eclipse plugin, and this step will need to be repeated for every new terminal you open.*
-......* `source scripts/work_here.sh`
-..* **Full install, including eclipse plugin:**
-....* `source scripts/work_here.sh`
-....* `python setup.py install --user`
-....* `mvn -f clonedcodecheckerplugin package`
-....* Now you need to copy the generated package to the *dropins* directory of your eclipse install. Assuming eclipse is installed in *eclipse* under the *home* directory, the command `cp clonedcodecheckerplugin/target/clonedcodechecker-1.0.0-SNAPSHOT.jar $HOME/eclipse/dropins/` should do it. Users can also use a file explorer. 
+..* Easily-removable, python-only install:
+..* *You will not be able to use the eclipse plugin, and this step will need to be repeated for every new terminal you open.*
+..* `source scripts/work_here.sh`
+..* __Full install, including eclipse plugin:__
+..* `source scripts/work_here.sh`
+..* `python setup.py install --user`
+..* `mvn -f clonedcodecheckerplugin package`
+..* Now you need to copy the generated package to the *dropins* directory of your eclipse install. Assuming eclipse is installed in *eclipse* under the *home* directory, the command `cp clonedcodecheckerplugin/target/clonedcodechecker-1.0.0-SNAPSHOT.jar $HOME/eclipse/dropins/` should do it. Users can also use a file explorer.
 
 
 To install:
