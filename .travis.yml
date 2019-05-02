@@ -2,7 +2,7 @@ sudo: false
 matrix:
   include:
     - language: java
-      script: "mvn -f clonedcodecheckerplugin clean verify initialize package test"
+      script: "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
       script: "mvn -f clonedcodecheckerplugin cobertura:cobertura"
       after_success:
         - bash <(curl -s https://codecov.io/bash)
@@ -13,7 +13,6 @@ matrix:
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
       install:
         - pip install -r requirements_travis.txt
-        - python clonedcodechecker/setup.py install
       # command to run tests
       script:
         - tox
