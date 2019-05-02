@@ -159,6 +159,8 @@ class Matcher:
     def print_output(self, outfile, starttime=None, filecount=None):
         """Print the line_matches dictionary to outfile."""
         print(outfile)
+        files_set = set()
+        duplicate_count = 0
         with open(outfile, "w") as file:
             print("ClonedCodeChecker", file=file)
             print("Version: 0.0.1", file=file)
@@ -171,7 +173,9 @@ class Matcher:
             for key in self.mergeupdater.keys():
                 if len(self.mergeupdater[key]) > 1:
                     print("Duplicate member found in: \n", file=file)
+                    duplicate_count += 1
                     for val in self.mergeupdater[key]:
+                        files_set.add(val[0])
                         print(
                             "\t",
                             "\t",
@@ -183,6 +187,8 @@ class Matcher:
                         )
                     print("Member:         \n\n", key, file=file)
                     print("\n\n", file=file)
+            print("Total duplicates: {}".format(duplicate_count), file=file)
+            print("Files affected: {}".format(len(files_set)), file=file)
 
         print("ClonedCodeChecker")
         print("Version: 0.0.1")
@@ -190,3 +196,5 @@ class Matcher:
         print("Run time: {}".format(datetime.now() - starttime))
         print("Files analyzed: {}".format(filecount))
         print("Lines analyzed: {}\n".format(self.total_linecount))
+        print("Total duplicates: {}".format(duplicate_count))
+        print("Files affected: {}".format(len(files_set)))

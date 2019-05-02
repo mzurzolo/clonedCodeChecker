@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <units size='1'>
-  <unit id='clonedcodechecker' version='1.0.0.201905011953' generation='2'>
-    <update id='clonedcodechecker' range='[0.0.0,1.0.0.201905011953)' severity='0'/>
+  <unit id='clonedcodechecker' version='1.0.0.201905020425' generation='2'>
+    <update id='clonedcodechecker' range='[0.0.0,1.0.0.201905020425)' severity='0'/>
     <properties size='7'>
       <property name='df_LT.Bundle-Name' value='Clonedcodechecker'/>
       <property name='df_LT.Bundle-Vendor' value='org.swe.dogs'/>
@@ -12,11 +12,11 @@
       <property name='maven-version' value='1.0.0-SNAPSHOT'/>
     </properties>
     <provides size='7'>
-      <provided namespace='org.eclipse.equinox.p2.iu' name='clonedcodechecker' version='1.0.0.201905011953'/>
-      <provided namespace='osgi.bundle' name='clonedcodechecker' version='1.0.0.201905011953'/>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='clonedcodechecker' version='1.0.0.201905020425'/>
+      <provided namespace='osgi.bundle' name='clonedcodechecker' version='1.0.0.201905020425'/>
       <provided namespace='java.package' name='clonedcodechecker' version='0.0.0'/>
       <provided namespace='java.package' name='clonedcodechecker.handlers' version='0.0.0'/>
-      <provided namespace='osgi.identity' name='clonedcodechecker' version='1.0.0.201905011953'>
+      <provided namespace='osgi.identity' name='clonedcodechecker' version='1.0.0.201905020425'>
         <properties size='1'>
           <property name='type' value='osgi.bundle'/>
         </properties>
@@ -35,13 +35,13 @@
       <requiredProperties namespace='osgi.ee' match='(&amp;(osgi.ee=JavaSE)(version=1.8))'/>
     </requires>
     <artifacts size='1'>
-      <artifact classifier='osgi.bundle' id='clonedcodechecker' version='1.0.0.201905011953'/>
+      <artifact classifier='osgi.bundle' id='clonedcodechecker' version='1.0.0.201905020425'/>
     </artifacts>
     <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
     <touchpointData size='1'>
       <instructions size='1'>
         <instruction key='manifest'>
-          Bundle-SymbolicName: clonedcodechecker;singleton:=true&#xA;Bundle-Version: 1.0.0.201905011953&#xA;
+          Bundle-SymbolicName: clonedcodechecker;singleton:=true&#xA;Bundle-Version: 1.0.0.201905020425&#xA;
         </instruction>
       </instructions>
     </touchpointData>
