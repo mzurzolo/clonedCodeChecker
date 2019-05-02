@@ -14,6 +14,7 @@
 2. cd into the project `cd clonedCodeChecker`
 
     2.1 __Easily-removable, python-only install:__
+    
       *You will not be able to use the eclipse plugin, and this step will need to be repeated for every new terminal you open.*
 
     `source scripts/work_here.sh`
