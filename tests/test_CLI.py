@@ -26,8 +26,7 @@ def test_purge():
 
 # thank you https://medium.com/opsops/how-to-test-if-name-main-1928367290cb
 def test_init():
-    from CCC import codechecker
-
+    from clonedcodechecker import codechecker
     with mock.patch.object(codechecker, "main", return_value=42):
         with mock.patch.object(codechecker, "__name__", "__main__"):
             with mock.patch.object(codechecker.sys, "exit") as mock_exit:
