@@ -4,16 +4,17 @@ import os
 import clonedcodechecker as CCC
 
 def test_dr_flags():
-    CCC.codechecker.main(['-d', '../opencv'])
-    CCC.codechecker.main(['-r', '-d', '../opencv'])
-    CCC.codechecker.main(['-r', '-d', '../opencv'])
+    os.sys("ccc -d ../opencv")
+    os.sys("ccc -rd ../opencv")
+    os.sys("ccc -rjd ../opencv")
+    os.sys("ccc -rd ../opencv")
     for fname in os.listdir('../opencv'):
         try:
             with open('../opencv/' + fname, 'a') as file:
-                print('1', file=file)
+                print('1dddddd', file=file)
         except:
             continue
-    CCC.codechecker.main(['-r', '-d', '../opencv'])
+    os.sys("ccc -rd ../opencv")
 
 def test_purge():
-    CCC.codechecker.main(['-p'])
+    os.sys("ccc -p")

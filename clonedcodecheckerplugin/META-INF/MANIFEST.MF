@@ -10,7 +10,8 @@ Require-Bundle: javax.inject,
  org.eclipse.jface,
  org.eclipse.e4.ui.services,
  org.eclipse.e4.core.di.annotations,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: clonedcodechecker
 Import-Package: javax.annotation;version="1.2.0"
