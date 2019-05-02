@@ -1,22 +1,20 @@
 sudo: false
-language: python
-python:
-  - "3.6"
+matrix:
+  include:
+    - language: java
+      script: "mvn -f clonedcodecheckerplugin cobertura:cobertura"
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
 
-before_install:
-  - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-install:
-  - pip install -r requirements_travis.txt
-# command to run tests
-script:
-  - tox
+    - language: python
+      python: 3.6
+      before_install:
+        - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
+      install:
+        - pip install -r requirements_travis.txt
+      # command to run tests
+      script:
+        - tox
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-language: java
-
-script: "mvn -f clonedcodecheckerplugin cobertura:cobertura"
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
