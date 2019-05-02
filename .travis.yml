@@ -12,6 +12,7 @@ matrix:
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
       install:
         - pip install -r requirements_travis.txt
+        - python clonedcodechecker/setup.py install
       # command to run tests
       script:
         - tox
