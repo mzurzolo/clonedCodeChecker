@@ -1,5 +1,3 @@
-package test;
-
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -13,7 +11,8 @@ import org.osgi.framework.BundleActivator;
 public class SampleTest implements BundleActivator
 {
 	private static Bundle bundle = FrameworkUtil.getBundle(Activator.class);
-	private static BundleContext context = bundle.getBundleContext();
+	private static BundleContext testcontext = bundle.getBundleContext();
+	private static BundleContext context;
 
 	static BundleContext getContext() {
 		return context;
@@ -29,9 +28,9 @@ public class SampleTest implements BundleActivator
 
     @Test
     public void testActivator() throws BundleException {
-				bundle.start();
-        bundle.stop();
-
+				this.bundle.start();
+				this.bundle.start();
+				this.bundle.stop();
     }
 
 }

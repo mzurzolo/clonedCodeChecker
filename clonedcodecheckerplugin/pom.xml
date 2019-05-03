@@ -6,6 +6,13 @@
   <artifactId>clonedcodechecker</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
+
+  <properties>
+    <tycho-version>1.4.0</tycho-version>
+    <jacoco-version>0.8.0</jacoco-version>
+    <argLine>tycho.testArgLine</argLine>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -13,31 +20,82 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <!--  must be on the classpath  -->
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.agent</artifactId>
+      <classifier>runtime</classifier>
+      <version>${jacoco-version}</version>
+    </dependency>
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/clonedcodechecker</directory>
+      </resource>
+      <resource>
+        <directory>src/clonedcodechecker/handlers</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-surefire-plugin</artifactId>
-        <version>1.4.0</version>
-        <configuration>
-          <includes>
-            <include>**/*.class</include>
-          </includes>
-          <useUIHarness>true</useUIHarness>
-          <argLine>-ea</argLine>
-          <product>clonedcodechecker</product>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>1.4.0</version>
+        <version>${tycho-version}</version>
         <extensions>true</extensions>
         <configuration>
           <includeAllDependencies>true</includeAllDependencies>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <systemPropertyVariables>
+          </systemPropertyVariables>
+          <useUIHarness>true</useUIHarness>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-version}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>COMPLEXITY</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.40</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -50,37 +108,9 @@
           </formats>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.0</version>
-        <configuration>
-          <destFile>${project.basedir}/target/jacoco.exec</destFile>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>emma-maven-plugin</artifactId>
-	<version>1.0-alpha-3</version>
-	<inherited>true</inherited>
-  <executions>
-		  <execution>
-			<phase>process-classes</phase>
-			<goals>
-				<goal>emma</goal>
-			</goals>
-		  </execution>
-		</executions>
-      </plugin>
     </plugins>
   </build>
+
   <repositories>
     <repository>
       <id>central</id>
@@ -91,10 +121,6 @@
       <id>eclipse-latest</id>
       <layout>p2</layout>
       <url>http://download.eclipse.org/releases/latest</url>
-    </repository>
-    <repository>
-      <id>eclipse-swtbot</id>
-      <url>http://download.eclipse.org/technology/swtbot/</url>
     </repository>
   </repositories>
   <pluginRepositories>
