@@ -3,7 +3,7 @@ matrix:
   include:
     - language: java
       script: "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
-      script: "mvn -f clonedcodecheckerplugin cobertura:cobertura"
+      script: "mvn -f clonedcodecheckerplugin verify initialize package test"
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
