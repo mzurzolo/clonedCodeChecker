@@ -74,6 +74,9 @@
             <goals>
               <goal>report</goal>
             </goals>
+            <configuration>
+              <outputDirectory>target/jacoco</outputDirectory>
+            </configuration>
           </execution>
           <execution>
             <id>default-check</id>
@@ -113,9 +116,14 @@
 
   <repositories>
     <repository>
-      <id>central</id>
-      <name>Central Repository</name>
+      <id>central-apache</id>
+      <name>Central Apache Repository</name>
       <url>http://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>central-mvn</id>
+      <name>Central Maven Repository</name>
+      <url>	http://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
       <id>eclipse-latest</id>
