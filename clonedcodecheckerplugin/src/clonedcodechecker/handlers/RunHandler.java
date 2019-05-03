@@ -31,7 +31,7 @@ public class RunHandler {
 		String entered_directory = inputdialog.getValue();
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		String commandString = "ccc" + " -rjd " + entered_directory;
-		processBuilder.command("bash", "-c", commandString);
+		processBuilder.command("bash", "-c", commandString + " &");
 		try {
 
 			Process process = processBuilder.start();
@@ -53,7 +53,7 @@ public class RunHandler {
 			} else {
 				//abnormal...
 			}
-			
+
 
 		} catch (IOException e) {
 			e.printStackTrace();

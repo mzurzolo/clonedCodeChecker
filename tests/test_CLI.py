@@ -7,17 +7,17 @@ import clonedcodechecker as CCC
 
 def test_dr_flags():
 
-    CCC.codechecker.main(["-d", "../opencv"])
-    CCC.codechecker.main(["-r", "-d", "../opencv"])
-    CCC.codechecker.main(["-rj", "-d", "../opencv"])
-    CCC.codechecker.main(["-r", "-d", "../opencv"])
-    for fname in os.listdir("../opencv"):
+    CCC.codechecker.main(["-d", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-r", "-d", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-rj", "-d", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-r", "-d", "/home/travis/build/mzurzolo/opencv"])
+    for fname in os.listdir("/home/travis/build/mzurzolo/opencv"):
         try:
-            with open("../opencv/" + fname, "a") as file:
+            with open("/home/travis/build/mzurzolo/opencv/" + fname, "a") as file:
                 print("1dddddd", file=file)
         except:
             continue
-    CCC.codechecker.main(["-r", "-d", "../opencv"])
+    CCC.codechecker.main(["-r", "-d", "/home/travis/build/mzurzolo/opencv"])
 
 
 def test_purge():
