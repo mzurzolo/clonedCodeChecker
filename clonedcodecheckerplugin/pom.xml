@@ -28,7 +28,6 @@
           <useUIHarness>true</useUIHarness>
           <argLine>-ea</argLine>
           <product>clonedcodechecker</product>
-          <application>org.eclipse.e4.ui.workbench.swt.E4Application</application>
         </configuration>
       </plugin>
       <plugin>

@@ -29,9 +29,9 @@ public class SampleTest implements BundleActivator
 
     @Test
     public void testActivator() throws BundleException {
-
+				bundle.start();
         bundle.stop();
 
     }
-    
+
 }

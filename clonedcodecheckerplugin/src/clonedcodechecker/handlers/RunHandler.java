@@ -43,7 +43,7 @@ public class RunHandler {
 
 			String line;
 			while ((line = reader.readLine()) != null) {
-				output.append(line + "\n");
+				//output.append(line + "\n");
 			}
 
 			int exitVal = process.waitFor();
