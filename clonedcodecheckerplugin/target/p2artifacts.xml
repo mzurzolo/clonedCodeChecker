@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?artifactRepository version='1.1.0'?>
 <artifacts size='1'>
-  <artifact classifier='osgi.bundle' id='clonedcodechecker' version='1.0.0.201905041158'>
+  <artifact classifier='osgi.bundle' id='clonedcodechecker' version='1.0.0.201905041831'>
     <properties size='5'>
-      <property name='artifact.size' value='12406'/>
-      <property name='download.size' value='12406'/>
+      <property name='artifact.size' value='10123'/>
+      <property name='download.size' value='10123'/>
       <property name='maven-groupId' value='clonedcodechecker'/>
       <property name='maven-artifactId' value='clonedcodechecker'/>
       <property name='maven-version' value='1.0.0-SNAPSHOT'/>
