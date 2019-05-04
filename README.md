@@ -21,9 +21,7 @@
 
     2.2 __Full install, including eclipse plugin:__
 
-        `source scripts/work_here.sh
-
-         python setup.py install --user
+        `python setup.py install --user
 
          mvn -f clonedcodecheckerplugin package`
 
