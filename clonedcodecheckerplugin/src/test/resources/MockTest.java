@@ -14,12 +14,11 @@ public class MockTest {
     public void testsetInputDialog() {
     	this.runHandler.setInputDialog(this.shell);
     }
-
+	
     public void testopencloseDialog() {
     	this.runHandler.openInputDialog();
     	this.runHandler.closeDialog();
     }
-
 
     public void testgetInput() {
 		this.runHandler.getInput();
