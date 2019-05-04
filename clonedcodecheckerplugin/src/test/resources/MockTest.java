@@ -34,7 +34,6 @@ public class MockTest {
 			}
     }
 
-    @Test
     public void testsetInitString() {
     	this.runHandler.setInitString("/tmp");
 	}
