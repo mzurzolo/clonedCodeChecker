@@ -3,8 +3,6 @@ package clonedcodechecker.handlers;
 import java.io.IOException;
 
 import javax.inject.Named;
-
-
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import javax.swing.JOptionPane;
