@@ -21,13 +21,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>swtbot</artifactId>
-      <version>2.0.0</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <!--  must be on the classpath  -->
       <groupId>org.jacoco</groupId>
       <artifactId>org.jacoco.agent</artifactId>

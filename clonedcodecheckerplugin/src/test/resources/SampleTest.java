@@ -31,6 +31,8 @@ public class SampleTest
 	@Test
 	public void testHandlersetInputDialog() {
 		this.runHandler.setInputDialog(shell);
+		this.runHandler.openInputDialog();
+		this.runHandler.okDialog();
 	}
 
 	public void testHandlergetInput() {

@@ -6,16 +6,16 @@ import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.jface.window.*;
 
 /** <b>Warning</b> :
 As explained in <a href="http://wiki.eclipse.org/Eclipse4/RCP/FAQ#Why_aren.27t_my_handler_fields_being_re-injected.3F">this wiki page</a>, it is not recommended to define @Inject fields in a handler. <br/><br/>
 <b>Inject the values in the @Execute methods</b>
  */
 public class RunHandler {
-	private InputDialog inputdialog;
+	private InternalInputDialog inputdialog;
 	private String init_string = System.getProperty("user.home");
 
 	@Execute
@@ -34,7 +34,7 @@ public class RunHandler {
 	}
 
 	public void setInputDialog(Shell s) {
-		this.inputdialog = new InputDialog(s,
+		this.inputdialog = new InternalInputDialog(s,
 				"Cloned Code Checker",
 				"Please enter a directory to check:",
 				this.init_string, null);
@@ -44,9 +44,9 @@ public class RunHandler {
 		this.inputdialog.open();
 	}
 
-	public void closeDialog() {
+	public void okDialog() {
 		//this.inputdialog.setReturnCode(CANCEL);
-		this.inputdialog.close();
+		this.inputdialog.okPressedDialog();
 		//this.inputdialog.getWindowManager().close();
 	}
 
@@ -67,6 +67,20 @@ public class RunHandler {
 
 	public void setInitString(String s) {
 		this.init_string = s;
+	}
+
+	public class InternalInputDialog extends InputDialog{
+
+		public InternalInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue,
+				IInputValidator validator) {
+			super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
+		}
+		public boolean close() {
+			return super.close();
+		}
+		protected void okPressedDialog() {
+			super.okPressed();
+		}
 	}
 
 
