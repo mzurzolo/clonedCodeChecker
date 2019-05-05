@@ -74,6 +74,7 @@ public class RunHandler {
 		public InternalInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue,
 				IInputValidator validator) {
 			super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
+			this.setBlockOnOpen(false);
 		}
 		public boolean close() {
 			return super.close();
