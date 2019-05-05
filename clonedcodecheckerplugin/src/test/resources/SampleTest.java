@@ -17,12 +17,29 @@ public class SampleTest
 	private RunHandler runHandler = new RunHandler();
 	private Shell shell = new Shell();
 
-    @Test
-    public void testActivator() throws BundleException {
-				this.bundle.start();
-				this.runHandler.setJFrame();
-				this.runHandler.setInputDialog();
-				this.bundle.stop();
-    }
+	@Test
+	public void testActivator() throws BundleException {
+		this.bundle.start();
+		this.bundle.stop();
+	}
+
+	@Test
+	public void testHandlersetInitString() {
+		this.runHandler.setInitString("/home");
+	}
+
+	@Test
+	public void testHandlersetInputDialog() {
+		this.runHandler.setInputDialog(shell);
+	}
+	
+	public void testHandlergetInput() {
+		this.runHandler.getInput();
+	}
+
+	@Test
+	public void testHandlergetprocessBuilder() {
+		this.runHandler.getprocessBuilder("/home");
+	}
 
 }

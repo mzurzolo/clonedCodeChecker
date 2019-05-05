@@ -3,28 +3,26 @@ package clonedcodechecker.handlers;
 import java.io.IOException;
 
 import javax.inject.Named;
+
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.window.*;
 
 /** <b>Warning</b> :
 As explained in <a href="http://wiki.eclipse.org/Eclipse4/RCP/FAQ#Why_aren.27t_my_handler_fields_being_re-injected.3F">this wiki page</a>, it is not recommended to define @Inject fields in a handler. <br/><br/>
 <b>Inject the values in the @Execute methods</b>
-*/
+ */
 public class RunHandler {
-	private JFrame inputdialog;
-	private JOptionPane joptionpane;
+	private InputDialog inputdialog;
 	private String init_string = System.getProperty("user.home");
 
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell s) {
 
-
-		this.setInputDialog();
-		this.setJFrame();
-		this.setInputDialog();
+		this.setInputDialog(s);
+		this.openInputDialog();
 		String inputstring = this.getInput();
 		ProcessBuilder pBuilder = this.getprocessBuilder(inputstring);
 
@@ -35,23 +33,25 @@ public class RunHandler {
 		}
 	}
 
-	public void setJFrame() {
-		this.inputdialog = new JFrame();
+	public void setInputDialog(Shell s) {
+		this.inputdialog = new InputDialog(s,
+				"Run Cloned Code Checker",
+				"Please enter a directory to check:",
+				this.init_string, null);
 	}
 
-	public void setInputDialog() {
-		this.joptionpane = new JOptionPane();
+	public void openInputDialog() {
+		this.inputdialog.open();
 	}
 
-	public void closeInputDialog() {
-		this.joptionpane = null;
+	public void closeDialog() {
+		//this.inputdialog.setReturnCode(CANCEL);
+		this.inputdialog.close();
+		//this.inputdialog.getWindowManager().close();
 	}
 
 	public String getInput() {
-		return this.joptionpane.showInputDialog(this.inputdialog,
-				"Please enter a directory to check." +
-				"\nTo purge stored data, add\' -p\' to the end of your entry.",
-				"Cloned Code Checker");
+		return this.inputdialog.getValue();
 	}
 
 	public ProcessBuilder getprocessBuilder(String entered_directory) {
