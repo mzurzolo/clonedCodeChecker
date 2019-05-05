@@ -32,7 +32,7 @@ public class SampleTest
 	public void testHandlersetInputDialog() {
 		this.runHandler.setInputDialog(shell);
 	}
-	
+
 	public void testHandlergetInput() {
 		this.runHandler.getInput();
 	}

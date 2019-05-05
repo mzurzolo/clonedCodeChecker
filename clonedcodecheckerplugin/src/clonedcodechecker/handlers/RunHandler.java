@@ -35,7 +35,7 @@ public class RunHandler {
 
 	public void setInputDialog(Shell s) {
 		this.inputdialog = new InputDialog(s,
-				"Run Cloned Code Checker",
+				"Cloned Code Checker",
 				"Please enter a directory to check:",
 				this.init_string, null);
 	}
