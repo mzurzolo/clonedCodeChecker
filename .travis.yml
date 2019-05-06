@@ -9,7 +9,7 @@ python:
   - "3.6"
 
 before_install:
-  - pip install requirements_travis.txt
+  - pip install tox-travis
   - sudo apt-get -y install maven
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 

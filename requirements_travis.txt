@@ -1,5 +1,0 @@
-ruamel.yaml==0.15.89
-tox-travis
-codecov
-coverage
-mock
