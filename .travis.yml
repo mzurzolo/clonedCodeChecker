@@ -13,8 +13,10 @@ matrix:
         - bash <(curl -s https://codecov.io/bash)
 
     - language: python
-      python: 3.6
-              3.4
+      python:
+        - "3.6"
+        - "3.5"
+        - "3.4"
       before_install:
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
       install:
