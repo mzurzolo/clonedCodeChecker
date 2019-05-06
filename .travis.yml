@@ -18,7 +18,7 @@ before_script:
 
 script:
   - tox
-  - pip install . --user
+  - pip install .
   - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
 
 matrix:
