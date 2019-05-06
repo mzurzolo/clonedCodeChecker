@@ -1,5 +1,5 @@
 sudo: required
-dist: xenial
+dist: trusty
 services:
   - xvfb
 language: python
@@ -11,13 +11,10 @@ before_install:
   - sudo apt-get -y install maven eclipse
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
-before_script:
-  - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean eclipse:eclipse validate initialize"
-
 script:
   - tox
   - pip install .
-  - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
+  - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean eclipse:eclipse validate initialize verify jacoco:report"
 
 matrix:
   include:
