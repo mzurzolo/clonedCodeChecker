@@ -4,13 +4,12 @@ services:
   - xvfb
 language: python
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
 
 before_install:
   - pip install tox-travis
-  - sudo apt-get -y install maven
+  - sudo apt-get -y install maven openjkd-8-jdk openjdk-7-jdk oraclejdk-8-jdk oraclejdk-7-jdk eclipse
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 before_script:
