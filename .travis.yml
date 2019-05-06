@@ -9,7 +9,9 @@ python:
 
 before_install:
   - pip install tox-travis
-  - sudo apt-get -y install maven openjkd-8-jdk openjdk-7-jdk oraclejdk-8-jdk oraclejdk-7-jdk eclipse
+  - sudo apt-get -y install maven eclipse
+  - sudo apt-get search openjdk
+  - sudo apt-get search oraclejdk 
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 before_script:
