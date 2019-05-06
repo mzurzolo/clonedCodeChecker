@@ -1,5 +1,7 @@
 sudo: required
-dist: trusty
+dist: xenial
+services:
+  - xvfb
 language: bash
 jdk:
   - openjdk7
@@ -12,9 +14,6 @@ before_install:
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
   - pip install -r requirements_travis.txt
   - pip install .
   - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean validate initialize"
