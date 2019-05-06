@@ -8,8 +8,8 @@
   <packaging>eclipse-test-plugin</packaging>
 
   <properties>
-    <tycho-version>1.3.0</tycho-version>
-    <jacoco-version>0.7.0</jacoco-version>
+    <tycho-version>1.4.0</tycho-version>
+    <jacoco-version>0.8.0</jacoco-version>
     <argLine>tycho.testArgLine</argLine>
   </properties>
 
@@ -118,7 +118,7 @@
     <repository>
       <id>eclipse-latest</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/oxygen</url>
+      <url>http://download.eclipse.org/releases/photon</url>
     </repository>
   </repositories>
   <pluginRepositories>
