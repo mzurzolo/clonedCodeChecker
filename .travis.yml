@@ -14,8 +14,8 @@ before_install:
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 before_script:
-  - pip install -r requirements_travis.txt
-  - pip install .
+  - pip install -r requirements_travis.txt --user
+  - pip install . --user
   - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean validate initialize"
 
 script:
