@@ -8,7 +8,7 @@ python:
 
 before_install:
   - pip install tox-travis
-  - sudo apt-get -y upgrade ; sudo apt-get -y install maven eclipse
+  - sudo apt-get -y install maven eclipse
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 before_script:
