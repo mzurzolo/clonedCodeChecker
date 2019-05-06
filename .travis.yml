@@ -19,10 +19,16 @@ script:
 
 matrix:
   include:
-    - jdk: "openjdk7"
-    - jdk: "openjdk8"
-    - jdk: "oraclejdk7"
-    - jdk: "oraclejdk8"
+    - jdk: "openjdk9"
+    - jdk: "openjdk10"
+    - jdk: "openjdk11"
+    - jdk: "openjdk12"
+    - jdk: "openjdk13"
+    - jdk: "oraclejdk9"
+    - jdk: "oraclejdk10"
+    - jdk: "oraclejdk11"
+    - jdk: "oraclejdk12"
+    - jdk: "oraclejdk13"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
