@@ -8,6 +8,7 @@ jdk:
   - oraclejdk8
 
 before_install:
+  - apt-get -y install maven2
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
   - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
 
