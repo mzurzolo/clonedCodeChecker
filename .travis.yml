@@ -2,12 +2,11 @@ sudo: required
 dist: xenial
 services:
   - xvfb
-language: bash
-jdk:
-  - openjdk7
-  - openjdk8
-  - oraclejdk7
-  - oraclejdk8
+language: python
+python:
+    - "3.6"
+    - "3.5"
+    - "3.4"
 
 before_install:
   - sudo apt-get -y install maven
@@ -24,9 +23,10 @@ script:
 
 matrix:
   include:
-    - python: 3.6
-    - python: 3.5
-    - python: 3.4
+    - jdk: "openjdk7"
+    - jdk: "openjdk8"
+    - jdk: "oraclejdk7"
+    - jdk: "oraclejdk8"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
