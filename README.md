@@ -21,9 +21,9 @@
 
     2.2 __Full install, including eclipse plugin:__
 
-        `python setup.py install --user
+      for python: `python setup.py install --user`
 
-         mvn -f clonedcodecheckerplugin package`
+      for eclipse: `mvn -f clonedcodecheckerplugin package`
 
     Now you need to copy the generated package to the *dropins* directory of your eclipse install. Assuming eclipse is installed in *eclipse* under the *home* directory, the command `cp clonedcodecheckerplugin/target/clonedcodechecker-1.0.0-SNAPSHOT.jar $HOME/eclipse/dropins/` should do it. Users can also use a file explorer.
 
