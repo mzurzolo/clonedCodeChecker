@@ -12,13 +12,31 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-    - language: python
-    - matrix:
-      - include:
-        -  python:
-            - "3.6"
-            - "3.5"
-            - "3.4"
+    - language: python: 3.6
+      before_install:
+        - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
+      install:
+        - pip install -r requirements_travis.txt
+      # command to run tests
+      script:
+        - tox
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+    - language: python: 3.5
+      before_install:
+        - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
+      install:
+        - pip install -r requirements_travis.txt
+      # command to run tests
+      script:
+        - tox
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+    - language: python: 3.4
       before_install:
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
       install:
