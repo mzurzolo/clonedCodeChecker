@@ -2,9 +2,14 @@ sudo: required
 dist: xenial
 services:
   - xvfb
-language: java
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
 
 before_install:
+  - pip install requirements_travis.txt
   - sudo apt-get -y install maven
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
@@ -12,9 +17,9 @@ before_script:
   - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean validate initialize"
 
 script:
+  - tox
   - pip install . --user
   - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
-  - tox
 
 matrix:
   include:
