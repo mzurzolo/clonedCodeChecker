@@ -30,9 +30,18 @@ public class SampleTest
 
 	@Test
 	public void testHandlersetInputDialog() {
+		this.runHandler.setBlockingBoolean(false);
+		this.runHandler.setInitString("/home");
 		this.runHandler.setInputDialog(shell);
 		this.runHandler.openInputDialog();
 		this.runHandler.okDialog();
+	}
+
+	@Test
+	public void testExecute() {
+		this.runHandler.setBlockingBoolean(false);
+		this.runHandler.setInitString("/home");
+		this.runHandler.execute(shell);
 	}
 
 	public void testHandlergetInput() {

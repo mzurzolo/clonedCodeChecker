@@ -15,13 +15,13 @@ As explained in <a href="http://wiki.eclipse.org/Eclipse4/RCP/FAQ#Why_aren.27t_m
 <b>Inject the values in the @Execute methods</b>
  */
 public class RunHandler {
+	private boolean blocking = true;
 	private InternalInputDialog inputdialog;
 	private String init_string = System.getProperty("user.home");
 
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell s) {
-
-		this.setInputDialog(s);
+		this.setInputDialog(s, this.blocking);
 		this.openInputDialog();
 		String inputstring = this.getInput();
 		ProcessBuilder pBuilder = this.getprocessBuilder(inputstring);
@@ -33,11 +33,11 @@ public class RunHandler {
 		}
 	}
 
-	public void setInputDialog(Shell s) {
+	public void setInputDialog(Shell s, boolean val) {
 		this.inputdialog = new InternalInputDialog(s,
 				"Cloned Code Checker",
 				"Please enter a directory to check:",
-				this.init_string, null);
+				this.init_string, null, val);
 	}
 
 	public void openInputDialog() {
@@ -68,13 +68,17 @@ public class RunHandler {
 	public void setInitString(String s) {
 		this.init_string = s;
 	}
+	
+	public void setBlockingBoolean(boolean val) {
+		this.blocking = val;
+	}
 
 	public class InternalInputDialog extends InputDialog{
 
 		public InternalInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue,
-				IInputValidator validator) {
+				IInputValidator validator, boolean val) {
 			super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
-			this.setBlockOnOpen(false);
+			this.setBlockOnOpen(val);
 		}
 		public boolean close() {
 			return super.close();
