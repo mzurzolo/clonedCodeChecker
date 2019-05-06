@@ -1,6 +1,5 @@
-FROM centos:7
+FROM oraclelinux:7
 
-COPY . /home/project
-RUN yum -y install epel-release
-RUN yum -y install python36
-RUN ls /home/project
+yum -y install python36 python36-setuptools python34 python34-setuptools devtoolset-4-eclipse
+
+COPY . /home/travis
