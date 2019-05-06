@@ -10,7 +10,7 @@ jdk:
   - oraclejdk8
 
 before_install:
-  - sudo apt-get -y install maven2
+  - sudo apt-get -y install maven
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 before_script:
