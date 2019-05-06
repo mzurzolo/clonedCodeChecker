@@ -10,7 +10,6 @@ jdk:
 before_install:
   - sudo apt-get -y install maven2
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-  - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
 
 before_script:
   - "export DISPLAY=:99.0"
@@ -18,7 +17,7 @@ before_script:
   - sleep 3 # give xvfb some time to start
   - pip install -r requirements_travis.txt
   - pip install .
-  - "mvn -f clonedcodecheckerplugin clean validate initialize"
+  - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean validate initialize"
 
 script:
   - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
