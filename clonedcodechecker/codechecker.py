@@ -160,11 +160,11 @@ def main(arg_s=None):
 
 # This is the entry point.
 # It means "if this file was run from the command line, do this stuff
-def init():
+def run():
     if __name__ == "__main__":
         # code_cache is the 'container' object. It holds cppFile objects
         # I create it here so every function above has access to it.
         sys.exit(main(arg_s=sys.argv[1:]))
 
 
-init()
+run()

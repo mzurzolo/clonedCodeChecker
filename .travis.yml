@@ -12,6 +12,7 @@ before_install:
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
 
 script:
+  - xvfb-run make test
   - tox
   - pip install .
   - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean eclipse:eclipse validate initialize verify jacoco:report"
