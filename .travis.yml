@@ -1,27 +1,25 @@
 sudo: false
 dist: trusty
-matrix:
-  include:
-    - language: java
-      before_script:
-        - "export DISPLAY=:99.0"
-        - "sh -e /etc/init.d/xvfb start"
-        - sleep 3 # give xvfb some time to start
-      script: pip install .
-      script: "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean validate initialize verify jacoco:report"
-      after_success:
-        - bash <(curl -s https://codecov.io/bash)
+- language: java
+  before_script:
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
+    - sleep 3 # give xvfb some time to start
+  script: pip install .
+  script: "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean validate initialize verify jacoco:report"
+  after_success:
+    - bash <(curl -s https://codecov.io/bash)
 
-    - language: python
-      python: - "3.6"
-              - "3.5"
-      before_install:
-        - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-      install:
-        - pip install -r requirements_travis.txt
-      # command to run tests
-      script:
-        - tox
+- language: python
+  python: - "3.6"
+          - "3.5"
+  before_install:
+    - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
+  install:
+    - pip install -r requirements_travis.txt
+  # command to run tests
+  script:
+    - tox
 
-      after_success:
-        - bash <(curl -s https://codecov.io/bash)
+  after_success:
+    - bash <(curl -s https://codecov.io/bash)
