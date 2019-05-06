@@ -32,7 +32,7 @@ public class SampleTest
 	public void testHandlersetInputDialog() {
 		this.runHandler.setBlockingBoolean(false);
 		this.runHandler.setInitString("/home");
-		this.runHandler.setInputDialog(shell);
+		this.runHandler.setInputDialog(shell, false);
 		this.runHandler.openInputDialog();
 		this.runHandler.okDialog();
 	}
