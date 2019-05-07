@@ -14,7 +14,7 @@ python:
 
 before_install:
   - docker build -t oracle7 .
-  - docker run -itv /home/travis:/home/travis --name oracle7 /bin/sh
+  - docker run -itv /home/travis:/home/travis --name oracle7 /bin/bash
   - sh -e /etc/init.d/xvfb start - sleep 3
   - pip install tox-travis
   - sudo apt-get -y install maven eclipse
