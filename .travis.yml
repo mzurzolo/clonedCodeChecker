@@ -14,7 +14,6 @@ python:
 before_install:
   - sh -e /etc/init.d/xvfb start - sleep 3
   - pip install tox-travis
-  - sudo apt-get -y install maven eclipse
   - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
   - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
 
