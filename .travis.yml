@@ -21,7 +21,6 @@ script:
   - tox
   - pip install .
   - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
-  - docker build -t oracle7 .
 
 matrix:
   include:
