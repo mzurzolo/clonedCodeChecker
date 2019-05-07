@@ -44,6 +44,9 @@
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho-version}</version>
         <extensions>true</extensions>
+        <configuration>
+          <includeAllDependencies>true</includeAllDependencies>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
