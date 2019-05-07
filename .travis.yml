@@ -1,7 +1,7 @@
 sudo: required
 dist: trusty
 services:
-  - xvfb
+  - docker
 
 env:
   global:
@@ -9,11 +9,13 @@ env:
 
 language: python
 python:
+  - "3.7"
   - "3.6"
   - "3.5"
-  - "3.4"
 
 before_install:
+  - docker build -t oracle7 .
+  - docker run -itv /home/travis:/home/travis --name oracle7 /bin/sh
   - sh -e /etc/init.d/xvfb start - sleep 3
   - pip install tox-travis
   - sudo apt-get -y install maven eclipse
@@ -32,6 +34,7 @@ matrix:
     - jdk: "openjdk11"
     - jdk: "openjdk12"
     - jdk: "openjdk13"
+    - jdk: "oraclejdk8"
     - jdk: "oraclejdk9"
     - jdk: "oraclejdk10"
     - jdk: "oraclejdk11"
