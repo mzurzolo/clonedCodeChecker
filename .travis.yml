@@ -11,6 +11,9 @@ matrix:
         - sh -e /etc/init.d/xvfb start - sleep 3
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
         - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
+      install:
+        - apt-get install python3-pip
+        - python3 setup.py install --user
       script:
         - python3 setup.py install --user
         - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
