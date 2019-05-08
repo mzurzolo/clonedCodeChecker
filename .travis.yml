@@ -10,17 +10,25 @@ matrix:
       before_install:
         - sh -e /etc/init.d/xvfb start - sleep 3
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-        - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
       install:
         - pip install tox-travis
       # command to run tests
       script:
-        - pip install .
-        - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
-        - bash <(curl -s https://codecov.io/bash)
         - tox
+
+      after_success:
         - bash <(curl -s https://codecov.io/bash)
 
+    - language: java
+      before_script:
+        - sh -e /etc/init.d/xvfb start - sleep 3
+        - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
+      # command to run tests
+      script:
+        - "mvn -f clonedcodecheckerplugin initialize verify jacoco:report"
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
 
 env:
   global:
