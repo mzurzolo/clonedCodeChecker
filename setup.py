@@ -26,7 +26,7 @@ def main():
           install_requires=['ruamel.yaml'],
           entry_points={
               'console_scripts': [
-                  'ccc = clonedcodechecker.codechecker:run'
+                  'ccc = clonedcodechecker.codechecker:main'
               ]
           })
 
