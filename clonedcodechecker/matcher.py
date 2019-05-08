@@ -129,7 +129,7 @@ class Matcher:
                 close_count = len(
                     self.tok_regex["CLOSE_BRACE"].findall(quote_filtered)
                 )
-                if open_count == close_count and quote_filtered.endswith("}"):
+                if open_count == close_count and close_count > 0:
                     startline_here = startline
                     startline += len(
                         self.tok_regex["LINE_COUNTER"].findall(
