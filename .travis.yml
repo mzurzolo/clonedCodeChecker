@@ -15,9 +15,9 @@ matrix:
         - pip install tox-travis
       # command to run tests
       script:
-        - tox
         - pip install .
         - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
+        - tox
 
       after_success:
         - bash <(curl -s https://codecov.io/bash)
