@@ -11,7 +11,7 @@ matrix:
         - sh -e /etc/init.d/xvfb start - sleep 3
         - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
       install:
-        - pip install tox-travis
+        - pip install tox-travis ruamel.yaml==0.15.89 pytest pytest-cov coverage codecov mock
       # command to run tests
       script:
         - tox
