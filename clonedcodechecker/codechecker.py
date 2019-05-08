@@ -161,6 +161,7 @@ def main(arg_s=None):
 # This is the entry point.
 # It means "if this file was run from the command line, do this stuff
 def run():
+    """Only useful for testing. Program's entry point is main. See setup.py"""
     if __name__ == "__main__":
         # code_cache is the 'container' object. It holds cppFile objects
         # I create it here so every function above has access to it.

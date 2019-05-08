@@ -26,16 +26,15 @@ class Matcher:
     The Matcher class.
 
     Slots:
-    line_matches: A dictionary where the key is the line being matched,
-    and the value is a list of filenames that contain the line.
-    tox_regex: A compiled regular expression object. Not yet in use
-    total_lineset: the set of all lines that have been seen by the matcher.
+    total_linecount: The total lines analyzed
+    mergeupdater: A modified ChainMap (dictionary) that updates the values of
+        existing keys instead of overwriting them
+    tox_regex: A dictionary of compiled regular expression objects that are
+        used as 'filters' while processing strings of source code
     """
 
     def __init__(self):
         """Build regular expression (tokenizer) object."""
-        self.line_matches = {}
-        self.total_lineset = set()
         self.total_linecount = 0
         self.mergeupdater = MergeUpdater()
 
@@ -76,6 +75,7 @@ class Matcher:
         comment_filtered = ""
         member_list = deque()
         for token in self.tok_regex["FIRST_FILTER"].finditer(text):
+            # Before we start building a member, drop things
             if member_accumulator == "":
                 if any(
                     [
@@ -89,35 +89,45 @@ class Matcher:
                         self.tok_regex["LINE_COUNTER"].findall(token.group())
                     )
                     continue
-
+            # Accumulate tokens while building member
             member_accumulator += token.group()
+            # Filter comments that may be inside the member (like this one)
             comment_filtered += re.sub(
                 self.tok_regex["COMMENT_FILTER"], "", token.group()
             )
+            # End on a brace
             if token.lastgroup == "TO_NEXT_BRACE":
+                # Remove quotes (since they may contain braces)
                 quote_filtered = re.sub(
                     self.tok_regex["QUOTEFILTER"], "", comment_filtered
                 )
+                # Count open and close braces
                 open_count = len(
                     self.tok_regex["OPEN_BRACE"].findall(quote_filtered)
                 )
                 close_count = len(
                     self.tok_regex["CLOSE_BRACE"].findall(quote_filtered)
                 )
+                # If it ends with a close brace, this is maybe a member
                 if open_count == close_count and quote_filtered.endswith("}"):
+                    # Keep track of line count
                     startline_here = startline
                     startline += len(
                         self.tok_regex["LINE_COUNTER"].findall(
                             member_accumulator
                         )
                     )
+                    # We want to start on the next line
                     endline = startline + 1
+                    # Comment filtered is the member without comments
+                    # Add member, start line, and end line as a 3-tuple to
+                    #  the member_list
                     member_list.append(
                         (comment_filtered, startline_here, endline)
                     )
                     member_accumulator = ""
                     comment_filtered = ""
-
+        # Catch last section of source code just in case
         if member_accumulator != "":
             if self.tok_regex["CLOSE_BRACE"].findall(comment_filtered):
                 quote_filtered = re.sub(
@@ -141,17 +151,22 @@ class Matcher:
                         (comment_filtered, startline_here, endline)
                     )
                     member_accumulator = ""
-
+            # Needed for accurate line recording
             startline += len(
                 self.tok_regex["LINE_COUNTER"].findall(member_accumulator)
             )
-
+        # Output goes to codecache instead of passing directly to
+        # match_tokens below.
         return (member_list, startline)
 
     def match_tokens(self, filename, member_tokens):
-        """Test the token matcher."""
+        """Loop through member tokens, adding to mergeupdater."""
         for token in member_tokens:
+            # Only consider members that contain ) {
+            # This filters members written as:   something()={}
             if self.tok_regex["PAREN_PAIR"].findall(token[0]):
+                # Sending each token through seperately ensures duplicates in
+                # the same file are found
                 self.mergeupdater.update(
                     {token[0]: (filename, token[1], token[2])}
                 )

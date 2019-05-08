@@ -15,10 +15,16 @@ def cache_filename(path):
 
 
 class CodeCache:
-    """The CodeCache holds CppFiles, the Matcher, and controls filecache."""
+    """The CodeCache holds CppFiles, the Matcher, and controls filecache.
+
+    Slots:
+    search_set: Absolute paths of all files to search. Comes from codechecker
+    filecache: Directory of the filecache. It's always in ~/.filecache
+    matcher: The CodeCache owns an instance of the Matcher class
+    output_dir: Set externally (in codechecker) on program launch
+    """
 
     __slots__ = [
-        "files",
         "search_set",
         "filecache",
         "filelist",
@@ -28,9 +34,7 @@ class CodeCache:
 
     def __init__(self, filecache="./.filecache/"):
         """Get new CodeCache object."""
-        self.files = deque()
         self.search_set = deque()
-        # the directory of processed files
         self.filecache = filecache
         self.matcher = Matcher()
         self.output_dir = None
@@ -56,21 +60,30 @@ class CodeCache:
         t_modified = os.stat(filename).st_mtime
         print(filename)
         try:
+            # Try to get it from the filecache
             with open(cachedfile, "r") as file:
                 new_file = YA_ML.load(file)
             if new_file.t_modified != t_modified:
                 os.remove(cachedfile)
                 raise OSError
         except (OSError, FileNotFoundError):
+            # Create a new CppFile if the above fails. It will fail on
+            # Differing timestamps, and on file not being in the filecache.
             new_file = CppFile(
                 filename=filename, cachedfile=cachedfile, t_modified=t_modified
             )
-
+            # Get members. This only runs if the file needs to be processed
+            # or re-processed.
             member_tokens, linesize = self.matcher.tokenize(new_file.linestring)
             new_file.linesize = linesize
             new_file.member_tokens = list(member_tokens)
+        # matcher's linesize is updated here to account for files that do not
+        # need to go through mathcer.tokenize  (where the count is generated)
         self.matcher.total_linecount += new_file.linesize
+        # Further processing of members could happen here, before they go to
+        # match_tokens
         self.matcher.match_tokens(new_file.filename, new_file.member_tokens)
+        # return to process_files, which dumps it directly to save_file
         return new_file
 
     def save_file(self, file):
@@ -79,7 +92,6 @@ class CodeCache:
         fname = cache_filename(file.filename)
         filepath = os.path.join(self.filecache, fname)
         file.linestring = ""
-        # match individual lines (for now)
         # if the file is already in the filecache, skip the rest of this
         # loop and go back up to the while statement.
         try:
@@ -129,4 +141,5 @@ class CppFile(defaultdict):
             self.linestring = file.read()
 
 
+# class must be registered to be loadable/dumpable by the C implementation
 YA_ML.register_class(CppFile)
