@@ -3,39 +3,37 @@ dist: trusty
 services:
   - docker
 
+matrix:
+  include:
+
+    - language: java
+      before_install:
+        - sh -e /etc/init.d/xvfb start - sleep 3
+        - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
+        - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
+      script:
+        - pip install .
+        - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+    - language: python
+      python: 3.6
+      before_install:
+        - sh -e /etc/init.d/xvfb start - sleep 3
+        - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
+        - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
+      install:
+        - pip install tox-travis
+      # command to run tests
+      script:
+        - tox
+        - pip install .
+        - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
 env:
   global:
    - DISPLAY=:99.0
-
-language: python
-python:
-  - "3.6"
-
-before_install:
-  - sh -e /etc/init.d/xvfb start - sleep 3
-  - pip install tox-travis
-  - git clone --depth 1 https://github.com/opencv/opencv.git /home/travis/build/mzurzolo/opencv
-  - "mvn -f clonedcodecheckerplugin dependency:purge-local-repository clean"
-
-script:
-  - tox
-  - pip install .
-  - "mvn -f clonedcodecheckerplugin clean validate initialize verify jacoco:report"
-
-matrix:
-  include:
-    - jdk: "openjdk8"
-    - jdk: "openjdk9"
-    - jdk: "openjdk10"
-    - jdk: "openjdk11"
-    - jdk: "openjdk12"
-    - jdk: "openjdk13"
-    - jdk: "oraclejdk8"
-    - jdk: "oraclejdk9"
-    - jdk: "oraclejdk10"
-    - jdk: "oraclejdk11"
-    - jdk: "oraclejdk12"
-    - jdk: "oraclejdk13"
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
