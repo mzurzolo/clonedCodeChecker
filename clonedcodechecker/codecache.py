@@ -112,11 +112,10 @@ class CppFile(defaultdict):
 
     filename: absolute path of source file
     cachedfile: absolute path of the cached version
-    lineset: an unordered collection of unique lines in the file
-    all_lines: all lines in the file
-    blocks: collections of lines into logical pieces/blocks of code
     t_modified: the last time the file was modified (epoch timestamp)
     as reported by the filesystem.
+    linesize: total number of lines
+    member_tokens: the members this file contains
     """
 
     def __init__(
