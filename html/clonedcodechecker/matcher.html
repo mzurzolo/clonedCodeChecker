@@ -21,12 +21,14 @@
 </header>
 <section id="section-intro">
 <p>The Matcher class owns all things involved in defining duplicate code.</p>
-<p>This is where the tokenizer lives, and where matches across files are stored.</p>
+<p>This is where the tokenizer lives, where matches across files are stored,
+and where the final output comes from.</p>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;The Matcher class owns all things involved in defining duplicate code.
 
-This is where the tokenizer lives, and where matches across files are stored.
+This is where the tokenizer lives, where matches across files are stored,
+and where the final output comes from.
 &#34;&#34;&#34;
 
 import re
@@ -60,7 +62,11 @@ class Matcher:
     &#34;&#34;&#34;
 
     def __init__(self):
-        &#34;&#34;&#34;Build regular expression (tokenizer) object.&#34;&#34;&#34;
+        &#34;&#34;&#34;Build a dictionary of compiled regular expressions.
+
+        Get a MergeUpdater to track matches.
+        Initialize total_linecount.
+        &#34;&#34;&#34;
         self.total_linecount = 0
         self.mergeupdater = MergeUpdater()
 
@@ -96,7 +102,10 @@ class Matcher:
             self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
 
     def tokenize(self, text, startline=1):
-        &#34;&#34;&#34;Yield tuples of text and line position for every found match.&#34;&#34;&#34;
+        &#34;&#34;&#34;Process text.
+
+        Return a list of 3-tuples (member, startline, endline).
+        &#34;&#34;&#34;
         member_accumulator = &#34;&#34;
         comment_filtered = &#34;&#34;
         member_list = deque()
@@ -264,7 +273,9 @@ class Matcher:
 <dt><strong><code>tox_regex</code></strong> :&ensp;<code>A</code> <code>dictionary</code> of <code>compiled</code> <code>regular</code> <code>expression</code> <code>objects</code> <code>that</code> <code>are</code></dt>
 <dd>used as 'filters' while processing strings of source code</dd>
 </dl>
-<p>Build regular expression (tokenizer) object.</p></section>
+<p>Build a dictionary of compiled regular expressions.</p>
+<p>Get a MergeUpdater to track matches.
+Initialize total_linecount.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Matcher:
@@ -280,7 +291,11 @@ class Matcher:
     &#34;&#34;&#34;
 
     def __init__(self):
-        &#34;&#34;&#34;Build regular expression (tokenizer) object.&#34;&#34;&#34;
+        &#34;&#34;&#34;Build a dictionary of compiled regular expressions.
+
+        Get a MergeUpdater to track matches.
+        Initialize total_linecount.
+        &#34;&#34;&#34;
         self.total_linecount = 0
         self.mergeupdater = MergeUpdater()
 
@@ -316,7 +331,10 @@ class Matcher:
             self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
 
     def tokenize(self, text, startline=1):
-        &#34;&#34;&#34;Yield tuples of text and line position for every found match.&#34;&#34;&#34;
+        &#34;&#34;&#34;Process text.
+
+        Return a list of 3-tuples (member, startline, endline).
+        &#34;&#34;&#34;
         member_accumulator = &#34;&#34;
         comment_filtered = &#34;&#34;
         member_list = deque()
@@ -537,11 +555,15 @@ class Matcher:
 <span>def <span class="ident">tokenize</span></span>(<span>self, text, startline=1)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Yield tuples of text and line position for every found match.</p></section>
+<section class="desc"><p>Process text.</p>
+<p>Return a list of 3-tuples (member, startline, endline).</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def tokenize(self, text, startline=1):
-    &#34;&#34;&#34;Yield tuples of text and line position for every found match.&#34;&#34;&#34;
+    &#34;&#34;&#34;Process text.
+
+    Return a list of 3-tuples (member, startline, endline).
+    &#34;&#34;&#34;
     member_accumulator = &#34;&#34;
     comment_filtered = &#34;&#34;
     member_list = deque()

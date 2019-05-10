@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.1" />
 <title>clonedcodechecker.codechecker API documentation</title>
-<meta name="description" content="cloned_code_checker is a static analysis tool for C/C++ Source Code." />
+<meta name="description" content="The clonedcodechecker is a static analysis tool for C/C++ Source Code." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,10 +20,10 @@
 <h1 class="title">Module <code>clonedcodechecker.codechecker</code></h1>
 </header>
 <section id="section-intro">
-<p>cloned_code_checker is a static analysis tool for C/C++ Source Code.</p>
+<p>The clonedcodechecker is a static analysis tool for C/C++ Source Code.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;cloned_code_checker is a static analysis tool for C/C++ Source Code.&#34;&#34;&#34;
+<pre><code class="python">&#34;&#34;&#34;The clonedcodechecker is a static analysis tool for C/C++ Source Code.&#34;&#34;&#34;
 
 import os
 import sys
@@ -31,6 +31,7 @@ import argparse
 from collections import deque
 from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
+import clonedcodechecker
 
 
 class ClonedCodeChecker:
@@ -122,7 +123,12 @@ class ClonedCodeChecker:
         self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
 
-def main(arg_s=None):
+def printversion():
+    &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
+    return &#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__)
+
+
+def main(arg_s=[&#34;-h&#34;]):
     &#34;&#34;&#34;Parse arguments, drive program.&#34;&#34;&#34;
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -131,10 +137,17 @@ def main(arg_s=None):
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
-    parser = argparse.ArgumentParser()
-    parser.add_argument(&#34;-p&#34;, action=&#34;store_true&#34;, help=&#34;Purge C++ Code Cache&#34;)
+    parser = argparse.ArgumentParser(clonedcodechecker)
+    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=sys.exit(printversion()))
+    parser.add_argument(
+        &#34;-p&#34;,
+        &#34;--purgefilecache&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;Purge the filecache (found at $HOME/.filecache)&#34;,
+    )
     parser.add_argument(
         &#34;-r&#34;,
+        &#34;--recursive&#34;,
         action=&#34;store_true&#34;,
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
@@ -143,6 +156,7 @@ def main(arg_s=None):
     )
     parser.add_argument(
         &#34;-d&#34;,
+        &#34;--directory&#34;,
         default=&#34;./&#34;,
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
@@ -204,13 +218,13 @@ run()</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="clonedcodechecker.codechecker.main"><code class="name flex">
-<span>def <span class="ident">main</span></span>(<span>arg_s=None)</span>
+<span>def <span class="ident">main</span></span>(<span>arg_s=['-h'])</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Parse arguments, drive program.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def main(arg_s=None):
+<pre><code class="python">def main(arg_s=[&#34;-h&#34;]):
     &#34;&#34;&#34;Parse arguments, drive program.&#34;&#34;&#34;
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -219,10 +233,17 @@ run()</code></pre>
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
-    parser = argparse.ArgumentParser()
-    parser.add_argument(&#34;-p&#34;, action=&#34;store_true&#34;, help=&#34;Purge C++ Code Cache&#34;)
+    parser = argparse.ArgumentParser(clonedcodechecker)
+    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=sys.exit(printversion()))
+    parser.add_argument(
+        &#34;-p&#34;,
+        &#34;--purgefilecache&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;Purge the filecache (found at $HOME/.filecache)&#34;,
+    )
     parser.add_argument(
         &#34;-r&#34;,
+        &#34;--recursive&#34;,
         action=&#34;store_true&#34;,
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
@@ -231,6 +252,7 @@ run()</code></pre>
     )
     parser.add_argument(
         &#34;-d&#34;,
+        &#34;--directory&#34;,
         default=&#34;./&#34;,
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
@@ -271,6 +293,18 @@ run()</code></pre>
         ccc.load_cpp_files(args.d)</code></pre>
 </details>
 </dd>
+<dt id="clonedcodechecker.codechecker.printversion"><code class="name flex">
+<span>def <span class="ident">printversion</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Print Version.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def printversion():
+    &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
+    return &#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__)</code></pre>
+</details>
+</dd>
 <dt id="clonedcodechecker.codechecker.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>)</span>
 </code></dt>
@@ -293,7 +327,7 @@ run()</code></pre>
 <dl>
 <dt id="clonedcodechecker.codechecker.ClonedCodeChecker"><code class="flex name class">
 <span>class <span class="ident">ClonedCodeChecker</span></span>
-<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 1, 21, 19, 640811))</span>
+<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 10, 29, 44, 854200))</span>
 </code></dt>
 <dd>
 <section class="desc"><p>The ClonedCodeChecker collects files for its CodeCache.</p>
@@ -492,6 +526,7 @@ run()</code></pre>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="clonedcodechecker.codechecker.main" href="#clonedcodechecker.codechecker.main">main</a></code></li>
+<li><code><a title="clonedcodechecker.codechecker.printversion" href="#clonedcodechecker.codechecker.printversion">printversion</a></code></li>
 <li><code><a title="clonedcodechecker.codechecker.run" href="#clonedcodechecker.codechecker.run">run</a></code></li>
 </ul>
 </li>

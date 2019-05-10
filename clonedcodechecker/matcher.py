@@ -1,6 +1,7 @@
 """The Matcher class owns all things involved in defining duplicate code.
 
-This is where the tokenizer lives, and where matches across files are stored.
+This is where the tokenizer lives, where matches across files are stored,
+and where the final output comes from.
 """
 
 import re
@@ -34,7 +35,11 @@ class Matcher:
     """
 
     def __init__(self):
-        """Build regular expression (tokenizer) object."""
+        """Build a dictionary of compiled regular expressions.
+
+        Get a MergeUpdater to track matches.
+        Initialize total_linecount.
+        """
         self.total_linecount = 0
         self.mergeupdater = MergeUpdater()
 
@@ -70,7 +75,10 @@ class Matcher:
             self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
 
     def tokenize(self, text, startline=1):
-        """Yield tuples of text and line position for every found match."""
+        """Process text.
+
+        Return a list of 3-tuples (member, startline, endline).
+        """
         member_accumulator = ""
         comment_filtered = ""
         member_list = deque()

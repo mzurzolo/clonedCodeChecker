@@ -1,4 +1,4 @@
-"""cloned_code_checker is a static analysis tool for C/C++ Source Code."""
+"""The clonedcodechecker is a static analysis tool for C/C++ Source Code."""
 
 import os
 import sys
@@ -6,6 +6,7 @@ import argparse
 from collections import deque
 from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
+import clonedcodechecker
 
 
 class ClonedCodeChecker:
@@ -97,7 +98,12 @@ class ClonedCodeChecker:
         self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
 
-def main(arg_s=None):
+def printversion():
+    """Print Version."""
+    return "ClonedCodeChecker {}".format(clonedcodechecker.__version__)
+
+
+def main(arg_s=["-h"]):
     """Parse arguments, drive program."""
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -106,10 +112,17 @@ def main(arg_s=None):
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-p", action="store_true", help="Purge C++ Code Cache")
+    parser = argparse.ArgumentParser(clonedcodechecker)
+    parser.add_argument("-v", "--version", action=sys.exit(printversion()))
+    parser.add_argument(
+        "-p",
+        "--purgefilecache",
+        action="store_true",
+        help="Purge the filecache (found at $HOME/.filecache)",
+    )
     parser.add_argument(
         "-r",
+        "--recursive",
         action="store_true",
         help="{}{}".format(
             "Search for duplicate code in given ",
@@ -118,6 +131,7 @@ def main(arg_s=None):
     )
     parser.add_argument(
         "-d",
+        "--directory",
         default="./",
         help="{}{}".format(
             "Search for duplicate code in given ",

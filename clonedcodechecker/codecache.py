@@ -1,4 +1,4 @@
-"""code_cache holds the CodeCache and CppFile classes, and the YAML object."""
+"""codecache holds the CodeCache and CppFile classes, and the YAML object."""
 
 import os
 from collections import deque, defaultdict
@@ -24,13 +24,7 @@ class CodeCache:
     output_dir: Set externally (in codechecker) on program launch
     """
 
-    __slots__ = [
-        "search_set",
-        "filecache",
-        "filelist",
-        "matcher",
-        "output_dir",
-    ]
+    __slots__ = ["search_set", "filecache", "filelist", "matcher", "output_dir"]
 
     def __init__(self, filecache="./.filecache/"):
         """Get new CodeCache object."""

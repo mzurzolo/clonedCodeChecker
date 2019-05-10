@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.1" />
 <title>clonedcodechecker.codecache API documentation</title>
-<meta name="description" content="code_cache holds the CodeCache and CppFile classes, and the YAML object." />
+<meta name="description" content="codecache holds the CodeCache and CppFile classes, and the YAML object." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,10 +20,10 @@
 <h1 class="title">Module <code>clonedcodechecker.codecache</code></h1>
 </header>
 <section id="section-intro">
-<p>code_cache holds the CodeCache and CppFile classes, and the YAML object.</p>
+<p>codecache holds the CodeCache and CppFile classes, and the YAML object.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;code_cache holds the CodeCache and CppFile classes, and the YAML object.&#34;&#34;&#34;
+<pre><code class="python">&#34;&#34;&#34;codecache holds the CodeCache and CppFile classes, and the YAML object.&#34;&#34;&#34;
 
 import os
 from collections import deque, defaultdict
@@ -49,13 +49,7 @@ class CodeCache:
     output_dir: Set externally (in codechecker) on program launch
     &#34;&#34;&#34;
 
-    __slots__ = [
-        &#34;search_set&#34;,
-        &#34;filecache&#34;,
-        &#34;filelist&#34;,
-        &#34;matcher&#34;,
-        &#34;output_dir&#34;,
-    ]
+    __slots__ = [&#34;search_set&#34;, &#34;filecache&#34;, &#34;filelist&#34;, &#34;matcher&#34;, &#34;output_dir&#34;]
 
     def __init__(self, filecache=&#34;./.filecache/&#34;):
         &#34;&#34;&#34;Get new CodeCache object.&#34;&#34;&#34;
@@ -224,13 +218,7 @@ YA_ML.register_class(CppFile)</code></pre>
     output_dir: Set externally (in codechecker) on program launch
     &#34;&#34;&#34;
 
-    __slots__ = [
-        &#34;search_set&#34;,
-        &#34;filecache&#34;,
-        &#34;filelist&#34;,
-        &#34;matcher&#34;,
-        &#34;output_dir&#34;,
-    ]
+    __slots__ = [&#34;search_set&#34;, &#34;filecache&#34;, &#34;filelist&#34;, &#34;matcher&#34;, &#34;output_dir&#34;]
 
     def __init__(self, filecache=&#34;./.filecache/&#34;):
         &#34;&#34;&#34;Get new CodeCache object.&#34;&#34;&#34;
