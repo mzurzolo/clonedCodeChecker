@@ -7,7 +7,7 @@ and where the final output comes from.
 import re
 from datetime import datetime
 from collections import ChainMap, deque
-from clonedcodechecker import _version as version
+from clonedcodechecker._version import __version__ as version
 
 
 class MergeUpdater(ChainMap):
@@ -215,7 +215,7 @@ class Matcher:
             print("Files affected: {}".format(len(files_set)), file=file)
 
         print("ClonedCodeChecker")
-        print("Version: {}".format(_version))
+        print("Version: {}".format(version))
         print("Start time: {}".format(starttime))
         print("Run time: {}".format(datetime.now() - starttime))
         print("Files analyzed: {}".format(filecount))

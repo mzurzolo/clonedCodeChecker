@@ -6,7 +6,7 @@ import argparse
 from collections import deque
 from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
-from clonedcodechecker import _version as version
+from clonedcodechecker._version import __version__ as version
 
 
 class ClonedCodeChecker:
@@ -109,8 +109,8 @@ def main(arg_s=None):
     starttime = datetime.now()
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-i",
-        "--iversion",
+        "-v",
+        "--version",
         action="store_true",
         help="print the ClonedCodeChecker's version and exit"
     )
@@ -151,8 +151,9 @@ def main(arg_s=None):
     except FileExistsError:
         pass
 
-    if args.i:
+    if args.version:
         print("ClonedCodeChecker {}".format(version))
+        return
 
     if args.j:
         output_location = os.path.join(args.d, "report.txt")
@@ -166,13 +167,13 @@ def main(arg_s=None):
     ccc.code_cache.filecache = filecache_location
     ccc.code_cache.output_dir = output_location
     #########################################################################
-    if args.p:
+    if args.purgefilecache:
         ccc.code_cache.purge()
 
-    if args.r:
-        ccc.recursive_walk(directory=args.d)
+    if args.recursive:
+        ccc.recursive_walk(directory=args.directory)
     else:
-        ccc.load_cpp_files(args.d)
+        ccc.load_cpp_files(args.directory)
 
 
 # This is the entry point.

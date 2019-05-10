@@ -34,7 +34,7 @@ and where the final output comes from.
 import re
 from datetime import datetime
 from collections import ChainMap, deque
-from clonedcodechecker import __version__ as _version
+from clonedcodechecker._version import __version__ as version
 
 
 class MergeUpdater(ChainMap):
@@ -214,7 +214,7 @@ class Matcher:
         duplicate_count = 0
         with open(outfile, &#34;w&#34;) as file:
             print(&#34;ClonedCodeChecker&#34;, file=file)
-            print(&#34;Version: {}&#34;.format(_version), file=file)
+            print(&#34;Version: {}&#34;.format(version), file=file)
             print(&#34;Start time: {}&#34;.format(starttime), file=file)
             print(&#34;Run time: {}&#34;.format(datetime.now() - starttime), file=file)
             print(&#34;Files analyzed: {}&#34;.format(filecount), file=file)
@@ -242,7 +242,7 @@ class Matcher:
             print(&#34;Files affected: {}&#34;.format(len(files_set)), file=file)
 
         print(&#34;ClonedCodeChecker&#34;)
-        print(&#34;Version: {}&#34;.format(_version))
+        print(&#34;Version: {}&#34;.format(version))
         print(&#34;Start time: {}&#34;.format(starttime))
         print(&#34;Run time: {}&#34;.format(datetime.now() - starttime))
         print(&#34;Files analyzed: {}&#34;.format(filecount))
@@ -443,7 +443,7 @@ Initialize total_linecount.</p></section>
         duplicate_count = 0
         with open(outfile, &#34;w&#34;) as file:
             print(&#34;ClonedCodeChecker&#34;, file=file)
-            print(&#34;Version: {}&#34;.format(_version), file=file)
+            print(&#34;Version: {}&#34;.format(version), file=file)
             print(&#34;Start time: {}&#34;.format(starttime), file=file)
             print(&#34;Run time: {}&#34;.format(datetime.now() - starttime), file=file)
             print(&#34;Files analyzed: {}&#34;.format(filecount), file=file)
@@ -471,7 +471,7 @@ Initialize total_linecount.</p></section>
             print(&#34;Files affected: {}&#34;.format(len(files_set)), file=file)
 
         print(&#34;ClonedCodeChecker&#34;)
-        print(&#34;Version: {}&#34;.format(_version))
+        print(&#34;Version: {}&#34;.format(version))
         print(&#34;Start time: {}&#34;.format(starttime))
         print(&#34;Run time: {}&#34;.format(datetime.now() - starttime))
         print(&#34;Files analyzed: {}&#34;.format(filecount))
@@ -515,7 +515,7 @@ Initialize total_linecount.</p></section>
     duplicate_count = 0
     with open(outfile, &#34;w&#34;) as file:
         print(&#34;ClonedCodeChecker&#34;, file=file)
-        print(&#34;Version: {}&#34;.format(_version), file=file)
+        print(&#34;Version: {}&#34;.format(version), file=file)
         print(&#34;Start time: {}&#34;.format(starttime), file=file)
         print(&#34;Run time: {}&#34;.format(datetime.now() - starttime), file=file)
         print(&#34;Files analyzed: {}&#34;.format(filecount), file=file)
@@ -543,7 +543,7 @@ Initialize total_linecount.</p></section>
         print(&#34;Files affected: {}&#34;.format(len(files_set)), file=file)
 
     print(&#34;ClonedCodeChecker&#34;)
-    print(&#34;Version: {}&#34;.format(_version))
+    print(&#34;Version: {}&#34;.format(version))
     print(&#34;Start time: {}&#34;.format(starttime))
     print(&#34;Run time: {}&#34;.format(datetime.now() - starttime))
     print(&#34;Files analyzed: {}&#34;.format(filecount))
