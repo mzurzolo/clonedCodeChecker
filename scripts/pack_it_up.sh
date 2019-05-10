@@ -1,6 +1,7 @@
 #!/bin/sh
+mv .hgignore .hg/
 hg purge
-rm -fR py37
+mv .hg/.hgignore ./
 rm -fR html
 rm -f RELEASES/ccc.latest.tar.gz
 mkdir RELEASES/ccc.latest

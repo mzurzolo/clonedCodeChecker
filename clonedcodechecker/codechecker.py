@@ -98,11 +98,6 @@ class ClonedCodeChecker:
         self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
 
-def printversion():
-    """Print Version."""
-    print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
-
-
 def main(arg_s=["-h"]):
     """Parse arguments, drive program."""
     # this is where the command line interface we interact with is defined.
@@ -112,18 +107,18 @@ def main(arg_s=["-h"]):
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
-    parser = argparse.ArgumentParser(clonedcodechecker)
+    parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-v",
-        "--version",
+        "-i",
+        "--iversion",
         action="store_true",
-        help="print the ClonedCodeChecker's version and exit",
+        help="print the ClonedCodeChecker's version and exit"
     )
     parser.add_argument(
         "-p",
         "--purgefilecache",
         action="store_true",
-        help="Purge the filecache (found at $HOME/.filecache)",
+        help="Purge the filecache (found at $HOME/.filecache)"
     )
     parser.add_argument(
         "-r",
@@ -131,8 +126,8 @@ def main(arg_s=["-h"]):
         action="store_true",
         help="{}{}".format(
             "Search for duplicate code in given ",
-            "directory and any sub-directories (recursive)",
-        ),
+            "directory and any sub-directories (recursive)"
+        )
     )
     parser.add_argument(
         "-d",
@@ -141,7 +136,7 @@ def main(arg_s=["-h"]):
         help="{}{}".format(
             "Search for duplicate code in given ",
             "directory (but not sub-directories)",
-        ),
+        )
     )
     parser.add_argument("-j", action="store_true", help=argparse.SUPPRESS)
 
@@ -156,13 +151,13 @@ def main(arg_s=["-h"]):
     except FileExistsError:
         pass
 
-    if args.v:
-        printversion()
+    if args.i:
+        print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
         return
 
     if args.j:
         output_location = os.path.join(args.d, "report.txt")
-
+    print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
     ccc = ClonedCodeChecker(
         output_location=output_location,
         filecache_location=filecache_location,
