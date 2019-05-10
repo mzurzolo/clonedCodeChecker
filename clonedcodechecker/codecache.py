@@ -78,7 +78,7 @@ class CodeCache:
             new_file.linesize = linesize
             new_file.member_tokens = list(member_tokens)
         # matcher's linesize is updated here to account for files that do not
-        # need to go through mathcer.tokenize  (where the count is generated)
+        # need to go through matcher.tokenize  (where the count is generated)
         self.matcher.total_linecount += new_file.linesize
         # Further processing of members could happen here, before they go to
         # match_tokens
@@ -141,4 +141,5 @@ class CppFile(defaultdict):
 
 
 # class must be registered to be loadable/dumpable by the C implementation
+# of the SafeLoader and SafeParser
 YA_ML.register_class(CppFile)
