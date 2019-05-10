@@ -126,7 +126,6 @@ class ClonedCodeChecker:
 def printversion():
     &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
     print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))
-    sys.exit(0)
 
 
 def main(arg_s=[&#34;-h&#34;]):
@@ -139,7 +138,12 @@ def main(arg_s=[&#34;-h&#34;]):
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
     parser = argparse.ArgumentParser(clonedcodechecker)
-    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=printversion())
+    parser.add_argument(
+        &#34;-v&#34;,
+        &#34;--version&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;print the ClonedCodeChecker&#39;s version and exit&#34;,
+    )
     parser.add_argument(
         &#34;-p&#34;,
         &#34;--purgefilecache&#34;,
@@ -176,6 +180,10 @@ def main(arg_s=[&#34;-h&#34;]):
         os.mkdir(filecache_location)
     except FileExistsError:
         pass
+
+    if args.v:
+        printversion()
+        return
 
     if args.j:
         output_location = os.path.join(args.d, &#34;report.txt&#34;)
@@ -235,7 +243,12 @@ run()</code></pre>
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
     parser = argparse.ArgumentParser(clonedcodechecker)
-    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=printversion())
+    parser.add_argument(
+        &#34;-v&#34;,
+        &#34;--version&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;print the ClonedCodeChecker&#39;s version and exit&#34;,
+    )
     parser.add_argument(
         &#34;-p&#34;,
         &#34;--purgefilecache&#34;,
@@ -273,6 +286,10 @@ run()</code></pre>
     except FileExistsError:
         pass
 
+    if args.v:
+        printversion()
+        return
+
     if args.j:
         output_location = os.path.join(args.d, &#34;report.txt&#34;)
 
@@ -303,8 +320,7 @@ run()</code></pre>
 <summary>Source code</summary>
 <pre><code class="python">def printversion():
     &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
-    print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))
-    sys.exit(0)</code></pre>
+    print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))</code></pre>
 </details>
 </dd>
 <dt id="clonedcodechecker.codechecker.run"><code class="name flex">
@@ -329,7 +345,7 @@ run()</code></pre>
 <dl>
 <dt id="clonedcodechecker.codechecker.ClonedCodeChecker"><code class="flex name class">
 <span>class <span class="ident">ClonedCodeChecker</span></span>
-<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 10, 36, 12, 531796))</span>
+<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 10, 46, 13, 301797))</span>
 </code></dt>
 <dd>
 <section class="desc"><p>The ClonedCodeChecker collects files for its CodeCache.</p>

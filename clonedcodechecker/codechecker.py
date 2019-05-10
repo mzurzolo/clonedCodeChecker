@@ -101,7 +101,6 @@ class ClonedCodeChecker:
 def printversion():
     """Print Version."""
     print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
-    sys.exit(0)
 
 
 def main(arg_s=["-h"]):
@@ -114,7 +113,12 @@ def main(arg_s=["-h"]):
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
     parser = argparse.ArgumentParser(clonedcodechecker)
-    parser.add_argument("-v", "--version", action=printversion())
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="store_true",
+        help="print the ClonedCodeChecker's version and exit",
+    )
     parser.add_argument(
         "-p",
         "--purgefilecache",
@@ -151,6 +155,10 @@ def main(arg_s=["-h"]):
         os.mkdir(filecache_location)
     except FileExistsError:
         pass
+
+    if args.v:
+        printversion()
+        return
 
     if args.j:
         output_location = os.path.join(args.d, "report.txt")
