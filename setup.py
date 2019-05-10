@@ -11,7 +11,7 @@ now_midnight = int(
 
 VERSION = "0.0.1.{}".format(now_midnight)
 with open("clonedcodechecker/_version.py", "w") as file:
-    print(VERSION, file=file)
+    print("__version__ = {}".format(VERSION), file=file)
 
 
 
