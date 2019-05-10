@@ -100,7 +100,8 @@ class ClonedCodeChecker:
 
 def printversion():
     """Print Version."""
-    return "ClonedCodeChecker {}".format(clonedcodechecker.__version__)
+    print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
+    sys.exit(0)
 
 
 def main(arg_s=["-h"]):
@@ -113,7 +114,7 @@ def main(arg_s=["-h"]):
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
     parser = argparse.ArgumentParser(clonedcodechecker)
-    parser.add_argument("-v", "--version", action=sys.exit(printversion()))
+    parser.add_argument("-v", "--version", action=printversion())
     parser.add_argument(
         "-p",
         "--purgefilecache",

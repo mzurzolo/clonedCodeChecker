@@ -125,7 +125,8 @@ class ClonedCodeChecker:
 
 def printversion():
     &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
-    return &#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__)
+    print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))
+    sys.exit(0)
 
 
 def main(arg_s=[&#34;-h&#34;]):
@@ -138,7 +139,7 @@ def main(arg_s=[&#34;-h&#34;]):
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
     parser = argparse.ArgumentParser(clonedcodechecker)
-    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=sys.exit(printversion()))
+    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=printversion())
     parser.add_argument(
         &#34;-p&#34;,
         &#34;--purgefilecache&#34;,
@@ -234,7 +235,7 @@ run()</code></pre>
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
     parser = argparse.ArgumentParser(clonedcodechecker)
-    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=sys.exit(printversion()))
+    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;, action=printversion())
     parser.add_argument(
         &#34;-p&#34;,
         &#34;--purgefilecache&#34;,
@@ -302,7 +303,8 @@ run()</code></pre>
 <summary>Source code</summary>
 <pre><code class="python">def printversion():
     &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
-    return &#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__)</code></pre>
+    print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))
+    sys.exit(0)</code></pre>
 </details>
 </dd>
 <dt id="clonedcodechecker.codechecker.run"><code class="name flex">
@@ -327,7 +329,7 @@ run()</code></pre>
 <dl>
 <dt id="clonedcodechecker.codechecker.ClonedCodeChecker"><code class="flex name class">
 <span>class <span class="ident">ClonedCodeChecker</span></span>
-<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 10, 29, 44, 854200))</span>
+<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 10, 36, 12, 531796))</span>
 </code></dt>
 <dd>
 <section class="desc"><p>The ClonedCodeChecker collects files for its CodeCache.</p>
