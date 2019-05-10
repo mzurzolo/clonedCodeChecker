@@ -12,4 +12,5 @@ SHELL ["/bin/bash", "-c"]
 RUN source scl_source enable maven30 ; \
 cd build/clonedcodecheckerplugin ; \
 mvn clean package
-RUN python36 /build/setup.py install
+RUN cd /build ; \
+python36 setup.py install
