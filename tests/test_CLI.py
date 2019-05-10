@@ -8,9 +8,9 @@ import clonedcodechecker as CCC
 def test_dr_flags():
 
     CCC.codechecker.main(["-d", "/home/travis/build/mzurzolo/opencv"])
-    CCC.codechecker.main(["-r", "-d", "/home/travis/build/mzurzolo/opencv"])
-    CCC.codechecker.main(["-rj", "-d", "/home/travis/build/mzurzolo/opencv"])
-    CCC.codechecker.main(["-r", "-d", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-rd", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-rjd", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-rd", "/home/travis/build/mzurzolo/opencv"])
     for fname in os.listdir("/home/travis/build/mzurzolo/opencv"):
         try:
             with open(
@@ -19,7 +19,7 @@ def test_dr_flags():
                 print("1dddddd", file=file)
         except:
             continue
-    CCC.codechecker.main(["-r", "-d", "/home/travis/build/mzurzolo/opencv"])
+    CCC.codechecker.main(["-rd", "/home/travis/build/mzurzolo/opencv"])
 
 
 def test_purge():
