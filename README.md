@@ -5,7 +5,7 @@
 
 
 ## Locally-hosted docs:
-[DOCS](html/clonedcodechecker/index.html)
+[DOCS](http://htmlpreview.github.io/?https://github.com/mzurzolo/clonedCodeChecker/blob/master/html/clonedcodechecker/index.html)
 
 # Installing from source with a network connection:
 
