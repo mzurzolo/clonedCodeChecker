@@ -12,7 +12,7 @@ class MergeUpdater(ChainMap):
     """Subclassed ChainMap with an altered update function."""
 
     def update(self, other):
-        """Update appends instead of replacing."""
+        """Append instead of update. Use deques for fast appends."""
         for key in other:
             try:
                 self[key].append(other[key])
@@ -172,7 +172,7 @@ class Matcher:
                 )
 
     def print_output(self, outfile, starttime=None, filecount=None):
-        """Print the line_matches dictionary to outfile."""
+        """Print mergeupdater matches to outfile."""
         print(outfile)
         files_set = set()
         duplicate_count = 0

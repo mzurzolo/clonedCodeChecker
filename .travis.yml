@@ -30,6 +30,10 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
+    - language: bash
+      script:
+        - "sudo docker build -t targetbuild ."
+
 env:
   global:
    - DISPLAY=:99.0

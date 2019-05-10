@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.1" />
+<title>clonedcodechecker.codecache API documentation</title>
+<meta name="description" content="code_cache holds the CodeCache and CppFile classes, and the YAML object." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>clonedcodechecker.codecache</code></h1>
+</header>
+<section id="section-intro">
+<p>code_cache holds the CodeCache and CppFile classes, and the YAML object.</p>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">&#34;&#34;&#34;code_cache holds the CodeCache and CppFile classes, and the YAML object.&#34;&#34;&#34;
+
+import os
+from collections import deque, defaultdict
+from ruamel.yaml import YAML
+from clonedcodechecker.matcher import Matcher
+
+YA_ML = YAML(typ=&#34;safe&#34;)
+YA_ML.default_style = False
+
+
+def cache_filename(path):
+    &#34;&#34;&#34;Turn absolute path into filename used in filecache.&#34;&#34;&#34;
+    return path.replace(&#34;/&#34;, &#34;.&#34;)[1:] + &#34;.yaml&#34;
+
+
+class CodeCache:
+    &#34;&#34;&#34;The CodeCache holds CppFiles, the Matcher, and controls filecache.
+
+    Slots:
+    search_set: Absolute paths of all files to search. Comes from codechecker
+    filecache: Directory of the filecache. It&#39;s always in ~/.filecache
+    matcher: The CodeCache owns an instance of the Matcher class
+    output_dir: Set externally (in codechecker) on program launch
+    &#34;&#34;&#34;
+
+    __slots__ = [
+        &#34;search_set&#34;,
+        &#34;filecache&#34;,
+        &#34;filelist&#34;,
+        &#34;matcher&#34;,
+        &#34;output_dir&#34;,
+    ]
+
+    def __init__(self, filecache=&#34;./.filecache/&#34;):
+        &#34;&#34;&#34;Get new CodeCache object.&#34;&#34;&#34;
+        self.search_set = deque()
+        self.filecache = filecache
+        self.matcher = Matcher()
+        self.output_dir = None
+
+    def purge(self):
+        &#34;&#34;&#34;Remove all files from the filecache.&#34;&#34;&#34;
+        for fname in os.listdir(self.filecache):
+            os.remove(os.path.join(self.filecache, fname))
+
+    def process_files(self):
+        &#34;&#34;&#34;Process files and save to filecache.&#34;&#34;&#34;
+        while self.search_set:
+            current_file = self.add_file(self.search_set.pop())
+            self.save_file(current_file)
+
+    def add_file(self, filename):
+        &#34;&#34;&#34;Add a new file to the CodeCache for analysis.&#34;&#34;&#34;
+        # Get the filename that will be used for the filecache
+        fname = cache_filename(filename)
+        # Full path for the file in the filecache
+        cachedfile = os.path.join(self.filecache, fname)
+        # Last time the file was modefied
+        t_modified = os.stat(filename).st_mtime
+        print(filename)
+        try:
+            # Try to get it from the filecache
+            with open(cachedfile, &#34;r&#34;) as file:
+                new_file = YA_ML.load(file)
+            if new_file.t_modified != t_modified:
+                os.remove(cachedfile)
+                raise OSError
+        except (OSError, FileNotFoundError):
+            # Create a new CppFile if the above fails. It will fail on
+            # Differing timestamps, and on file not being in the filecache.
+            new_file = CppFile(
+                filename=filename, cachedfile=cachedfile, t_modified=t_modified
+            )
+            # Get members. This only runs if the file needs to be processed
+            # or re-processed.
+            member_tokens, linesize = self.matcher.tokenize(new_file.linestring)
+            new_file.linesize = linesize
+            new_file.member_tokens = list(member_tokens)
+        # matcher&#39;s linesize is updated here to account for files that do not
+        # need to go through mathcer.tokenize  (where the count is generated)
+        self.matcher.total_linecount += new_file.linesize
+        # Further processing of members could happen here, before they go to
+        # match_tokens
+        self.matcher.match_tokens(new_file.filename, new_file.member_tokens)
+        # return to process_files, which dumps it directly to save_file
+        return new_file
+
+    def save_file(self, file):
+        &#34;&#34;&#34;Clear file out of memory, dumping new file into the filecache.&#34;&#34;&#34;
+        # get a filecache name for it
+        fname = cache_filename(file.filename)
+        filepath = os.path.join(self.filecache, fname)
+        file.linestring = &#34;&#34;
+        # if the file is already in the filecache, skip the rest of this
+        # loop and go back up to the while statement.
+        try:
+            with open(filepath, &#34;x&#34;) as outfile:
+                YA_ML.dump(file, outfile)
+        except FileExistsError:
+            pass
+
+    def output(self, starttime=None, filecount=None):
+        &#34;&#34;&#34;Tell matcher to print the report.&#34;&#34;&#34;
+        self.matcher.print_output(
+            self.output_dir, starttime=starttime, filecount=filecount
+        )
+
+
+class CppFile(defaultdict):
+    &#34;&#34;&#34;CppFile represents a single loaded source file in the code_cache.
+
+    filename: absolute path of source file
+    cachedfile: absolute path of the cached version
+    t_modified: the last time the file was modified (epoch timestamp)
+    as reported by the filesystem.
+    linesize: total number of lines
+    member_tokens: the members this file contains
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        filename=None,
+        cachedfile=None,
+        t_modified=None,
+        linesize=None,
+        member_tokens=None,
+    ):
+        &#34;&#34;&#34;Create new CppFile object.&#34;&#34;&#34;
+        self.filename = filename
+        self.cachedfile = cachedfile
+        self.t_modified = t_modified
+        self.linesize = linesize
+        self.member_tokens = member_tokens
+        self.__loadall__()
+
+    def __loadall__(self):
+        &#34;&#34;&#34;Load the file from the filecache or from the absolute path.&#34;&#34;&#34;
+        with open(self.filename, &#34;r&#34;, errors=&#34;ignore&#34;) as file:
+            self.linestring = file.read()
+
+
+# class must be registered to be loadable/dumpable by the C implementation
+YA_ML.register_class(CppFile)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="clonedcodechecker.codecache.cache_filename"><code class="name flex">
+<span>def <span class="ident">cache_filename</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Turn absolute path into filename used in filecache.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def cache_filename(path):
+    &#34;&#34;&#34;Turn absolute path into filename used in filecache.&#34;&#34;&#34;
+    return path.replace(&#34;/&#34;, &#34;.&#34;)[1:] + &#34;.yaml&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="clonedcodechecker.codecache.CodeCache"><code class="flex name class">
+<span>class <span class="ident">CodeCache</span></span>
+<span>(</span><span>filecache='./.filecache/')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>The CodeCache holds CppFiles, the Matcher, and controls filecache.</p>
+<dl>
+<dt>Slots:</dt>
+<dt><strong><code>search_set</code></strong> :&ensp;<code>Absolute</code> <code>paths</code> of <code>all</code> <code>files</code> <code>to</code> <code>search.</code> <code>Comes</code> <code>from</code> <code>codechecker</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>filecache</code></strong> :&ensp;<code>Directory</code> of <code>the</code> <code>filecache.</code> <code>It's</code> <code>always</code> <code>in</code> ~/<code>.filecache</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>matcher</code></strong> :&ensp;<code>The</code> <a title="clonedcodechecker.codecache.CodeCache" href="#clonedcodechecker.codecache.CodeCache"><code>CodeCache</code></a> <code>owns</code> <code>an</code> <code>instance</code> of <code>the</code> <code>Matcher</code> <code>class</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>output_dir</code></strong> :&ensp;<code>Set</code> <code>externally</code> (<code>in</code> <code>codechecker</code>) <code>on</code> <code>program</code> <code>launch</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>Get new CodeCache object.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class CodeCache:
+    &#34;&#34;&#34;The CodeCache holds CppFiles, the Matcher, and controls filecache.
+
+    Slots:
+    search_set: Absolute paths of all files to search. Comes from codechecker
+    filecache: Directory of the filecache. It&#39;s always in ~/.filecache
+    matcher: The CodeCache owns an instance of the Matcher class
+    output_dir: Set externally (in codechecker) on program launch
+    &#34;&#34;&#34;
+
+    __slots__ = [
+        &#34;search_set&#34;,
+        &#34;filecache&#34;,
+        &#34;filelist&#34;,
+        &#34;matcher&#34;,
+        &#34;output_dir&#34;,
+    ]
+
+    def __init__(self, filecache=&#34;./.filecache/&#34;):
+        &#34;&#34;&#34;Get new CodeCache object.&#34;&#34;&#34;
+        self.search_set = deque()
+        self.filecache = filecache
+        self.matcher = Matcher()
+        self.output_dir = None
+
+    def purge(self):
+        &#34;&#34;&#34;Remove all files from the filecache.&#34;&#34;&#34;
+        for fname in os.listdir(self.filecache):
+            os.remove(os.path.join(self.filecache, fname))
+
+    def process_files(self):
+        &#34;&#34;&#34;Process files and save to filecache.&#34;&#34;&#34;
+        while self.search_set:
+            current_file = self.add_file(self.search_set.pop())
+            self.save_file(current_file)
+
+    def add_file(self, filename):
+        &#34;&#34;&#34;Add a new file to the CodeCache for analysis.&#34;&#34;&#34;
+        # Get the filename that will be used for the filecache
+        fname = cache_filename(filename)
+        # Full path for the file in the filecache
+        cachedfile = os.path.join(self.filecache, fname)
+        # Last time the file was modefied
+        t_modified = os.stat(filename).st_mtime
+        print(filename)
+        try:
+            # Try to get it from the filecache
+            with open(cachedfile, &#34;r&#34;) as file:
+                new_file = YA_ML.load(file)
+            if new_file.t_modified != t_modified:
+                os.remove(cachedfile)
+                raise OSError
+        except (OSError, FileNotFoundError):
+            # Create a new CppFile if the above fails. It will fail on
+            # Differing timestamps, and on file not being in the filecache.
+            new_file = CppFile(
+                filename=filename, cachedfile=cachedfile, t_modified=t_modified
+            )
+            # Get members. This only runs if the file needs to be processed
+            # or re-processed.
+            member_tokens, linesize = self.matcher.tokenize(new_file.linestring)
+            new_file.linesize = linesize
+            new_file.member_tokens = list(member_tokens)
+        # matcher&#39;s linesize is updated here to account for files that do not
+        # need to go through mathcer.tokenize  (where the count is generated)
+        self.matcher.total_linecount += new_file.linesize
+        # Further processing of members could happen here, before they go to
+        # match_tokens
+        self.matcher.match_tokens(new_file.filename, new_file.member_tokens)
+        # return to process_files, which dumps it directly to save_file
+        return new_file
+
+    def save_file(self, file):
+        &#34;&#34;&#34;Clear file out of memory, dumping new file into the filecache.&#34;&#34;&#34;
+        # get a filecache name for it
+        fname = cache_filename(file.filename)
+        filepath = os.path.join(self.filecache, fname)
+        file.linestring = &#34;&#34;
+        # if the file is already in the filecache, skip the rest of this
+        # loop and go back up to the while statement.
+        try:
+            with open(filepath, &#34;x&#34;) as outfile:
+                YA_ML.dump(file, outfile)
+        except FileExistsError:
+            pass
+
+    def output(self, starttime=None, filecount=None):
+        &#34;&#34;&#34;Tell matcher to print the report.&#34;&#34;&#34;
+        self.matcher.print_output(
+            self.output_dir, starttime=starttime, filecount=filecount
+        )</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="clonedcodechecker.codecache.CodeCache.filecache"><code class="name">var <span class="ident">filecache</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.filelist"><code class="name">var <span class="ident">filelist</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.matcher"><code class="name">var <span class="ident">matcher</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.output_dir"><code class="name">var <span class="ident">output_dir</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.search_set"><code class="name">var <span class="ident">search_set</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="clonedcodechecker.codecache.CodeCache.add_file"><code class="name flex">
+<span>def <span class="ident">add_file</span></span>(<span>self, filename)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Add a new file to the CodeCache for analysis.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def add_file(self, filename):
+    &#34;&#34;&#34;Add a new file to the CodeCache for analysis.&#34;&#34;&#34;
+    # Get the filename that will be used for the filecache
+    fname = cache_filename(filename)
+    # Full path for the file in the filecache
+    cachedfile = os.path.join(self.filecache, fname)
+    # Last time the file was modefied
+    t_modified = os.stat(filename).st_mtime
+    print(filename)
+    try:
+        # Try to get it from the filecache
+        with open(cachedfile, &#34;r&#34;) as file:
+            new_file = YA_ML.load(file)
+        if new_file.t_modified != t_modified:
+            os.remove(cachedfile)
+            raise OSError
+    except (OSError, FileNotFoundError):
+        # Create a new CppFile if the above fails. It will fail on
+        # Differing timestamps, and on file not being in the filecache.
+        new_file = CppFile(
+            filename=filename, cachedfile=cachedfile, t_modified=t_modified
+        )
+        # Get members. This only runs if the file needs to be processed
+        # or re-processed.
+        member_tokens, linesize = self.matcher.tokenize(new_file.linestring)
+        new_file.linesize = linesize
+        new_file.member_tokens = list(member_tokens)
+    # matcher&#39;s linesize is updated here to account for files that do not
+    # need to go through mathcer.tokenize  (where the count is generated)
+    self.matcher.total_linecount += new_file.linesize
+    # Further processing of members could happen here, before they go to
+    # match_tokens
+    self.matcher.match_tokens(new_file.filename, new_file.member_tokens)
+    # return to process_files, which dumps it directly to save_file
+    return new_file</code></pre>
+</details>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.output"><code class="name flex">
+<span>def <span class="ident">output</span></span>(<span>self, starttime=None, filecount=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Tell matcher to print the report.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def output(self, starttime=None, filecount=None):
+    &#34;&#34;&#34;Tell matcher to print the report.&#34;&#34;&#34;
+    self.matcher.print_output(
+        self.output_dir, starttime=starttime, filecount=filecount
+    )</code></pre>
+</details>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.process_files"><code class="name flex">
+<span>def <span class="ident">process_files</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Process files and save to filecache.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def process_files(self):
+    &#34;&#34;&#34;Process files and save to filecache.&#34;&#34;&#34;
+    while self.search_set:
+        current_file = self.add_file(self.search_set.pop())
+        self.save_file(current_file)</code></pre>
+</details>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.purge"><code class="name flex">
+<span>def <span class="ident">purge</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Remove all files from the filecache.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def purge(self):
+    &#34;&#34;&#34;Remove all files from the filecache.&#34;&#34;&#34;
+    for fname in os.listdir(self.filecache):
+        os.remove(os.path.join(self.filecache, fname))</code></pre>
+</details>
+</dd>
+<dt id="clonedcodechecker.codecache.CodeCache.save_file"><code class="name flex">
+<span>def <span class="ident">save_file</span></span>(<span>self, file)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Clear file out of memory, dumping new file into the filecache.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def save_file(self, file):
+    &#34;&#34;&#34;Clear file out of memory, dumping new file into the filecache.&#34;&#34;&#34;
+    # get a filecache name for it
+    fname = cache_filename(file.filename)
+    filepath = os.path.join(self.filecache, fname)
+    file.linestring = &#34;&#34;
+    # if the file is already in the filecache, skip the rest of this
+    # loop and go back up to the while statement.
+    try:
+        with open(filepath, &#34;x&#34;) as outfile:
+            YA_ML.dump(file, outfile)
+    except FileExistsError:
+        pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="clonedcodechecker.codecache.CppFile"><code class="flex name class">
+<span>class <span class="ident">CppFile</span></span>
+<span>(</span><span>filename=None, cachedfile=None, t_modified=None, linesize=None, member_tokens=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>CppFile represents a single loaded source file in the code_cache.</p>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>absolute</code> <code>path</code> of <code>source</code> <code>file</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>cachedfile</code></strong> :&ensp;<code>absolute</code> <code>path</code> of <code>the</code> <code>cached</code> <code>version</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>t_modified</code></strong> :&ensp;<code>the</code> <code>last</code> <code>time</code> <code>the</code> <code>file</code> <code>was</code> <code>modified</code> (<code>epoch</code> <code>timestamp</code>)</dt>
+<dd>&nbsp;</dd>
+<dt>as reported by the filesystem.</dt>
+<dt><strong><code>linesize</code></strong> :&ensp;<code>total</code> <code>number</code> of <code>lines</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>member_tokens</code></strong> :&ensp;<code>the</code> <code>members</code> <code>this</code> <code>file</code> <code>contains</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>Create new CppFile object.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class CppFile(defaultdict):
+    &#34;&#34;&#34;CppFile represents a single loaded source file in the code_cache.
+
+    filename: absolute path of source file
+    cachedfile: absolute path of the cached version
+    t_modified: the last time the file was modified (epoch timestamp)
+    as reported by the filesystem.
+    linesize: total number of lines
+    member_tokens: the members this file contains
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        filename=None,
+        cachedfile=None,
+        t_modified=None,
+        linesize=None,
+        member_tokens=None,
+    ):
+        &#34;&#34;&#34;Create new CppFile object.&#34;&#34;&#34;
+        self.filename = filename
+        self.cachedfile = cachedfile
+        self.t_modified = t_modified
+        self.linesize = linesize
+        self.member_tokens = member_tokens
+        self.__loadall__()
+
+    def __loadall__(self):
+        &#34;&#34;&#34;Load the file from the filecache or from the absolute path.&#34;&#34;&#34;
+        with open(self.filename, &#34;r&#34;, errors=&#34;ignore&#34;) as file:
+            self.linestring = file.read()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.defaultdict</li>
+<li>builtins.dict</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="clonedcodechecker" href="index.html">clonedcodechecker</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="clonedcodechecker.codecache.cache_filename" href="#clonedcodechecker.codecache.cache_filename">cache_filename</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="clonedcodechecker.codecache.CodeCache" href="#clonedcodechecker.codecache.CodeCache">CodeCache</a></code></h4>
+<ul class="two-column">
+<li><code><a title="clonedcodechecker.codecache.CodeCache.add_file" href="#clonedcodechecker.codecache.CodeCache.add_file">add_file</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.filecache" href="#clonedcodechecker.codecache.CodeCache.filecache">filecache</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.filelist" href="#clonedcodechecker.codecache.CodeCache.filelist">filelist</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.matcher" href="#clonedcodechecker.codecache.CodeCache.matcher">matcher</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.output" href="#clonedcodechecker.codecache.CodeCache.output">output</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.output_dir" href="#clonedcodechecker.codecache.CodeCache.output_dir">output_dir</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.process_files" href="#clonedcodechecker.codecache.CodeCache.process_files">process_files</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.purge" href="#clonedcodechecker.codecache.CodeCache.purge">purge</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.save_file" href="#clonedcodechecker.codecache.CodeCache.save_file">save_file</a></code></li>
+<li><code><a title="clonedcodechecker.codecache.CodeCache.search_set" href="#clonedcodechecker.codecache.CodeCache.search_set">search_set</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="clonedcodechecker.codecache.CppFile" href="#clonedcodechecker.codecache.CppFile">CppFile</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

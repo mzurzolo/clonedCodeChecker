@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.1" />
+<title>clonedcodechecker.matcher API documentation</title>
+<meta name="description" content="The Matcher class owns all things involved in defining duplicate code …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>clonedcodechecker.matcher</code></h1>
+</header>
+<section id="section-intro">
+<p>The Matcher class owns all things involved in defining duplicate code.</p>
+<p>This is where the tokenizer lives, and where matches across files are stored.</p>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">&#34;&#34;&#34;The Matcher class owns all things involved in defining duplicate code.
+
+This is where the tokenizer lives, and where matches across files are stored.
+&#34;&#34;&#34;
+
+import re
+from datetime import datetime
+from collections import ChainMap, deque
+
+
+class MergeUpdater(ChainMap):
+    &#34;&#34;&#34;Subclassed ChainMap with an altered update function.&#34;&#34;&#34;
+
+    def update(self, other):
+        &#34;&#34;&#34;Append instead of update. Use deques for fast appends.&#34;&#34;&#34;
+        for key in other:
+            try:
+                self[key].append(other[key])
+            except KeyError:
+                self[key] = deque()
+                self[key].append(other[key])
+
+
+class Matcher:
+    &#34;&#34;&#34;
+    The Matcher class.
+
+    Slots:
+    total_linecount: The total lines analyzed
+    mergeupdater: A modified ChainMap (dictionary) that updates the values of
+        existing keys instead of overwriting them
+    tox_regex: A dictionary of compiled regular expression objects that are
+        used as &#39;filters&#39; while processing strings of source code
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        &#34;&#34;&#34;Build regular expression (tokenizer) object.&#34;&#34;&#34;
+        self.total_linecount = 0
+        self.mergeupdater = MergeUpdater()
+
+        token_spec = [
+            (
+                &#34;FIRST_FILTER&#34;,
+                r&#34;&#34;&#34;(?P&lt;DOUBLE_SLASH_COMMENT&gt;//.*?\n)|
+                                 (?P&lt;SLASH_STAR_COMMENT&gt;/\*.*?\*/)|
+                                 (?P&lt;DOUBLEQUOTES&gt;\&#34;.*?\&#34;)|
+                                 (?P&lt;SEMICOLONWS&gt;;\s*)|
+                                 (?P&lt;TO_NEXT_BRACE&gt;\s*\})|
+                                 (?P&lt;WHITESPACE&gt;\s+)|
+                                 (?P&lt;NOTWHITESPACE&gt;\w+\s*)|
+                                 (?P&lt;NONWORD&gt;\W\s*)|
+                                 (?P&lt;FAILURE&gt;.)
+                                 &#34;&#34;&#34;,
+            ),
+            (
+                &#34;COMMENT_FILTER&#34;,
+                r&#34;&#34;&#34;(?P&lt;DOUBLE_SLASH_COMMENT&gt;//.*?\n)|
+                             (?P&lt;SLASH_STAR_COMMENT&gt;/\*.*?\*/)
+                             &#34;&#34;&#34;,
+            ),
+            (&#34;QUOTEFILTER&#34;, r&#34;&#34;&#34;(?P&lt;DOUBLEQUOTES&gt;\&#34;.*?\&#34;)&#34;&#34;&#34;),
+            (&#34;OPEN_BRACE&#34;, r&#34;&#34;&#34;(?P&lt;OPEN_BRACE&gt;\{)&#34;&#34;&#34;),
+            (&#34;CLOSE_BRACE&#34;, r&#34;&#34;&#34;(?P&lt;CLOSE_BRACE&gt;\})&#34;&#34;&#34;),
+            (&#34;PAREN_PAIR&#34;, r&#34;&#34;&#34;(?P&lt;PAREN_PAIR&gt;\)\s*?\{)&#34;&#34;&#34;),
+            (&#34;LINE_COUNTER&#34;, r&#34;&#34;&#34;\n&#34;&#34;&#34;),
+        ]
+
+        self.tok_regex = {}
+        for pair in token_spec:
+            self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
+
+    def tokenize(self, text, startline=1):
+        &#34;&#34;&#34;Yield tuples of text and line position for every found match.&#34;&#34;&#34;
+        member_accumulator = &#34;&#34;
+        comment_filtered = &#34;&#34;
+        member_list = deque()
+        for token in self.tok_regex[&#34;FIRST_FILTER&#34;].finditer(text):
+            # Before we start building a member, drop things
+            if member_accumulator == &#34;&#34;:
+                if any(
+                    [
+                        token.lastgroup == &#34;DOUBLE_SLASH_COMMENT&#34;,
+                        token.lastgroup == &#34;SLASH_STAR_COMMENT&#34;,
+                        token.lastgroup == &#34;WHITESPACE&#34;,
+                        token.lastgroup == &#34;SEMICOLONWS&#34;,
+                    ]
+                ):
+                    startline += len(
+                        self.tok_regex[&#34;LINE_COUNTER&#34;].findall(token.group())
+                    )
+                    continue
+            # Accumulate tokens while building member
+            member_accumulator += token.group()
+            # Filter comments that may be inside the member (like this one)
+            comment_filtered += re.sub(
+                self.tok_regex[&#34;COMMENT_FILTER&#34;], &#34;&#34;, token.group()
+            )
+            # End on a brace
+            if token.lastgroup == &#34;TO_NEXT_BRACE&#34;:
+                # Remove quotes (since they may contain braces)
+                quote_filtered = re.sub(
+                    self.tok_regex[&#34;QUOTEFILTER&#34;], &#34;&#34;, comment_filtered
+                )
+                # Count open and close braces
+                open_count = len(
+                    self.tok_regex[&#34;OPEN_BRACE&#34;].findall(quote_filtered)
+                )
+                close_count = len(
+                    self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(quote_filtered)
+                )
+                # If it ends with a close brace, this is maybe a member
+                if open_count == close_count and quote_filtered.endswith(&#34;}&#34;):
+                    # Keep track of line count
+                    startline_here = startline
+                    startline += len(
+                        self.tok_regex[&#34;LINE_COUNTER&#34;].findall(
+                            member_accumulator
+                        )
+                    )
+                    # We want to start on the next line
+                    endline = startline + 1
+                    # Comment filtered is the member without comments
+                    # Add member, start line, and end line as a 3-tuple to
+                    #  the member_list
+                    member_list.append(
+                        (comment_filtered, startline_here, endline)
+                    )
+                    member_accumulator = &#34;&#34;
+                    comment_filtered = &#34;&#34;
+        # Catch last section of source code just in case
+        if member_accumulator != &#34;&#34;:
+            if self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(comment_filtered):
+                quote_filtered = re.sub(
+                    self.tok_regex[&#34;QUOTEFILTER&#34;], &#34;&#34;, comment_filtered
+                )
+                open_count = len(
+                    self.tok_regex[&#34;OPEN_BRACE&#34;].findall(quote_filtered)
+                )
+                close_count = len(
+                    self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(quote_filtered)
+                )
+                if open_count == close_count and close_count &gt; 0:
+                    startline_here = startline
+                    startline += len(
+                        self.tok_regex[&#34;LINE_COUNTER&#34;].findall(
+                            member_accumulator
+                        )
+                    )
+                    endline = startline + 1
+                    member_list.append(
+                        (comment_filtered, startline_here, endline)
+                    )
+                    member_accumulator = &#34;&#34;
+            # Needed for accurate line recording
+            startline += len(
+                self.tok_regex[&#34;LINE_COUNTER&#34;].findall(member_accumulator)
+            )
+        # Output goes to codecache instead of passing directly to
+        # match_tokens below.
+        return (member_list, startline)
+
+    def match_tokens(self, filename, member_tokens):
+        &#34;&#34;&#34;Loop through member tokens, adding to mergeupdater.&#34;&#34;&#34;
+        for token in member_tokens:
+            # Only consider members that contain ) {
+            # This filters members written as:   something()={}
+            if self.tok_regex[&#34;PAREN_PAIR&#34;].findall(token[0]):
+                # Sending each token through seperately ensures duplicates in
+                # the same file are found
+                self.mergeupdater.update(
+                    {token[0]: (filename, token[1], token[2])}
+                )
+
+    def print_output(self, outfile, starttime=None, filecount=None):
+        &#34;&#34;&#34;Print mergeupdater matches to outfile.&#34;&#34;&#34;
+        print(outfile)
+        files_set = set()
+        duplicate_count = 0
+        with open(outfile, &#34;w&#34;) as file:
+            print(&#34;ClonedCodeChecker&#34;, file=file)
+            print(&#34;Version: 0.0.1&#34;, file=file)
+            print(&#34;Start time: {}&#34;.format(starttime), file=file)
+            print(&#34;Run time: {}&#34;.format(datetime.now() - starttime), file=file)
+            print(&#34;Files analyzed: {}&#34;.format(filecount), file=file)
+            print(
+                &#34;Lines analyzed: {}\n&#34;.format(self.total_linecount), file=file
+            )
+            for key in self.mergeupdater.keys():
+                if len(self.mergeupdater[key]) &gt; 1:
+                    print(&#34;Duplicate member found in: \n&#34;, file=file)
+                    duplicate_count += 1
+                    for val in self.mergeupdater[key]:
+                        files_set.add(val[0])
+                        print(
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;{} line: {}&#34;.format(val[0], val[1]),
+                            file=file,
+                        )
+                    print(&#34;Member:         \n\n&#34;, key, file=file)
+                    print(&#34;\n\n&#34;, file=file)
+            print(&#34;Total duplicates: {}&#34;.format(duplicate_count), file=file)
+            print(&#34;Files affected: {}&#34;.format(len(files_set)), file=file)
+
+        print(&#34;ClonedCodeChecker&#34;)
+        print(&#34;Version: 0.0.1&#34;)
+        print(&#34;Start time: {}&#34;.format(starttime))
+        print(&#34;Run time: {}&#34;.format(datetime.now() - starttime))
+        print(&#34;Files analyzed: {}&#34;.format(filecount))
+        print(&#34;Lines analyzed: {}\n&#34;.format(self.total_linecount))
+        print(&#34;Total duplicates: {}&#34;.format(duplicate_count))
+        print(&#34;Files affected: {}&#34;.format(len(files_set)))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="clonedcodechecker.matcher.Matcher"><code class="flex name class">
+<span>class <span class="ident">Matcher</span></span>
+</code></dt>
+<dd>
+<section class="desc"><p>The Matcher class.</p>
+<dl>
+<dt>Slots:</dt>
+<dt><strong><code>total_linecount</code></strong> :&ensp;<code>The</code> <code>total</code> <code>lines</code> <code>analyzed</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>mergeupdater</code></strong> :&ensp;<code>A</code> <code>modified</code> <code>ChainMap</code> (<code>dictionary</code>) <code>that</code> <code>updates</code> <code>the</code> <code>values</code> of</dt>
+<dd>existing keys instead of overwriting them</dd>
+<dt><strong><code>tox_regex</code></strong> :&ensp;<code>A</code> <code>dictionary</code> of <code>compiled</code> <code>regular</code> <code>expression</code> <code>objects</code> <code>that</code> <code>are</code></dt>
+<dd>used as 'filters' while processing strings of source code</dd>
+</dl>
+<p>Build regular expression (tokenizer) object.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class Matcher:
+    &#34;&#34;&#34;
+    The Matcher class.
+
+    Slots:
+    total_linecount: The total lines analyzed
+    mergeupdater: A modified ChainMap (dictionary) that updates the values of
+        existing keys instead of overwriting them
+    tox_regex: A dictionary of compiled regular expression objects that are
+        used as &#39;filters&#39; while processing strings of source code
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        &#34;&#34;&#34;Build regular expression (tokenizer) object.&#34;&#34;&#34;
+        self.total_linecount = 0
+        self.mergeupdater = MergeUpdater()
+
+        token_spec = [
+            (
+                &#34;FIRST_FILTER&#34;,
+                r&#34;&#34;&#34;(?P&lt;DOUBLE_SLASH_COMMENT&gt;//.*?\n)|
+                                 (?P&lt;SLASH_STAR_COMMENT&gt;/\*.*?\*/)|
+                                 (?P&lt;DOUBLEQUOTES&gt;\&#34;.*?\&#34;)|
+                                 (?P&lt;SEMICOLONWS&gt;;\s*)|
+                                 (?P&lt;TO_NEXT_BRACE&gt;\s*\})|
+                                 (?P&lt;WHITESPACE&gt;\s+)|
+                                 (?P&lt;NOTWHITESPACE&gt;\w+\s*)|
+                                 (?P&lt;NONWORD&gt;\W\s*)|
+                                 (?P&lt;FAILURE&gt;.)
+                                 &#34;&#34;&#34;,
+            ),
+            (
+                &#34;COMMENT_FILTER&#34;,
+                r&#34;&#34;&#34;(?P&lt;DOUBLE_SLASH_COMMENT&gt;//.*?\n)|
+                             (?P&lt;SLASH_STAR_COMMENT&gt;/\*.*?\*/)
+                             &#34;&#34;&#34;,
+            ),
+            (&#34;QUOTEFILTER&#34;, r&#34;&#34;&#34;(?P&lt;DOUBLEQUOTES&gt;\&#34;.*?\&#34;)&#34;&#34;&#34;),
+            (&#34;OPEN_BRACE&#34;, r&#34;&#34;&#34;(?P&lt;OPEN_BRACE&gt;\{)&#34;&#34;&#34;),
+            (&#34;CLOSE_BRACE&#34;, r&#34;&#34;&#34;(?P&lt;CLOSE_BRACE&gt;\})&#34;&#34;&#34;),
+            (&#34;PAREN_PAIR&#34;, r&#34;&#34;&#34;(?P&lt;PAREN_PAIR&gt;\)\s*?\{)&#34;&#34;&#34;),
+            (&#34;LINE_COUNTER&#34;, r&#34;&#34;&#34;\n&#34;&#34;&#34;),
+        ]
+
+        self.tok_regex = {}
+        for pair in token_spec:
+            self.tok_regex[pair[0]] = re.compile(pair[1], re.X | re.S)
+
+    def tokenize(self, text, startline=1):
+        &#34;&#34;&#34;Yield tuples of text and line position for every found match.&#34;&#34;&#34;
+        member_accumulator = &#34;&#34;
+        comment_filtered = &#34;&#34;
+        member_list = deque()
+        for token in self.tok_regex[&#34;FIRST_FILTER&#34;].finditer(text):
+            # Before we start building a member, drop things
+            if member_accumulator == &#34;&#34;:
+                if any(
+                    [
+                        token.lastgroup == &#34;DOUBLE_SLASH_COMMENT&#34;,
+                        token.lastgroup == &#34;SLASH_STAR_COMMENT&#34;,
+                        token.lastgroup == &#34;WHITESPACE&#34;,
+                        token.lastgroup == &#34;SEMICOLONWS&#34;,
+                    ]
+                ):
+                    startline += len(
+                        self.tok_regex[&#34;LINE_COUNTER&#34;].findall(token.group())
+                    )
+                    continue
+            # Accumulate tokens while building member
+            member_accumulator += token.group()
+            # Filter comments that may be inside the member (like this one)
+            comment_filtered += re.sub(
+                self.tok_regex[&#34;COMMENT_FILTER&#34;], &#34;&#34;, token.group()
+            )
+            # End on a brace
+            if token.lastgroup == &#34;TO_NEXT_BRACE&#34;:
+                # Remove quotes (since they may contain braces)
+                quote_filtered = re.sub(
+                    self.tok_regex[&#34;QUOTEFILTER&#34;], &#34;&#34;, comment_filtered
+                )
+                # Count open and close braces
+                open_count = len(
+                    self.tok_regex[&#34;OPEN_BRACE&#34;].findall(quote_filtered)
+                )
+                close_count = len(
+                    self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(quote_filtered)
+                )
+                # If it ends with a close brace, this is maybe a member
+                if open_count == close_count and quote_filtered.endswith(&#34;}&#34;):
+                    # Keep track of line count
+                    startline_here = startline
+                    startline += len(
+                        self.tok_regex[&#34;LINE_COUNTER&#34;].findall(
+                            member_accumulator
+                        )
+                    )
+                    # We want to start on the next line
+                    endline = startline + 1
+                    # Comment filtered is the member without comments
+                    # Add member, start line, and end line as a 3-tuple to
+                    #  the member_list
+                    member_list.append(
+                        (comment_filtered, startline_here, endline)
+                    )
+                    member_accumulator = &#34;&#34;
+                    comment_filtered = &#34;&#34;
+        # Catch last section of source code just in case
+        if member_accumulator != &#34;&#34;:
+            if self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(comment_filtered):
+                quote_filtered = re.sub(
+                    self.tok_regex[&#34;QUOTEFILTER&#34;], &#34;&#34;, comment_filtered
+                )
+                open_count = len(
+                    self.tok_regex[&#34;OPEN_BRACE&#34;].findall(quote_filtered)
+                )
+                close_count = len(
+                    self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(quote_filtered)
+                )
+                if open_count == close_count and close_count &gt; 0:
+                    startline_here = startline
+                    startline += len(
+                        self.tok_regex[&#34;LINE_COUNTER&#34;].findall(
+                            member_accumulator
+                        )
+                    )
+                    endline = startline + 1
+                    member_list.append(
+                        (comment_filtered, startline_here, endline)
+                    )
+                    member_accumulator = &#34;&#34;
+            # Needed for accurate line recording
+            startline += len(
+                self.tok_regex[&#34;LINE_COUNTER&#34;].findall(member_accumulator)
+            )
+        # Output goes to codecache instead of passing directly to
+        # match_tokens below.
+        return (member_list, startline)
+
+    def match_tokens(self, filename, member_tokens):
+        &#34;&#34;&#34;Loop through member tokens, adding to mergeupdater.&#34;&#34;&#34;
+        for token in member_tokens:
+            # Only consider members that contain ) {
+            # This filters members written as:   something()={}
+            if self.tok_regex[&#34;PAREN_PAIR&#34;].findall(token[0]):
+                # Sending each token through seperately ensures duplicates in
+                # the same file are found
+                self.mergeupdater.update(
+                    {token[0]: (filename, token[1], token[2])}
+                )
+
+    def print_output(self, outfile, starttime=None, filecount=None):
+        &#34;&#34;&#34;Print mergeupdater matches to outfile.&#34;&#34;&#34;
+        print(outfile)
+        files_set = set()
+        duplicate_count = 0
+        with open(outfile, &#34;w&#34;) as file:
+            print(&#34;ClonedCodeChecker&#34;, file=file)
+            print(&#34;Version: 0.0.1&#34;, file=file)
+            print(&#34;Start time: {}&#34;.format(starttime), file=file)
+            print(&#34;Run time: {}&#34;.format(datetime.now() - starttime), file=file)
+            print(&#34;Files analyzed: {}&#34;.format(filecount), file=file)
+            print(
+                &#34;Lines analyzed: {}\n&#34;.format(self.total_linecount), file=file
+            )
+            for key in self.mergeupdater.keys():
+                if len(self.mergeupdater[key]) &gt; 1:
+                    print(&#34;Duplicate member found in: \n&#34;, file=file)
+                    duplicate_count += 1
+                    for val in self.mergeupdater[key]:
+                        files_set.add(val[0])
+                        print(
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;\t&#34;,
+                            &#34;{} line: {}&#34;.format(val[0], val[1]),
+                            file=file,
+                        )
+                    print(&#34;Member:         \n\n&#34;, key, file=file)
+                    print(&#34;\n\n&#34;, file=file)
+            print(&#34;Total duplicates: {}&#34;.format(duplicate_count), file=file)
+            print(&#34;Files affected: {}&#34;.format(len(files_set)), file=file)
+
+        print(&#34;ClonedCodeChecker&#34;)
+        print(&#34;Version: 0.0.1&#34;)
+        print(&#34;Start time: {}&#34;.format(starttime))
+        print(&#34;Run time: {}&#34;.format(datetime.now() - starttime))
+        print(&#34;Files analyzed: {}&#34;.format(filecount))
+        print(&#34;Lines analyzed: {}\n&#34;.format(self.total_linecount))
+        print(&#34;Total duplicates: {}&#34;.format(duplicate_count))
+        print(&#34;Files affected: {}&#34;.format(len(files_set)))</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="clonedcodechecker.matcher.Matcher.match_tokens"><code class="name flex">
+<span>def <span class="ident">match_tokens</span></span>(<span>self, filename, member_tokens)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Loop through member tokens, adding to mergeupdater.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def match_tokens(self, filename, member_tokens):
+    &#34;&#34;&#34;Loop through member tokens, adding to mergeupdater.&#34;&#34;&#34;
+    for token in member_tokens:
+        # Only consider members that contain ) {
+        # This filters members written as:   something()={}
+        if self.tok_regex[&#34;PAREN_PAIR&#34;].findall(token[0]):
+            # Sending each token through seperately ensures duplicates in
+            # the same file are found
+            self.mergeupdater.update(
+                {token[0]: (filename, token[1], token[2])}
+            )</code></pre>
+</details>
+</dd>
+<dt id="clonedcodechecker.matcher.Matcher.print_output"><code class="name flex">
+<span>def <span class="ident">print_output</span></span>(<span>self, outfile, starttime=None, filecount=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Print mergeupdater matches to outfile.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def print_output(self, outfile, starttime=None, filecount=None):
+    &#34;&#34;&#34;Print mergeupdater matches to outfile.&#34;&#34;&#34;
+    print(outfile)
+    files_set = set()
+    duplicate_count = 0
+    with open(outfile, &#34;w&#34;) as file:
+        print(&#34;ClonedCodeChecker&#34;, file=file)
+        print(&#34;Version: 0.0.1&#34;, file=file)
+        print(&#34;Start time: {}&#34;.format(starttime), file=file)
+        print(&#34;Run time: {}&#34;.format(datetime.now() - starttime), file=file)
+        print(&#34;Files analyzed: {}&#34;.format(filecount), file=file)
+        print(
+            &#34;Lines analyzed: {}\n&#34;.format(self.total_linecount), file=file
+        )
+        for key in self.mergeupdater.keys():
+            if len(self.mergeupdater[key]) &gt; 1:
+                print(&#34;Duplicate member found in: \n&#34;, file=file)
+                duplicate_count += 1
+                for val in self.mergeupdater[key]:
+                    files_set.add(val[0])
+                    print(
+                        &#34;\t&#34;,
+                        &#34;\t&#34;,
+                        &#34;\t&#34;,
+                        &#34;\t&#34;,
+                        &#34;\t&#34;,
+                        &#34;{} line: {}&#34;.format(val[0], val[1]),
+                        file=file,
+                    )
+                print(&#34;Member:         \n\n&#34;, key, file=file)
+                print(&#34;\n\n&#34;, file=file)
+        print(&#34;Total duplicates: {}&#34;.format(duplicate_count), file=file)
+        print(&#34;Files affected: {}&#34;.format(len(files_set)), file=file)
+
+    print(&#34;ClonedCodeChecker&#34;)
+    print(&#34;Version: 0.0.1&#34;)
+    print(&#34;Start time: {}&#34;.format(starttime))
+    print(&#34;Run time: {}&#34;.format(datetime.now() - starttime))
+    print(&#34;Files analyzed: {}&#34;.format(filecount))
+    print(&#34;Lines analyzed: {}\n&#34;.format(self.total_linecount))
+    print(&#34;Total duplicates: {}&#34;.format(duplicate_count))
+    print(&#34;Files affected: {}&#34;.format(len(files_set)))</code></pre>
+</details>
+</dd>
+<dt id="clonedcodechecker.matcher.Matcher.tokenize"><code class="name flex">
+<span>def <span class="ident">tokenize</span></span>(<span>self, text, startline=1)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Yield tuples of text and line position for every found match.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def tokenize(self, text, startline=1):
+    &#34;&#34;&#34;Yield tuples of text and line position for every found match.&#34;&#34;&#34;
+    member_accumulator = &#34;&#34;
+    comment_filtered = &#34;&#34;
+    member_list = deque()
+    for token in self.tok_regex[&#34;FIRST_FILTER&#34;].finditer(text):
+        # Before we start building a member, drop things
+        if member_accumulator == &#34;&#34;:
+            if any(
+                [
+                    token.lastgroup == &#34;DOUBLE_SLASH_COMMENT&#34;,
+                    token.lastgroup == &#34;SLASH_STAR_COMMENT&#34;,
+                    token.lastgroup == &#34;WHITESPACE&#34;,
+                    token.lastgroup == &#34;SEMICOLONWS&#34;,
+                ]
+            ):
+                startline += len(
+                    self.tok_regex[&#34;LINE_COUNTER&#34;].findall(token.group())
+                )
+                continue
+        # Accumulate tokens while building member
+        member_accumulator += token.group()
+        # Filter comments that may be inside the member (like this one)
+        comment_filtered += re.sub(
+            self.tok_regex[&#34;COMMENT_FILTER&#34;], &#34;&#34;, token.group()
+        )
+        # End on a brace
+        if token.lastgroup == &#34;TO_NEXT_BRACE&#34;:
+            # Remove quotes (since they may contain braces)
+            quote_filtered = re.sub(
+                self.tok_regex[&#34;QUOTEFILTER&#34;], &#34;&#34;, comment_filtered
+            )
+            # Count open and close braces
+            open_count = len(
+                self.tok_regex[&#34;OPEN_BRACE&#34;].findall(quote_filtered)
+            )
+            close_count = len(
+                self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(quote_filtered)
+            )
+            # If it ends with a close brace, this is maybe a member
+            if open_count == close_count and quote_filtered.endswith(&#34;}&#34;):
+                # Keep track of line count
+                startline_here = startline
+                startline += len(
+                    self.tok_regex[&#34;LINE_COUNTER&#34;].findall(
+                        member_accumulator
+                    )
+                )
+                # We want to start on the next line
+                endline = startline + 1
+                # Comment filtered is the member without comments
+                # Add member, start line, and end line as a 3-tuple to
+                #  the member_list
+                member_list.append(
+                    (comment_filtered, startline_here, endline)
+                )
+                member_accumulator = &#34;&#34;
+                comment_filtered = &#34;&#34;
+    # Catch last section of source code just in case
+    if member_accumulator != &#34;&#34;:
+        if self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(comment_filtered):
+            quote_filtered = re.sub(
+                self.tok_regex[&#34;QUOTEFILTER&#34;], &#34;&#34;, comment_filtered
+            )
+            open_count = len(
+                self.tok_regex[&#34;OPEN_BRACE&#34;].findall(quote_filtered)
+            )
+            close_count = len(
+                self.tok_regex[&#34;CLOSE_BRACE&#34;].findall(quote_filtered)
+            )
+            if open_count == close_count and close_count &gt; 0:
+                startline_here = startline
+                startline += len(
+                    self.tok_regex[&#34;LINE_COUNTER&#34;].findall(
+                        member_accumulator
+                    )
+                )
+                endline = startline + 1
+                member_list.append(
+                    (comment_filtered, startline_here, endline)
+                )
+                member_accumulator = &#34;&#34;
+        # Needed for accurate line recording
+        startline += len(
+            self.tok_regex[&#34;LINE_COUNTER&#34;].findall(member_accumulator)
+        )
+    # Output goes to codecache instead of passing directly to
+    # match_tokens below.
+    return (member_list, startline)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="clonedcodechecker.matcher.MergeUpdater"><code class="flex name class">
+<span>class <span class="ident">MergeUpdater</span></span>
+<span>(</span><span>*maps)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Subclassed ChainMap with an altered update function.</p>
+<p>Initialize a ChainMap by setting <em>maps</em> to the given mappings.
+If no mappings are provided, a single empty dictionary is used.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class MergeUpdater(ChainMap):
+    &#34;&#34;&#34;Subclassed ChainMap with an altered update function.&#34;&#34;&#34;
+
+    def update(self, other):
+        &#34;&#34;&#34;Append instead of update. Use deques for fast appends.&#34;&#34;&#34;
+        for key in other:
+            try:
+                self[key].append(other[key])
+            except KeyError:
+                self[key] = deque()
+                self[key].append(other[key])</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.ChainMap</li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="clonedcodechecker.matcher.MergeUpdater.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Append instead of update. Use deques for fast appends.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update(self, other):
+    &#34;&#34;&#34;Append instead of update. Use deques for fast appends.&#34;&#34;&#34;
+    for key in other:
+        try:
+            self[key].append(other[key])
+        except KeyError:
+            self[key] = deque()
+            self[key].append(other[key])</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="clonedcodechecker" href="index.html">clonedcodechecker</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="clonedcodechecker.matcher.Matcher" href="#clonedcodechecker.matcher.Matcher">Matcher</a></code></h4>
+<ul class="">
+<li><code><a title="clonedcodechecker.matcher.Matcher.match_tokens" href="#clonedcodechecker.matcher.Matcher.match_tokens">match_tokens</a></code></li>
+<li><code><a title="clonedcodechecker.matcher.Matcher.print_output" href="#clonedcodechecker.matcher.Matcher.print_output">print_output</a></code></li>
+<li><code><a title="clonedcodechecker.matcher.Matcher.tokenize" href="#clonedcodechecker.matcher.Matcher.tokenize">tokenize</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="clonedcodechecker.matcher.MergeUpdater" href="#clonedcodechecker.matcher.MergeUpdater">MergeUpdater</a></code></h4>
+<ul class="">
+<li><code><a title="clonedcodechecker.matcher.MergeUpdater.update" href="#clonedcodechecker.matcher.MergeUpdater.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
