@@ -6,7 +6,7 @@ import argparse
 from collections import deque
 from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
-import clonedcodechecker
+from clonedcodechecker import _version as version
 
 
 class ClonedCodeChecker:
@@ -98,7 +98,7 @@ class ClonedCodeChecker:
         self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
 
-def main(arg_s=["-h"]):
+def main(arg_s=None):
     """Parse arguments, drive program."""
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -152,12 +152,11 @@ def main(arg_s=["-h"]):
         pass
 
     if args.i:
-        print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
-        return
+        print("ClonedCodeChecker {}".format(version))
 
     if args.j:
         output_location = os.path.join(args.d, "report.txt")
-    print("ClonedCodeChecker {}".format(clonedcodechecker.__version__))
+
     ccc = ClonedCodeChecker(
         output_location=output_location,
         filecache_location=filecache_location,
@@ -179,7 +178,7 @@ def main(arg_s=["-h"]):
 # This is the entry point.
 # It means "if this file was run from the command line, do this stuff
 def run():
-    """Only useful for testing. Program's entry point is main. See setup.py"""
+    """Only useful for testing. Program's entry point is main. See setup.py."""
     if __name__ == "__main__":
         # code_cache is the 'container' object. It holds cppFile objects
         # I create it here so every function above has access to it.

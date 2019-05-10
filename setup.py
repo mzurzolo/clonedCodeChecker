@@ -4,27 +4,22 @@ from datetime import datetime
 import setuptools
 
 
-def rewrite_init():
-    """Version by day timestamp."""
-    now = datetime.now()
-    now_midnight = int(
-        datetime(year=now.year, month=now.month, day=now.day).timestamp()
-    )
-    with open("clonedcodechecker/__init__.py", "w") as file:
-        print('__name__ = "clonedcodechecker"', file=file)
-        print('__version__ = "0.0.1.{}"'.format(now_midnight), file=file)
-        print("from . import codecache", file=file)
-        print("from . import codechecker", file=file)
-        print("from . import matcher", file=file)
+now = datetime.now()
+now_midnight = int(
+    datetime(year=now.year, month=now.month, day=now.day).timestamp()
+)
 
-    return now_midnight
+VERSION = "0.0.1.{}".format(now_midnight)
+with open("clonedcodechecker/_version.py", "w") as file:
+    print(VERSION, file=file)
+
 
 
 def main():
-    """Package"""
+    """Package."""
     setuptools.setup(
         name="clonedcodechecker",
-        version="0.0.1.{}".format(rewrite_init()),
+        version=VERSION,
         description="Cloned C++ Code Checker",
         url="https://sourceforge.net/p/clonedcodechecker/mercurial/ci/default/tree/",
         author="Michael Zurzolo <mikezurzolo@gmail.com>,\
@@ -43,5 +38,4 @@ def main():
 
 
 if __name__ == "__main__":
-    rewrite_init()
     main()

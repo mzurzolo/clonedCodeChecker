@@ -7,7 +7,7 @@ and where the final output comes from.
 import re
 from datetime import datetime
 from collections import ChainMap, deque
-import clonedcodechecker
+from clonedcodechecker import _version as version
 
 
 class MergeUpdater(ChainMap):
@@ -187,9 +187,7 @@ class Matcher:
         duplicate_count = 0
         with open(outfile, "w") as file:
             print("ClonedCodeChecker", file=file)
-            print(
-                "Version: {}".format(clonedcodechecker.__version__), file=file
-            )
+            print("Version: {}".format(version), file=file)
             print("Start time: {}".format(starttime), file=file)
             print("Run time: {}".format(datetime.now() - starttime), file=file)
             print("Files analyzed: {}".format(filecount), file=file)
@@ -217,7 +215,7 @@ class Matcher:
             print("Files affected: {}".format(len(files_set)), file=file)
 
         print("ClonedCodeChecker")
-        print("Version: {}".format(clonedcodechecker.__version__))
+        print("Version: {}".format(_version))
         print("Start time: {}".format(starttime))
         print("Run time: {}".format(datetime.now() - starttime))
         print("Files analyzed: {}".format(filecount))

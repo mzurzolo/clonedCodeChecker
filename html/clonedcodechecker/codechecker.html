@@ -31,7 +31,7 @@ import argparse
 from collections import deque
 from datetime import datetime
 from clonedcodechecker.codecache import CodeCache
-import clonedcodechecker
+from clonedcodechecker import __version__ as _version
 
 
 class ClonedCodeChecker:
@@ -123,12 +123,7 @@ class ClonedCodeChecker:
         self.code_cache.output(starttime=self.starttime, filecount=filecount)
 
 
-def printversion():
-    &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
-    print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))
-
-
-def main(arg_s=[&#34;-h&#34;]):
+def main(arg_s=None):
     &#34;&#34;&#34;Parse arguments, drive program.&#34;&#34;&#34;
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -137,18 +132,18 @@ def main(arg_s=[&#34;-h&#34;]):
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
-    parser = argparse.ArgumentParser(clonedcodechecker)
+    parser = argparse.ArgumentParser()
     parser.add_argument(
-        &#34;-v&#34;,
-        &#34;--version&#34;,
+        &#34;-i&#34;,
+        &#34;--iversion&#34;,
         action=&#34;store_true&#34;,
-        help=&#34;print the ClonedCodeChecker&#39;s version and exit&#34;,
+        help=&#34;print the ClonedCodeChecker&#39;s version and exit&#34;
     )
     parser.add_argument(
         &#34;-p&#34;,
         &#34;--purgefilecache&#34;,
         action=&#34;store_true&#34;,
-        help=&#34;Purge the filecache (found at $HOME/.filecache)&#34;,
+        help=&#34;Purge the filecache (found at $HOME/.filecache)&#34;
     )
     parser.add_argument(
         &#34;-r&#34;,
@@ -156,8 +151,8 @@ def main(arg_s=[&#34;-h&#34;]):
         action=&#34;store_true&#34;,
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
-            &#34;directory and any sub-directories (recursive)&#34;,
-        ),
+            &#34;directory and any sub-directories (recursive)&#34;
+        )
     )
     parser.add_argument(
         &#34;-d&#34;,
@@ -166,7 +161,7 @@ def main(arg_s=[&#34;-h&#34;]):
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
             &#34;directory (but not sub-directories)&#34;,
-        ),
+        )
     )
     parser.add_argument(&#34;-j&#34;, action=&#34;store_true&#34;, help=argparse.SUPPRESS)
 
@@ -181,9 +176,8 @@ def main(arg_s=[&#34;-h&#34;]):
     except FileExistsError:
         pass
 
-    if args.v:
-        printversion()
-        return
+    if args.i:
+        print(&#34;ClonedCodeChecker {}&#34;.format(_version))
 
     if args.j:
         output_location = os.path.join(args.d, &#34;report.txt&#34;)
@@ -209,7 +203,7 @@ def main(arg_s=[&#34;-h&#34;]):
 # This is the entry point.
 # It means &#34;if this file was run from the command line, do this stuff
 def run():
-    &#34;&#34;&#34;Only useful for testing. Program&#39;s entry point is main. See setup.py&#34;&#34;&#34;
+    &#34;&#34;&#34;Only useful for testing. Program&#39;s entry point is main. See setup.py.&#34;&#34;&#34;
     if __name__ == &#34;__main__&#34;:
         # code_cache is the &#39;container&#39; object. It holds cppFile objects
         # I create it here so every function above has access to it.
@@ -227,13 +221,13 @@ run()</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="clonedcodechecker.codechecker.main"><code class="name flex">
-<span>def <span class="ident">main</span></span>(<span>arg_s=['-h'])</span>
+<span>def <span class="ident">main</span></span>(<span>arg_s=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Parse arguments, drive program.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def main(arg_s=[&#34;-h&#34;]):
+<pre><code class="python">def main(arg_s=None):
     &#34;&#34;&#34;Parse arguments, drive program.&#34;&#34;&#34;
     # this is where the command line interface we interact with is defined.
     # help is what gets displayed if the -h argument is passed
@@ -242,18 +236,18 @@ run()</code></pre>
     # walking through directories recursively is disabled by default. When the
     # -r is present, recursive is True (turned on)
     starttime = datetime.now()
-    parser = argparse.ArgumentParser(clonedcodechecker)
+    parser = argparse.ArgumentParser()
     parser.add_argument(
-        &#34;-v&#34;,
-        &#34;--version&#34;,
+        &#34;-i&#34;,
+        &#34;--iversion&#34;,
         action=&#34;store_true&#34;,
-        help=&#34;print the ClonedCodeChecker&#39;s version and exit&#34;,
+        help=&#34;print the ClonedCodeChecker&#39;s version and exit&#34;
     )
     parser.add_argument(
         &#34;-p&#34;,
         &#34;--purgefilecache&#34;,
         action=&#34;store_true&#34;,
-        help=&#34;Purge the filecache (found at $HOME/.filecache)&#34;,
+        help=&#34;Purge the filecache (found at $HOME/.filecache)&#34;
     )
     parser.add_argument(
         &#34;-r&#34;,
@@ -261,8 +255,8 @@ run()</code></pre>
         action=&#34;store_true&#34;,
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
-            &#34;directory and any sub-directories (recursive)&#34;,
-        ),
+            &#34;directory and any sub-directories (recursive)&#34;
+        )
     )
     parser.add_argument(
         &#34;-d&#34;,
@@ -271,7 +265,7 @@ run()</code></pre>
         help=&#34;{}{}&#34;.format(
             &#34;Search for duplicate code in given &#34;,
             &#34;directory (but not sub-directories)&#34;,
-        ),
+        )
     )
     parser.add_argument(&#34;-j&#34;, action=&#34;store_true&#34;, help=argparse.SUPPRESS)
 
@@ -286,9 +280,8 @@ run()</code></pre>
     except FileExistsError:
         pass
 
-    if args.v:
-        printversion()
-        return
+    if args.i:
+        print(&#34;ClonedCodeChecker {}&#34;.format(_version))
 
     if args.j:
         output_location = os.path.join(args.d, &#34;report.txt&#34;)
@@ -311,27 +304,15 @@ run()</code></pre>
         ccc.load_cpp_files(args.d)</code></pre>
 </details>
 </dd>
-<dt id="clonedcodechecker.codechecker.printversion"><code class="name flex">
-<span>def <span class="ident">printversion</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Print Version.</p></section>
-<details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def printversion():
-    &#34;&#34;&#34;Print Version.&#34;&#34;&#34;
-    print(&#34;ClonedCodeChecker {}&#34;.format(clonedcodechecker.__version__))</code></pre>
-</details>
-</dd>
 <dt id="clonedcodechecker.codechecker.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Only useful for testing. Program's entry point is main. See setup.py</p></section>
+<section class="desc"><p>Only useful for testing. Program's entry point is main. See setup.py.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def run():
-    &#34;&#34;&#34;Only useful for testing. Program&#39;s entry point is main. See setup.py&#34;&#34;&#34;
+    &#34;&#34;&#34;Only useful for testing. Program&#39;s entry point is main. See setup.py.&#34;&#34;&#34;
     if __name__ == &#34;__main__&#34;:
         # code_cache is the &#39;container&#39; object. It holds cppFile objects
         # I create it here so every function above has access to it.
@@ -345,7 +326,7 @@ run()</code></pre>
 <dl>
 <dt id="clonedcodechecker.codechecker.ClonedCodeChecker"><code class="flex name class">
 <span>class <span class="ident">ClonedCodeChecker</span></span>
-<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 10, 48, 1, 915979))</span>
+<span>(</span><span>output_location='.', filecache_location='.', starttime=datetime.datetime(2019, 5, 10, 12, 6, 12, 362866))</span>
 </code></dt>
 <dd>
 <section class="desc"><p>The ClonedCodeChecker collects files for its CodeCache.</p>
@@ -544,7 +525,6 @@ run()</code></pre>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="clonedcodechecker.codechecker.main" href="#clonedcodechecker.codechecker.main">main</a></code></li>
-<li><code><a title="clonedcodechecker.codechecker.printversion" href="#clonedcodechecker.codechecker.printversion">printversion</a></code></li>
 <li><code><a title="clonedcodechecker.codechecker.run" href="#clonedcodechecker.codechecker.run">run</a></code></li>
 </ul>
 </li>
