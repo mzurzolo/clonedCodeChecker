@@ -156,7 +156,7 @@ def main(arg_s=None):
         return
 
     if args.j:
-        output_location = os.path.join(args.d, "report.txt")
+        output_location = os.path.join(args.directory, "report.txt")
 
     ccc = ClonedCodeChecker(
         output_location=output_location,
